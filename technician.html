@@ -1,0 +1,2827 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/car-service.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --light-bg: #f5f7fa;
+            --light-secondary: #eef2f7;
+            --card-bg: #ffffff;
+            --card-hover: #f8f9fa;
+            --text-primary: #2c3e50;
+            --text-secondary: #7f8c8d;
+            --text-muted: #95a5a6;
+            --border-color: #e0e0e0;
+            --border-hover: #cbd5e1;
+            --accent-primary: #3498db;
+            --accent-secondary: #2980b9;
+            --accent-light: rgba(52, 152, 219, 0.1);
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --error: #e74c3c;
+            --info: #3498db;
+            --purple: #9b59b6;
+            --teal: #1abc9c;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.15);
+            --modal-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        html.dark-mode {
+            --light-bg: #0f172a;
+            --light-secondary: #1e293b;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #475569;
+            --border-hover: #64748b;
+            --accent-primary: #60a5fa;
+            --accent-secondary: #3b82f6;
+            --accent-light: rgba(59, 130, 246, 0.15);
+            --success: #34d399;
+            --warning: #fbbf24;
+            --error: #f87171;
+            --info: #60a5fa;
+            --purple: #a78bfa;
+            --teal: #5eead4;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 8px 24px rgba(0, 0, 0, 0.4);
+            --modal-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light-bg) 0%, var(--light-secondary) 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--card-hover) 100%);
+            color: var(--text-primary);
+            padding: 1.2rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-primary);
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--error);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-info .avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .logout-btn {
+            background: var(--accent-light);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: var(--shadow-hover);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-title h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .dashboard-title p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .role-badge {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 0.8rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        /* Dashboard Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.8rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--accent-primary);
+        }
+
+        .stat-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon.tasks { 
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); 
+            color: white;
+        }
+        .stat-icon.completed { 
+            background: linear-gradient(135deg, var(--success), #27ae60); 
+            color: white;
+        }
+        .stat-icon.progress { 
+            background: linear-gradient(135deg, var(--warning), #d68910); 
+            color: white;
+        }
+        .stat-icon.priority { 
+            background: linear-gradient(135deg, var(--error), #c0392b); 
+            color: white;
+        }
+
+        .stat-info h3 {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: var(--text-primary);
+        }
+
+        /* Dashboard Sections */
+        .dashboard-section {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .section-header {
+            padding: 1.8rem 2rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 600;
+        }
+
+        .section-icon {
+            color: var(--accent-primary);
+            font-size: 1.4rem;
+        }
+
+        .section-content {
+            padding: 2rem;
+        }
+
+        /* Assigned Jobs Section */
+        .jobs-container {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .job-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+        }
+
+        .job-card:hover {
+            box-shadow: var(--shadow-hover);
+            transform: translateY(-3px);
+            border-color: var(--accent-primary);
+        }
+
+        .job-header {
+            background: var(--card-hover);
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .job-title {
+            font-size: 1.3rem;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 600;
+        }
+
+        .job-title i {
+            color: var(--accent-primary);
+        }
+
+        .job-body {
+            padding: 1.5rem;
+        }
+
+        .car-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .car-icon {
+            width: 55px;
+            height: 55px;
+            background: var(--accent-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: var(--accent-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .car-details h4 {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+            font-weight: 600;
+        }
+
+        .car-details p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .job-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-light);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .detail-info h5 {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-info p {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        /* Timer Display – STABLE (no flicker) */
+        .timer-display {
+            background: linear-gradient(135deg, var(--accent-light), var(--card-hover));
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            margin: 1rem 0 0.5rem 0;
+            border-left: 4px solid var(--accent-primary);
+            display: flex !important;          /* force always block */
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid var(--border-color);
+            visibility: visible !important;    /* ensure not hidden */
+            opacity: 1 !important;             /* no pulse flicker */
+            transition: none;                 /* remove pulsing animation */
+        }
+
+        .timer-value {
+            font-family: 'Courier New', monospace;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            background: var(--card-bg);
+            padding: 0.2rem 0.8rem;
+            border-radius: 6px;
+            letter-spacing: 2px;
+        }
+
+        .job-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.8rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 0.95rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+        }
+
+        .btn-success:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d68910);
+            color: white;
+        }
+
+        .btn-warning:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Communication Panel */
+        .communication-panel {
+            background: var(--card-hover);
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .advisor-list {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .advisor-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 200px;
+            flex: 1;
+        }
+
+        .advisor-card:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .advisor-card.active {
+            background: var(--accent-light);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--accent-light);
+        }
+
+        .advisor-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .advisor-info h4 {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+            font-weight: 600;
+        }
+
+        .advisor-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .advisor-status {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.75rem;
+            margin-top: 0.2rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.online {
+            background-color: var(--success);
+        }
+
+        .status-dot.offline {
+            background-color: var(--error);
+        }
+
+        .message-area {
+            background: var(--card-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 1rem;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            max-width: 80%;
+            border: 1px solid var(--border-color);
+        }
+
+        .message.received {
+            background: var(--accent-light);
+            border-left: 4px solid var(--accent-primary);
+            margin-right: auto;
+        }
+
+        .message.sent {
+            background: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid var(--success);
+            margin-left: auto;
+        }
+
+        .message-input {
+            display: flex;
+            gap: 0.8rem;
+        }
+
+        .message-input input {
+            flex-grow: 1;
+            padding: 1rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+        }
+
+        .message-input input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 16px;
+            box-shadow: var(--modal-shadow);
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.8rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1.5rem;
+        }
+
+        .modal-header h2 {
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 700;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: color 0.3s;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: var(--accent-light);
+            color: var(--accent-primary);
+        }
+
+        .modal-section {
+            margin-bottom: 1.8rem;
+        }
+
+        .modal-section h3 {
+            color: var(--accent-primary);
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .modal-row {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .modal-field {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .modal-field label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .modal-field value {
+            display: block;
+            color: var(--text-primary);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .modal-description {
+            background: var(--card-hover);
+            border-left: 4px solid var(--accent-primary);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-description label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-description-text {
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-size: 1rem;
+            white-space: pre-wrap;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            padding-top: 1.8rem;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+            text-align: center;
+            justify-content: center;
+        }
+
+        /* QC Modal */
+        .qc-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .qc-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.2rem;
+            cursor: pointer;
+            background: var(--card-bg);
+            transition: all 0.2s ease;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .qc-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--warning);
+        }
+
+        .qc-card.selected {
+            border-color: var(--warning);
+            box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.2);
+            background: var(--accent-light);
+        }
+
+        .qc-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--purple), #8b5cf6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .qc-info h4 {
+            margin: 0;
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .qc-info p {
+            margin: 0.2rem 0 0;
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            word-break: break-word;
+        }
+
+        .qc-search {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.9rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            background: var(--card-bg);
+            margin-bottom: 1rem;
+        }
+
+        .qc-search i {
+            color: var(--text-muted);
+        }
+
+        .qc-search input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 0.95rem;
+            background: transparent;
+            color: var(--text-primary);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border: 1px solid;
+        }
+
+        .status-pending {
+            background: rgba(243, 156, 18, 0.15);
+            color: var(--warning);
+            border-color: rgba(243, 156, 18, 0.3);
+        }
+
+        .status-in-progress {
+            background: rgba(52, 152, 219, 0.15);
+            color: var(--info);
+            border-color: rgba(52, 152, 219, 0.3);
+        }
+
+        .status-completed {
+            background: rgba(46, 204, 113, 0.15);
+            color: var(--success);
+            border-color: rgba(46, 204, 113, 0.3);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 2rem;
+            color: var(--text-secondary);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+        }
+
+        /* Tools & Resources */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .tool-btn {
+            flex-direction: column;
+            height: 140px;
+            justify-content: center;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s;
+        }
+
+        .tool-btn:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-primary);
+            transform: translateY(-3px);
+        }
+
+        .tool-btn i {
+            font-size: 2.2rem;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-btn div:first-of-type {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+        }
+
+        .tool-btn div:last-of-type {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* misc */
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 2px dashed var(--border-color);
+        }
+
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .last-update {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--accent-light);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .theme-toggle {
+            background: var(--accent-light);
+            border: 2px solid var(--accent-primary);
+            color: var(--text-primary);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .notification {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            padding: 1.2rem 1.8rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow-hover);
+            z-index: 2001;
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-left: 4px solid;
+        }
+
+        .notification.success {
+            background: linear-gradient(135deg, var(--success), #27ae60);
+            color: white;
+            border-left-color: #27ae60;
+        }
+        .notification.error {
+            background: linear-gradient(135deg, var(--error), #c0392b);
+            color: white;
+            border-left-color: #c0392b;
+        }
+        .notification.info {
+            background: linear-gradient(135deg, var(--info), var(--accent-secondary));
+            color: white;
+            border-left-color: var(--accent-secondary);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Comprehensive Responsive Design */
+        /* Large Tablet / Desktop Responsive (1024px and below) */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 1rem;
+                max-width: 95%;
+            }
+
+            header {
+                padding: 1rem;
+            }
+
+            nav {
+                gap: 1.5rem;
+            }
+
+            .dashboard-header {
+                padding: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1.2rem;
+            }
+
+            .dashboard-section {
+                padding: 1.5rem;
+            }
+
+            .modal-content {
+                width: 90vw;
+                max-height: 85vh;
+            }
+
+            .job-details-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filter-buttons {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .user-details {
+                display: none;
+            }
+        }
+
+        /* Tablet / Mobile Responsive (768px and below) */
+        @media (max-width: 768px) {
+            header {
+                padding: 0.8rem;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 1rem;
+                align-items: center;
+                justify-content: space-between;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .container {
+                padding: 0.8rem;
+            }
+
+            .dashboard-header {
+                padding: 1rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.9rem;
+            }
+
+            .role-badge {
+                align-self: flex-start;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-card .stat-header {
+                gap: 1rem;
+            }
+
+            .dashboard-section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .section-title {
+                flex-direction: column;
+                gap: 0.8rem;
+                font-size: 1.2rem;
+            }
+
+            .job-card {
+                padding: 1rem;
+            }
+
+            .job-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .job-title {
+                font-size: 1.1rem;
+            }
+
+            .job-body {
+                padding: 1rem;
+            }
+
+            .car-info {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .car-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.5rem;
+            }
+
+            .job-details-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .detail-item {
+                gap: 0.8rem;
+            }
+
+            .detail-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+
+            .job-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .job-actions button {
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 95vw;
+                padding: 1rem;
+            }
+
+            .modal-header {
+                padding: 1rem;
+            }
+
+            .modal-section {
+                padding: 1rem;
+            }
+
+            .modal-row {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .timer-display {
+                flex-direction: column;
+            }
+
+            .user-details {
+                display: none;
+            }
+
+            .communication-panel {
+                padding: 1rem;
+            }
+
+            .advisor-list {
+                grid-template-columns: 1fr;
+            }
+
+            .advisor-item {
+                padding: 0.8rem;
+            }
+
+            .message-area {
+                height: 300px;
+            }
+
+            .message-input {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .message-input input {
+                width: 100%;
+            }
+
+            .message-input button {
+                width: 100%;
+            }
+
+            .filter-buttons {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                overflow-x: auto;
+            }
+
+            .filter-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+                white-space: nowrap;
+            }
+
+            .assigned-jobs-container,
+            #no-jobs-message {
+                padding: 0.8rem;
+            }
+
+            .qc-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .qc-card {
+                padding: 0.8rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .modal-actions .btn {
+                width: 100%;
+            }
+
+            .notification {
+                right: 10px;
+                left: 10px;
+                width: auto;
+                max-width: none;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Small Mobile Responsive (480px and below) */
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            header {
+                padding: 0.6rem 0.8rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            nav {
+                gap: 0.5rem;
+            }
+
+            .user-info {
+                gap: 0.5rem;
+            }
+
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+
+            .logout-btn {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .container {
+                padding: 0 10px;
+            }
+
+            .dashboard-header {
+                padding: 0.8rem;
+                gap: 0.8rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.3rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.85rem;
+            }
+
+            .live-time {
+                font-size: 0.8rem;
+                gap: 0.3rem;
+            }
+
+            .role-badge {
+                font-size: 0.8rem;
+                padding: 0.5rem 0.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+
+            .stat-card {
+                padding: 0.8rem;
+                gap: 0.8rem;
+            }
+
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .stat-info h3 {
+                font-size: 0.75rem;
+            }
+
+            .stat-info .value {
+                font-size: 1.2rem;
+            }
+
+            .dashboard-section {
+                padding: 0.8rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+                gap: 0.5rem;
+            }
+
+            .section-title i {
+                font-size: 1.2rem;
+            }
+
+            .job-card {
+                padding: 0.8rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .job-header {
+                gap: 0.3rem;
+            }
+
+            .job-title {
+                font-size: 1rem;
+            }
+
+            .job-body {
+                padding: 0.8rem;
+            }
+
+            .car-info {
+                gap: 0.6rem;
+            }
+
+            .car-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.3rem;
+            }
+
+            .car-details h4 {
+                font-size: 0.95rem;
+            }
+
+            .car-details p {
+                font-size: 0.8rem;
+            }
+
+            .job-details-grid {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+
+            .detail-item {
+                gap: 0.6rem;
+            }
+
+            .detail-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+
+            .detail-info h5 {
+                font-size: 0.8rem;
+            }
+
+            .detail-info p {
+                font-size: 0.85rem;
+            }
+
+            .job-actions {
+                flex-direction: column;
+                gap: 0.4rem;
+            }
+
+            .job-actions button {
+                width: 100%;
+                padding: 0.7rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .modal-content {
+                width: 100%;
+                padding: 0.8rem;
+                margin: 1rem auto;
+            }
+
+            .modal-header {
+                padding: 0.8rem;
+            }
+
+            .modal-header h2 {
+                font-size: 1.2rem;
+            }
+
+            .modal-header .modal-close {
+                font-size: 1.5rem;
+            }
+
+            .modal-section {
+                padding: 0.8rem;
+            }
+
+            .modal-row {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .modal-field {
+                margin-bottom: 0.8rem;
+            }
+
+            .modal-field label {
+                font-size: 0.85rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .modal-field value {
+                font-size: 0.9rem;
+            }
+
+            .timer-display {
+                flex-direction: column;
+                gap: 0.5rem;
+                padding: 0.8rem;
+            }
+
+            .timer-value {
+                font-size: 1.1rem;
+            }
+
+            .communication-panel {
+                padding: 0.8rem;
+            }
+
+            .advisor-list {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+
+            .advisor-item {
+                padding: 0.8rem;
+                gap: 0.8rem;
+            }
+
+            .advisor-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+
+            .message-area {
+                height: 250px;
+                padding: 0.8rem;
+            }
+
+            .message {
+                padding: 0.6rem 0.8rem;
+                margin: 0.4rem 0;
+                font-size: 0.85rem;
+            }
+
+            .message-input {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .message-input input {
+                width: 100%;
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .message-input button {
+                width: 100%;
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .filter-buttons {
+                gap: 0.3rem;
+                overflow-x: auto;
+            }
+
+            .filter-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+                white-space: nowrap;
+            }
+
+            .assigned-jobs-container {
+                padding: 0.6rem;
+            }
+
+            .qc-grid {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+
+            .qc-card {
+                padding: 0.6rem;
+                gap: 0.6rem;
+            }
+
+            .qc-avatar {
+                width: 38px;
+                height: 38px;
+                font-size: 0.85rem;
+            }
+
+            .qc-info h4 {
+                font-size: 0.9rem;
+            }
+
+            .qc-info p {
+                font-size: 0.8rem;
+            }
+
+            .qc-search {
+                padding: 0.6rem 0.8rem;
+                gap: 0.6rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                gap: 0.4rem;
+            }
+
+            .modal-actions .btn {
+                width: 100%;
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .notification {
+                right: 5px;
+                left: 5px;
+                padding: 0.8rem;
+                font-size: 0.8rem;
+                min-width: auto;
+                width: auto;
+                max-width: none;
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .status-badge {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .assigned-advisor {
+                font-size: 0.8rem;
+                padding: 0.3rem 0.6rem;
+            }
+        }
+
+        /* Extra Small Mobile Responsive (360px and below) */
+        @media (max-width: 360px) {
+            body {
+                font-size: 13px;
+            }
+
+            header {
+                padding: 0.5rem 0.6rem;
+            }
+
+            .logo {
+                font-size: 1.1rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            nav {
+                gap: 0.3rem;
+            }
+
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+
+            .logout-btn {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.7rem;
+            }
+
+            .container {
+                padding: 0 8px;
+            }
+
+            .dashboard-header {
+                padding: 0.6rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.2rem;
+                margin-bottom: 0.2rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.8rem;
+            }
+
+            .live-time {
+                font-size: 0.7rem;
+                gap: 0.2rem;
+            }
+
+            .role-badge {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.6rem;
+            }
+
+            .stats-grid {
+                gap: 0.5rem;
+            }
+
+            .stat-card {
+                padding: 0.6rem;
+                gap: 0.6rem;
+            }
+
+            .stat-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+
+            .stat-info h3 {
+                font-size: 0.7rem;
+            }
+
+            .stat-info .value {
+                font-size: 1.1rem;
+            }
+
+            .dashboard-section {
+                padding: 0.6rem;
+                margin-bottom: 0.6rem;
+            }
+
+            .section-title {
+                font-size: 1rem;
+                gap: 0.3rem;
+            }
+
+            .job-card {
+                padding: 0.6rem;
+                margin-bottom: 0.6rem;
+            }
+
+            .job-title {
+                font-size: 0.95rem;
+            }
+
+            .job-body {
+                padding: 0.6rem;
+            }
+
+            .car-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1.1rem;
+            }
+
+            .car-details h4 {
+                font-size: 0.9rem;
+            }
+
+            .car-details p {
+                font-size: 0.75rem;
+            }
+
+            .job-details-grid {
+                gap: 0.5rem;
+            }
+
+            .detail-item {
+                gap: 0.5rem;
+            }
+
+            .detail-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 0.8rem;
+            }
+
+            .detail-info h5 {
+                font-size: 0.75rem;
+            }
+
+            .detail-info p {
+                font-size: 0.8rem;
+            }
+
+            .job-actions button {
+                padding: 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .modal-content {
+                width: 100%;
+                padding: 0.6rem;
+            }
+
+            .modal-header h2 {
+                font-size: 1.1rem;
+            }
+
+            .modal-section {
+                padding: 0.6rem;
+            }
+
+            .modal-field label {
+                font-size: 0.8rem;
+            }
+
+            .modal-field value {
+                font-size: 0.85rem;
+            }
+
+            .timer-value {
+                font-size: 1rem;
+            }
+
+            .advisor-item {
+                padding: 0.6rem;
+                gap: 0.6rem;
+            }
+
+            .advisor-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 0.85rem;
+            }
+
+            .message-area {
+                height: 200px;
+                padding: 0.6rem;
+            }
+
+            .message {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .message-input input {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+
+            .message-input button {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .filter-btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .qc-card {
+                padding: 0.5rem;
+            }
+
+            .qc-avatar {
+                width: 33px;
+                height: 33px;
+                font-size: 0.8rem;
+            }
+
+            .qc-info h4 {
+                font-size: 0.85rem;
+            }
+
+            .qc-info p {
+                font-size: 0.75rem;
+            }
+
+            .modal-actions .btn {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .notification {
+                padding: 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .theme-toggle {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+
+            .status-badge {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.7rem;
+            }
+
+            .assigned-advisor {
+                font-size: 0.75rem;
+                padding: 0.2rem 0.4rem;
+            }
+        }
+    </style>
+
+    <!-- Unified theme overrides: ensure all dashboards share the same color palette and UI tokens -->
+    <style>
+        :root{
+            --primary: #3b82f6;
+            --accent-primary: #8b5cf6;
+            --accent: var(--primary);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --card-bg: #ffffff;
+            --bg-gradient-from: #f8fafc;
+            --bg-gradient-to: #eef2f7;
+            --text-primary: #1f2937;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0,0,0,0.06);
+        }
+
+        body { background: linear-gradient(135deg,var(--bg-gradient-from),var(--bg-gradient-to)); color:var(--text-primary); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        header { background: linear-gradient(135deg,#0f172a 0%, #1f2937 100%); border-bottom: 3px solid var(--primary); }
+        .btn, button { background: var(--primary); color: #fff; border: none; border-radius: 8px; }
+        .btn-primary { background: var(--primary); }
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); }
+        .btn-danger { background: var(--error); }
+        .role-badge, .status-badge { border-color: var(--primary); }
+        .card, .stat-card, .vehicle-card, .modal-content { background: var(--card-bg); box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+        a { color: var(--primary); }
+    </style>
+
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-wrench"></i>
+                Car<span>Service</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <div class="user-info">
+                    <div class="avatar" id="user-avatar">T</div>
+                    <div>
+                        <div style="font-weight: 600; color: var(--text-primary);" id="user-name">Technician User</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);" id="user-role">Technician</div>
+                    </div>
+                    <button class="logout-btn" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header">
+            <div class="dashboard-title">
+                <h1>Technician Dashboard</h1>
+                <p>Manage your assigned tasks and access service resources</p>
+            </div>
+            <div class="role-badge">
+                <i class="fas fa-tools"></i> Technician
+            </div>
+        </div>
+
+        <!-- Stats Overview -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon tasks">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>ASSIGNED TASKS</h3>
+                    <div class="stat-number" id="total-tasks">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon completed">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>COMPLETED</h3>
+                    <div class="stat-number" id="completed-tasks">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon progress">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>IN PROGRESS</h3>
+                    <div class="stat-number" id="inprogress-tasks">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon priority">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>HIGH PRIORITY</h3>
+                    <div class="stat-number" id="highpriority-tasks">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assigned Jobs Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-car section-icon"></i> Assigned Jobs
+                </h2>
+                <div class="last-update">
+                    <span id="last-update-time">Last updated: Just now</span>
+                </div>
+            </div>
+            <div class="section-content">
+                <div id="no-jobs-message" class="no-data">
+                    <div>
+                        <i class="fas fa-tasks"></i>
+                    </div>
+                    <h3>No jobs assigned yet</h3>
+                    <p>Service advisors will assign jobs to you. Check back soon!</p>
+                </div>
+                <div class="jobs-container" id="assigned-jobs-container"></div>
+            </div>
+        </div>
+
+        <!-- Tools & Resources Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-toolbox section-icon"></i> Tools & Resources
+                </h2>
+            </div>
+            <div class="section-content">
+                <div class="tools-grid">
+                    <button class="btn btn-outline tool-btn" onclick="openServiceManuals()">
+                        <i class="fas fa-wrench"></i>
+                        <div>Service Manuals</div>
+                        <div>Access guides</div>
+                    </button>
+                    <button class="btn btn-outline tool-btn" onclick="openWorkOrders()">
+                        <i class="fas fa-clipboard-list"></i>
+                        <div>Work Orders</div>
+                        <div>View & update</div>
+                    </button>
+                    <button class="btn btn-outline tool-btn" onclick="openPartsInventory()">
+                        <i class="fas fa-file-invoice"></i>
+                        <div>Parts Inventory</div>
+                        <div>Check stock</div>
+                    </button>
+                    <button class="btn btn-outline tool-btn" onclick="openTeamChat()">
+                        <i class="fas fa-comment-dots"></i>
+                        <div>Team Chat</div>
+                        <div>Communicate</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Communication with Service Advisors Section -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-comments section-icon"></i> Communication with Service Advisors
+                </h2>
+            </div>
+            <div class="section-content">
+                <div class="communication-panel">
+                    <h4 style="margin-bottom: 1rem; color: var(--text-primary); font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-user-tie"></i> Available Service Advisors
+                    </h4>
+                    <div class="advisor-list" id="advisor-list"></div>
+                </div>
+                <div id="chat-section" style="display: none; margin-top: 1.5rem;">
+                    <h4 style="color: var(--text-primary); margin-bottom: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
+                        <i class="fas fa-comment-dots"></i> <span id="chat-with">Chat</span>
+                    </h4>
+                    <div class="message-area" id="message-area"></div>
+                    <div class="message-input">
+                        <input type="text" id="message-input" placeholder="Type your message..." onkeypress="handleMessageKeypress(event)">
+                        <button id="send-message-btn" class="btn btn-primary" style="padding: 1rem 1.5rem;">
+                            <i class="fas fa-paper-plane"></i> Send
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Details Modal -->
+        <div id="jobDetailsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-briefcase" style="color: var(--accent-primary);"></i> Service Task Details</h2>
+                    <button class="modal-close" onclick="closeJobDetailsModal()">&times;</button>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-wrench"></i> Service Information</h3>
+                    <div class="modal-row">
+                        <div class="modal-field"><label>Service Type</label><value id="modal-service-name">-</value></div>
+                        <div class="modal-field"><label>Status</label><div id="modal-status">-</div></div>
+                    </div>
+                    <div class="modal-row">
+                        <div class="modal-field"><label>Estimated Hours</label><value id="modal-estimated-hours">-</value></div>
+                        <div class="modal-field"><label>Estimated Cost</label><value id="modal-estimated-cost">-</value></div>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-car"></i> Vehicle Information</h3>
+                    <div class="modal-row">
+                        <div class="modal-field"><label>Vehicle Number</label><value id="modal-vehicle-number">-</value></div>
+                        <div class="modal-field"><label>Model</label><value id="modal-vehicle-model">-</value></div>
+                    </div>
+                    <div class="modal-row">
+                        <div class="modal-field"><label>Car Name</label><value id="modal-car-name">-</value></div>
+                        <div class="modal-field"><label>Color</label><value id="modal-vehicle-color">-</value></div>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-user-circle"></i> Owner Information</h3>
+                    <div class="modal-row">
+                        <div class="modal-field"><label>Email</label><value id="modal-owner-email">-</value></div>
+                        <div class="modal-field"><label>Phone</label><value id="modal-owner-phone">-</value></div>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-calendar-alt"></i> Assignment Information</h3>
+                    <div class="modal-row">
+                        <div class="modal-field"><label>Assigned Advisor</label><value id="modal-advisor-name">-</value></div>
+                        <div class="modal-field"><label>Assigned Date</label><value id="modal-assigned-date">-</value></div>
+                    </div>
+                    <div class="modal-row" id="modal-timing-row" style="display: none;">
+                        <div class="modal-field"><label>Start Time</label><value id="modal-start-time">-</value></div>
+                        <div class="modal-field"><label>Completion Time</label><value id="modal-complete-time">-</value></div>
+                    </div>
+                </div>
+                <div class="modal-section" id="modal-service-time-section" style="display: none;">
+                    <h3><i class="fas fa-clock"></i> Service Time Information</h3>
+                    <div class="modal-row">
+                        <div class="modal-field"><label>Actual Service Time</label><value id="modal-actual-time">-</value></div>
+                    </div>
+                </div>
+                <div class="modal-description">
+                    <label><i class="fas fa-file-alt"></i> Job Description</label>
+                    <div class="modal-description-text" id="modal-job-description">No description provided.</div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="closeJobDetailsModal()">Close</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- QC Assignment Modal -->
+        <div id="qcAssignModal" class="modal">
+            <div class="modal-content" style="max-width: 800px;">
+                <div class="modal-header">
+                    <h2><i class="fas fa-clipboard-check" style="color: var(--warning);"></i> Send Vehicle to Quality Control</h2>
+                    <button class="modal-close" onclick="closeQcAssignModal()">&times;</button>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-car"></i> Vehicle</h3>
+                    <div style="display:flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                        <div style="color: var(--text-primary); font-weight:600; font-size: 1.1rem;" id="qc-vehicle-title">-</div>
+                        <div style="color: var(--text-secondary); font-size:0.9rem;" id="qc-vehicle-subtitle">-</div>
+                    </div>
+                    <div id="qc-service-time-summary" style="margin-top: 0.5rem; padding: 0.5rem; background: var(--accent-light); border-radius: 8px;"></div>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-user-check"></i> Select Quality Controller</h3>
+                    <div class="qc-search">
+                        <i class="fas fa-search"></i>
+                        <input id="qc-search-input" type="text" placeholder="Search QC by name or email..." autocomplete="off">
+                    </div>
+                    <div id="qc-list" class="qc-grid"></div>
+                    <div id="qc-none" style="display:none; text-align:center; padding:1.5rem; color: var(--text-muted);">
+                        <i class="fas fa-user-shield" style="font-size:2rem; margin-bottom:0.75rem;"></i>
+                        <div style="font-weight:600; color: var(--text-secondary);">No Quality Controllers found</div>
+                        <div style="font-size:0.9rem; margin-top:0.25rem;">Register users with role <strong>QC</strong> from the login/registration page.</div>
+                    </div>
+                </div>
+                <div class="modal-section">
+                    <h3><i class="fas fa-sticky-note"></i> Notes (optional)</h3>
+                    <div style="background: var(--card-bg); border:1px solid var(--border-color); border-radius: 10px; padding: 1rem;">
+                        <textarea id="qc-send-notes" style="width:100%; min-height:100px; border:none; outline:none; resize:vertical; font-family:inherit; background: transparent; color: var(--text-primary);" placeholder="Any notes for the QC inspector..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="closeQcAssignModal()">Cancel</button>
+                    <button id="qc-assign-btn" class="btn btn-warning" onclick="confirmSendToQC()" disabled>
+                        <i class="fas fa-paper-plane"></i> Assign & Send to QC
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+        </div>
+    </div>
+
+    <script>
+        // ===== STABLE TIMER SYSTEM – NO FLICKER, NO VISIBILITY TOGGLE =====
+        let activeTimers = {};          // interval per (vehicleId_jobId)
+        let timerUpdateCallbacks = {};  // per job, last known elapsed
+
+        function startTimerForJob(jobId, vehicleId) {
+            const timerKey = `${vehicleId}_${jobId}`;
+            
+            // Clear any existing timer for this job
+            if (activeTimers[timerKey]) {
+                clearInterval(activeTimers[timerKey]);
+                delete activeTimers[timerKey];
+            }
+
+            // Immediate update to show timer without delay
+            const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
+            if (vehicle) {
+                const job = vehicle.jobs?.find(j => String(j.id) === String(jobId));
+                if (job && job.startTimestamp) {
+                    const elapsedMs = Date.now() - job.startTimestamp;
+                    const elapsedHours = elapsedMs / (1000 * 60 * 60);
+                    job.totalServiceTime = parseFloat(elapsedHours.toFixed(2));
+                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehicles));
+                    updateTimerDisplayDirect(jobId, vehicleId, elapsedHours);
+                }
+            }
+
+            // Set up a dedicated timer that ONLY updates existing timer display – does NOT recreate DOM
+            activeTimers[timerKey] = setInterval(() => {
+                const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+                const vehicle = vehicles.find(v => String(v.id) === String(vehicleId));
+                if (!vehicle) {
+                    clearInterval(activeTimers[timerKey]);
+                    delete activeTimers[timerKey];
+                    return;
+                }
+                const job = vehicle.jobs?.find(j => String(j.id) === String(jobId));
+                if (!job || job.status !== 'in-progress') {
+                    clearInterval(activeTimers[timerKey]);
+                    delete activeTimers[timerKey];
+                    return;
+                }
+                if (job.startTimestamp) {
+                    const elapsedMs = Date.now() - job.startTimestamp;
+                    const elapsedHours = elapsedMs / (1000 * 60 * 60);
+                    job.totalServiceTime = parseFloat(elapsedHours.toFixed(2));
+                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehicles));
+                    // Update existing timer display (do NOT remove/add divs)
+                    updateTimerDisplayDirect(jobId, vehicleId, elapsedHours);
+                }
+            }, 1000);
+        }
+
+        // Direct update – modifies content of existing timer element, does NOT recreate
+        function updateTimerDisplayDirect(jobId, vehicleId, elapsedHours) {
+            const timerElements = document.querySelectorAll('.timer-display');
+            for (let el of timerElements) {
+                // locate the job card that contains this timer with matching data attributes
+                const jobCard = el.closest('.job-card');
+                if (!jobCard) continue;
+                const detailsBtn = jobCard.querySelector(`.btn-job-details[data-id="${jobId}"][data-vehicle-id="${vehicleId}"]`);
+                if (detailsBtn) {
+                    const timerValueSpan = el.querySelector('.timer-value');
+                    if (timerValueSpan) {
+                        const hours = Math.floor(elapsedHours);
+                        const minutes = Math.floor((elapsedHours - hours) * 60);
+                        const seconds = Math.floor(((elapsedHours - hours) * 60 - minutes) * 60);
+                        timerValueSpan.textContent = `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+                    }
+                    break;
+            }
+        }
+        }
+
+        // Create timer display ONCE and insert it – called only when job card is built
+        function createTimerElement(jobId, vehicleId, elapsedHours) {
+            const div = document.createElement('div');
+            div.className = 'timer-display';
+            div.style.display = 'flex !important';
+            div.style.visibility = 'visible !important';
+            div.style.opacity = '1 !important';
+            div.style.animation = 'none';
+            
+            const hours = Math.floor(elapsedHours);
+            const minutes = Math.floor((elapsedHours - hours) * 60);
+            const seconds = Math.floor(((elapsedHours - hours) * 60 - minutes) * 60);
+            
+            div.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 0.8rem; width: 100%;">
+                    <i class="fas fa-hourglass-half" style="color: var(--accent-primary); font-size: 1.2rem;"></i>
+                    <span style="font-weight: 600; color: var(--text-primary);">Service Time:</span>
+                    <span class="timer-value">${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}</span>
+                    <span style="color: var(--text-secondary); margin-left: auto; font-size: 0.85rem;">hours</span>
+                </div>
+            `;
+            return div;
+        }
+
+        // ===== GLOBAL VARIABLES =====
+        let assignedJobs = [];
+        let serviceAdvisors = [];
+        let currentAdvisor = null;
+        let messages = {};
+        let currentUser = null;
+        let qualityControllers = [];
+        let selectedQcId = null;
+        let qcVehicleId = null;
+
+        // ===== INIT =====
+        document.addEventListener('DOMContentLoaded', function() {
+            const storedUser = localStorage.getItem('vsms_current_user');
+            if (!storedUser) { window.location.href = 'logreg.html'; return; }
+            try {
+                currentUser = JSON.parse(storedUser);
+                if (!currentUser.role || currentUser.role.toLowerCase() !== 'technician') {
+                    window.location.href = 'logreg.html'; return;
+                }
+            } catch(e) { window.location.href = 'logreg.html'; return; }
+
+            initThemeToggle();
+            document.getElementById('user-name').textContent = currentUser.name || 'Technician User';
+            const avatar = document.getElementById('user-avatar');
+            avatar.textContent = (currentUser.name || 'T').charAt(0).toUpperCase();
+            if (currentUser.email) document.getElementById('user-role').textContent = `Technician • ${currentUser.email.split('@')[0]}`;
+            document.getElementById('logout-btn').addEventListener('click', function() {
+                localStorage.removeItem('vsms_current_user');
+                window.location.href = 'logreg.html';
+            });
+            document.getElementById('send-message-btn').addEventListener('click', sendMessage);
+
+            initializeDatabases();
+            loadServiceAdvisors();
+            loadAssignedJobs();
+
+            // Refresh jobs (but not timer recreation) – setInterval only for stats and new jobs, but timers keep running via separate intervals
+            setInterval(() => { loadAssignedJobs(); }, 5000); // refresh job list, but timer elements are NOT recreated if they exist
+
+            // event delegation
+            document.getElementById('assigned-jobs-container').addEventListener('click', function(e) {
+                const startBtn = e.target.closest('.btn-start-job');
+                const completeBtn = e.target.closest('.btn-complete-job');
+                const detailsBtn = e.target.closest('.btn-job-details');
+                const messageBtn = e.target.closest('.btn-message-advisor');
+
+                if (startBtn) {
+                    const jobId = startBtn.getAttribute('data-id');
+                    const vehicleId = startBtn.getAttribute('data-vehicle-id');
+                    startBtn.disabled = true; startBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Starting...';
+                    startJob(jobId, vehicleId, startBtn);
+                }
+                if (completeBtn) {
+                    const jobId = completeBtn.getAttribute('data-id');
+                    const vehicleId = completeBtn.getAttribute('data-vehicle-id');
+                    completeBtn.disabled = true; completeBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Completing...';
+                    completeJob(jobId, vehicleId, completeBtn);
+                }
+                if (detailsBtn) {
+                    const jobId = detailsBtn.getAttribute('data-id');
+                    const vehicleId = detailsBtn.getAttribute('data-vehicle-id');
+                    showJobDetails(jobId, vehicleId);
+                }
+                if (messageBtn) {
+                    const advisorId = messageBtn.getAttribute('data-advisor');
+                    const advisor = serviceAdvisors.find(a => a.name === advisorId || a.id === advisorId);
+                    if (advisor) { selectAdvisor(advisor.id); document.getElementById('message-input').focus(); }
+                }
+            });
+
+            // modal close events
+            const modalEl = document.getElementById('jobDetailsModal');
+            modalEl.addEventListener('click', function(e) { if (e.target === this) closeJobDetailsModal(); });
+            document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && modalEl.classList.contains('show')) closeJobDetailsModal(); });
+
+            const qcModalEl = document.getElementById('qcAssignModal');
+            qcModalEl.addEventListener('click', function(e) { if (e.target === this) closeQcAssignModal(); });
+            document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && qcModalEl.classList.contains('show')) closeQcAssignModal(); });
+
+            document.getElementById('qc-search-input')?.addEventListener('input', renderQualityControllers);
+        });
+
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            const savedTheme = localStorage.getItem('vsms-theme-preference');
+            if (savedTheme === 'dark') { html.classList.add('dark-mode'); if(toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-moon"></i>'; }
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    localStorage.setItem('vsms-theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+
+        function initializeDatabases() {
+            if (!localStorage.getItem('vsms_users')) {
+                localStorage.setItem('vsms_users', JSON.stringify([
+                    { id: 1, name: 'Admin User', email: 'admin@vsms.com', password: 'admin123', role: 'admin' },
+                    { id: 2, name: 'John Advisor', email: 'advisor@vsms.com', password: 'advisor123', role: 'advisor' },
+                    { id: 3, name: 'Mike Technician', email: 'tech@vsms.com', password: 'tech123', role: 'technician' },
+                    { id: 4, name: 'Sarah QC', email: 'qc@vsms.com', password: 'qc123', role: 'qc' }
+                ]));
+            }
+            if (!localStorage.getItem('vsms_vehicles')) {
+                localStorage.setItem('vsms_vehicles', JSON.stringify([
+                    { id: 1, vehicleNumber: 'ABC123', carName: 'Toyota', vehicleModel: 'Camry 2020', color: 'Silver', year: 2020, ownerEmail: 'owner1@email.com', mobileNumber: '555-0101', assignedAdvisor: 'John Advisor', serviceStatus: 'pending', jobs: [
+                        { id: 'job1', serviceName: 'Oil Change', type: 'Maintenance', status: 'pending', estimatedHours: 1, estimatedCost: 50, description: 'Regular oil change service', assignedDate: new Date().toISOString(), technicianId: 3, technician: 'Mike Technician', priority: 'normal' },
+                        { id: 'job2', serviceName: 'Brake Inspection', type: 'Inspection', status: 'pending', estimatedHours: 1.5, estimatedCost: 80, description: 'Check brake pads and rotors', assignedDate: new Date().toISOString(), technicianId: 3, technician: 'Mike Technician', priority: 'high' }
+                    ]},
+                    { id: 2, vehicleNumber: 'XYZ789', carName: 'Honda', vehicleModel: 'Civic 2021', color: 'Blue', year: 2021, ownerEmail: 'owner2@email.com', mobileNumber: '555-0102', assignedAdvisor: 'John Advisor', serviceStatus: 'in-progress', jobs: [
+                        { id: 'job3', serviceName: 'Tire Rotation', type: 'Maintenance', status: 'in-progress', estimatedHours: 0.75, estimatedCost: 40, description: 'Rotate all tires', assignedDate: new Date().toISOString(), startTime: new Date().toISOString(), startTimestamp: Date.now(), technicianId: 3, technician: 'Mike Technician', priority: 'normal' }
+                    ]}
+                ]));
+            }
+            if (!localStorage.getItem('vsms_messages')) localStorage.setItem('vsms_messages', JSON.stringify({}));
+        }
+
+        function loadServiceAdvisors() {
+            const users = JSON.parse(localStorage.getItem('vsms_users')) || [];
+            serviceAdvisors = users.filter(u => u.role && u.role.toLowerCase() === 'advisor').map((a,i) => ({
+                id: a.id || `advisor_${i+1}`, name: a.name || 'Service Advisor', role: 'Service Advisor', email: a.email || 'advisor@vsms.com',
+                avatar: (a.name || 'SA').split(' ').map(n=>n[0]).join('').toUpperCase() || 'SA', isActive: true
+            }));
+            if (serviceAdvisors.length === 0) serviceAdvisors = [{ id:2, name:'John Advisor', role:'Service Advisor', email:'advisor@vsms.com', avatar:'JA', isActive:true }];
+            const storedMessages = JSON.parse(localStorage.getItem('vsms_messages')) || {};
+            serviceAdvisors.forEach(adv => { const aid = String(adv.id); messages[aid] = storedMessages[aid] || []; });
+            const advisorList = document.getElementById('advisor-list');
+            advisorList.innerHTML = '';
+            serviceAdvisors.forEach(advisor => {
+                const card = document.createElement('div');
+                card.className = `advisor-card ${advisor.isActive?'active':''}`;
+                card.setAttribute('data-id', advisor.id);
+                card.innerHTML = `<div class="advisor-avatar" style="background: linear-gradient(135deg, #3498db, #2980b9);">${advisor.avatar}</div>
+                    <div class="advisor-info"><h4>${advisor.name}</h4><p>${advisor.role}</p><div class="advisor-status"><span class="status-dot online"></span><span>Online</span></div></div>`;
+                card.addEventListener('click', () => selectAdvisor(advisor.id));
+                advisorList.appendChild(card);
+            });
+        }
+
+        function selectAdvisor(advisorId) {
+            const advisor = serviceAdvisors.find(a => String(a.id) === String(advisorId));
+            if (!advisor) return;
+            currentAdvisor = advisor;
+            document.querySelectorAll('.advisor-card').forEach(c => c.classList.remove('active'));
+            const selected = document.querySelector(`.advisor-card[data-id="${advisorId}"]`);
+            if (selected) selected.classList.add('active');
+            document.getElementById('chat-section').style.display = 'block';
+            document.getElementById('chat-with').textContent = `Chat with: ${advisor.name}`;
+            loadMessages(advisorId);
+        }
+
+        function loadMessages(advisorId) {
+            const area = document.getElementById('message-area');
+            area.innerHTML = '';
+            const advisorMessages = messages[String(advisorId)] || [];
+            if (!advisorMessages.length) { area.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 2rem;">No messages yet. Start a conversation!</div>'; return; }
+            advisorMessages.forEach(msg => {
+                const div = document.createElement('div');
+                div.className = `message ${msg.type || 'received'}`;
+                div.innerHTML = `<div style="font-weight: 600; margin-bottom: 0.3rem; font-size: 0.85rem; display: flex; justify-content: space-between;"><span>${msg.type === 'sent' ? 'You' : (serviceAdvisors.find(a=>String(a.id)===String(advisorId))?.name||'Advisor')}</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">${formatTime(msg.timestamp)}</span></div><div>${msg.text}</div>`;
+                area.appendChild(div);
+            });
+            area.scrollTop = area.scrollHeight;
+        }
+
+        function sendMessage() {
+            if (!currentAdvisor) { showNotification('Please select a service advisor first', 'error'); return; }
+            const input = document.getElementById('message-input');
+            const messageText = input.value.trim();
+            if (!messageText) return;
+            const msg = { id: Date.now(), text: messageText, timestamp: new Date().toISOString(), type: 'sent', sender: currentUser?.name||'Technician', from: currentUser?.id||'tech' };
+            const advisorId = String(currentAdvisor.id);
+            if (!messages[advisorId]) messages[advisorId] = [];
+            messages[advisorId].push(msg);
+            const stored = JSON.parse(localStorage.getItem('vsms_messages')) || {};
+            stored[advisorId] = messages[advisorId];
+            localStorage.setItem('vsms_messages', JSON.stringify(stored));
+            input.value = '';
+            loadMessages(advisorId);
+            setTimeout(() => {
+                const reply = { id: Date.now(), text: `Thanks for your message. I'll check on this.`, timestamp: new Date().toISOString(), type: 'received', sender: currentAdvisor.name, from: currentAdvisor.id };
+                messages[advisorId].push(reply);
+                stored[advisorId] = messages[advisorId];
+                localStorage.setItem('vsms_messages', JSON.stringify(stored));
+                loadMessages(advisorId);
+            }, 2000);
+        }
+        function handleMessageKeypress(e) { if(e.key === 'Enter') sendMessage(); }
+
+        // ===== LOAD ASSIGNED JOBS – with stable timer insertion =====
+        function loadAssignedJobs() {
+            const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            assignedJobs = [];
+            const currentTechId = currentUser?.id, currentTechName = currentUser?.name;
+            vehicles.forEach(v => {
+                if (v.jobs) v.jobs.forEach(job => {
+                    if ((job.technicianId && String(job.technicianId) === String(currentTechId)) || (job.technician && job.technician === currentTechName)) {
+                        const skip = ['delivered','completed','qc-approved','ready-for-delivery','in-qc','awaiting-qc'];
+                        if (!skip.includes(v.serviceStatus||'')) {
+                            assignedJobs.push({ ...job, vehicleId:v.id, vehicleNumber:v.vehicleNumber||'N/A', carName:v.carName||'Unknown', vehicleModel:v.vehicleModel||'Unknown', color:v.color||'N/A', year:v.year||'N/A', ownerEmail:v.ownerEmail||'N/A', mobileNumber:v.mobileNumber||'N/A', assignedAdvisor:v.assignedAdvisor||'Service Advisor', serviceDescription:v.serviceDescription||'', serviceStatus:v.serviceStatus||'pending' });
+                        }
+                    }
+                });
+            });
+            updateJobsDisplay();
+            updateDashboardStats();
+            updateLastUpdateTime();
+        }
+
+        function updateJobsDisplay() {
+            const container = document.getElementById('assigned-jobs-container');
+            const noJobsMsg = document.getElementById('no-jobs-message');
+            if (assignedJobs.length === 0) { container.innerHTML = ''; noJobsMsg.style.display = 'block'; return; }
+            noJobsMsg.style.display = 'none';
+            container.innerHTML = '';
+
+            const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            const jobsByVehicle = {};
+            assignedJobs.forEach(j => { if (!jobsByVehicle[j.vehicleId]) jobsByVehicle[j.vehicleId] = []; jobsByVehicle[j.vehicleId].push(j); });
+
+            Object.keys(jobsByVehicle).forEach(vId => {
+                const vehicleJobs = jobsByVehicle[vId];
+                const vehicle = vehicles.find(v => String(v.id) === String(vId));
+                const vehicleSection = document.createElement('div');
+                vehicleSection.setAttribute('data-vehicle-section', vId);
+                vehicleSection.style.marginBottom = '2rem'; vehicleSection.style.paddingBottom = '1.5rem'; vehicleSection.style.borderBottom = '2px solid var(--border-color)';
+                
+                if (vehicle) {
+                    const header = document.createElement('div');
+                    header.style.cssText = `background: linear-gradient(135deg, var(--card-hover), var(--accent-light)); padding:1.5rem; border-radius:12px; margin-bottom:1.5rem; border-left:4px solid var(--accent-primary); border:1px solid var(--border-color);`;
+                    const totalJobs = vehicle.jobs?.length || 0, completedJobs = vehicle.jobs?.filter(j=>j.status==='completed').length || 0;
+                    header.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                        <div style="flex:1;"><h3 style="margin:0; color:var(--text-primary); font-size:1.3rem; display:flex; align-items:center; gap:0.5rem;"><i class="fas fa-car" style="color:var(--accent-primary);"></i> ${vehicle.vehicleNumber||'N/A'} <span style="font-size:1rem; color:var(--text-secondary); margin-left:0.5rem;">${vehicle.carName||''} ${vehicle.vehicleModel||''} • ${vehicle.color||'N/A'} (${vehicle.year||'N/A'})</span><span style="font-size:0.9rem; color:var(--accent-primary); margin-left:1rem; font-weight:600; background:var(--accent-light); padding:0.3rem 0.8rem; border-radius:20px; border:1px solid var(--border-color);">📋 ${completedJobs}/${totalJobs} completed</span></h3>
+                        <p style="margin:0.5rem 0 0; font-size:0.9rem; color:var(--text-secondary);">Owner: ${vehicle.ownerEmail||'N/A'} • Status: <strong style="color:var(--text-primary);">${vehicle.serviceStatus||'Pending'}</strong>${vehicle.totalServiceTime?` • Total Service Time: <strong>${vehicle.totalServiceTime.toFixed(1)} hrs</strong>`:''}</p></div>
+                        <div><span class="status-badge" style="background-color: var(--accent-primary); color: white; padding:0.5rem 1rem; font-size:0.85rem;">${vehicle.serviceStatus||'Pending'}</span></div>
+                    </div>`;
+                    vehicleSection.appendChild(header);
+                }
+
+                vehicleJobs.forEach(job => {
+                    let statusText = "Pending", statusBg = "status-pending", statusIcon = "fas fa-hourglass-half", actionButton = '';
+                    if (!job.status || job.status === 'pending') {
+                        statusText = "Pending"; statusBg = "status-pending"; statusIcon = "fas fa-hourglass-half";
+                        actionButton = `<button class="btn btn-primary btn-start-job" data-id="${job.id}" data-vehicle-id="${job.vehicleId}"><i class="fas fa-play-circle"></i> Start Task</button>`;
+                    } else if (job.status === 'in-progress') {
+                        statusText = "In Progress"; statusBg = "status-in-progress"; statusIcon = "fas fa-spinner fa-spin";
+                        actionButton = `<button class="btn btn-success btn-complete-job" data-id="${job.id}" data-vehicle-id="${job.vehicleId}"><i class="fas fa-check-circle"></i> Mark Complete</button>`;
+                    } else if (job.status === 'completed') {
+                        statusText = "Completed"; statusBg = "status-completed"; statusIcon = "fas fa-check-circle";
+                        actionButton = `<button class="btn btn-outline" style="cursor: default; opacity: 0.7;" disabled><i class="fas fa-check"></i> Completed (${job.totalServiceTime ? job.totalServiceTime.toFixed(1) + ' hrs' : ''})</button>`;
+                    }
+
+                    const card = document.createElement('div');
+                    card.className = 'job-card';
+                    let timerHtml = '';  // will be placed if in-progress
+                    if (job.status === 'in-progress' && job.startTimestamp) {
+                        const elapsed = (Date.now() - job.startTimestamp) / (1000*60*60);
+                        const h = Math.floor(elapsed), m = Math.floor((elapsed-h)*60), s = Math.floor(((elapsed-h)*60-m)*60);
+                        timerHtml = `<div class="timer-display" style="display: flex !important; visibility: visible !important; opacity: 1 !important; animation: none !important;">
+                            <div style="display: flex; align-items: center; gap: 0.8rem; width: 100%;">
+                                <i class="fas fa-hourglass-half" style="color: var(--accent-primary); font-size: 1.2rem;"></i>
+                                <span style="font-weight: 600; color: var(--text-primary);">Service Time:</span>
+                                <span class="timer-value">${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}</span>
+                                <span style="color: var(--text-secondary); margin-left: auto; font-size: 0.85rem;">hours</span>
+                            </div>
+                        </div>`;
+                    }
+
+                    card.innerHTML = `
+                        <div class="job-header">
+                            <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+                                <div><div class="job-title"><i class="fas fa-wrench"></i> ${job.serviceName || job.type || 'General Service'}</div>
+                                <div style="font-size:0.85rem; color:var(--text-secondary); margin-top:0.3rem;">Job ID: <strong>${job.id}</strong> • Assigned: ${job.assignedDate?formatDate(job.assignedDate):'Today'}</div></div>
+                                <div style="display:flex; align-items:center; gap:0.8rem;"><span class="status-badge ${statusBg}"><i class="${statusIcon}"></i> ${statusText}</span></div>
+                            </div>
+                        </div>
+                        <div class="job-body">
+                            <div class="car-info">
+                                <div class="car-icon"><i class="fas fa-car"></i></div>
+                                <div class="car-details" style="flex:1;">
+                                    <h4>${job.vehicleNumber||'N/A'}</h4>
+                                    <p style="margin-bottom:0.3rem;"><strong>${job.carName||''} ${job.vehicleModel||''}</strong> (${job.year||'N/A'})</p>
+                                    <p style="margin-bottom:0.3rem;">🎨 Color: <strong>${job.color||'N/A'}</strong></p>
+                                    <p style="font-size:0.85rem; color:var(--text-secondary);">Owner: ${job.ownerEmail||'N/A'} • Phone: ${job.mobileNumber||'N/A'}</p>
+                                </div>
+                            </div>
+                            <div class="job-details-grid" style="margin-top:1rem; margin-bottom:1rem;">
+                                <div class="detail-item"><div class="detail-icon"><i class="fas fa-clock"></i></div><div class="detail-info"><h5>Estimated Hours</h5><p>${job.estimatedHours||'TBD'} hrs</p></div></div>
+                                <div class="detail-item"><div class="detail-icon"><i class="fas fa-dollar-sign"></i></div><div class="detail-info"><h5>Estimated Cost</h5><p>${job.estimatedCost?`$${job.estimatedCost}`:'TBD'}</p></div></div>
+                                <div class="detail-item"><div class="detail-icon"><i class="fas fa-user-tie"></i></div><div class="detail-info"><h5>Assigned Advisor</h5><p>${job.assignedAdvisor||'Service Advisor'}</p></div></div>
+                                <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar-alt"></i></div><div class="detail-info"><h5>Assigned Date</h5><p>${job.assignedDate?formatDate(job.assignedDate):'Today'}</p></div></div>
+                            </div>
+                            <div style="background:var(--card-hover); padding:1.2rem; border-radius:10px; margin-bottom:1rem; border-left:4px solid var(--accent-primary); border:1px solid var(--border-color);">
+                                <div style="display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem;"><i class="fas fa-info-circle" style="color:var(--accent-primary);"></i><strong style="color:var(--text-primary);">Job Description:</strong></div>
+                                <p style="color:var(--text-primary); font-size:0.9rem; white-space:pre-wrap;">${job.description||'No description provided.'}</p>
+                            </div>
+                            ${timerHtml}
+                            <div class="job-actions">
+                                ${actionButton}
+                                <button class="btn btn-outline btn-job-details" data-id="${job.id}" data-vehicle-id="${job.vehicleId}"><i class="fas fa-info-circle"></i> Details</button>
+                                ${job.assignedAdvisor?`<button class="btn btn-outline btn-message-advisor" data-advisor="${job.assignedAdvisor}"><i class="fas fa-comment"></i> Message Advisor</button>`:''}
+                            </div>
+                        </div>
+                    `;
+                    vehicleSection.appendChild(card);
+                });
+
+                // QC button if all jobs completed
+                if (vehicle && vehicle.jobs && vehicle.jobs.length>0 && vehicle.jobs.every(j=>j.status==='completed') && !['awaiting-qc','in-qc','ready-for-delivery'].includes(vehicle.serviceStatus||'')) {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn-warning';
+                    btn.style.marginTop = '1.5rem'; btn.style.width = '100%'; btn.style.fontWeight = 'bold'; btn.style.padding = '1rem'; btn.style.fontSize = '1.1rem';
+                    btn.innerHTML = `<i class="fas fa-clipboard-check"></i> Send Vehicle to Quality Control (Total Time: ${vehicle.totalServiceTime?vehicle.totalServiceTime.toFixed(1):'0'} hrs)`;
+                    btn.onclick = () => openQcAssignModal(vehicle.id);
+                    vehicleSection.appendChild(btn);
+                }
+                container.appendChild(vehicleSection);
+            });
+
+            // after cards are built, start timers for any in-progress jobs
+            assignedJobs.filter(j => j.status === 'in-progress' && j.startTimestamp).forEach(j => {
+                startTimerForJob(j.id, j.vehicleId);
+            });
+        }
+
+        function startJob(jobId, vehicleId, btn) {
+            const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            const vehicle = vehicles.find(v=>String(v.id)===String(vehicleId));
+            if (!vehicle || !vehicle.jobs) { showNotification('Vehicle or jobs not found!','error'); if(btn) btn.disabled=false; return; }
+            const job = vehicle.jobs.find(j=>String(j.id)===String(jobId));
+            if (!job) { showNotification('Job not found!','error'); if(btn) btn.disabled=false; return; }
+            job.status = 'in-progress'; job.startTime = new Date().toISOString(); job.startTimestamp = Date.now();
+            if (!job.totalServiceTime) job.totalServiceTime = 0;
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehicles));
+            startTimerForJob(jobId, vehicleId);
+            const note = { id: Date.now(), text: `Started working on ${job.serviceName||'job'} for vehicle ${vehicle.vehicleNumber}.`, timestamp: new Date().toISOString(), type: 'sent', sender: currentUser?.name||'Technician' };
+            if (vehicle.assignedAdvisor) {
+                const advisor = serviceAdvisors.find(a=>a.name === vehicle.assignedAdvisor);
+                if (advisor) {
+                    const aid = String(advisor.id); if(!messages[aid]) messages[aid]=[]; messages[aid].push(note);
+                    const stored = JSON.parse(localStorage.getItem('vsms_messages'))||{}; stored[aid] = messages[aid]; localStorage.setItem('vsms_messages',JSON.stringify(stored));
+                }
+            }
+            setTimeout(() => { loadAssignedJobs(); if(btn) btn.disabled = false; }, 300);
+            showNotification(`✅ Started: ${job.serviceName||'Job'}`, 'success');
+        }
+
+        function completeJob(jobId, vehicleId, btn) {
+            const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            const vehicle = vehicles.find(v=>String(v.id)===String(vehicleId));
+            if (!vehicle || !vehicle.jobs) { showNotification('Vehicle or jobs not found!','error'); if(btn) btn.disabled=false; return; }
+            const job = vehicle.jobs.find(j=>String(j.id)===String(jobId));
+            if (!job) { showNotification('Job not found!','error'); if(btn) btn.disabled=false; return; }
+            const timerKey = `${vehicleId}_${jobId}`;
+            if (activeTimers[timerKey]) { clearInterval(activeTimers[timerKey]); delete activeTimers[timerKey]; }
+            if (job.startTimestamp) {
+                const elapsedMs = Date.now() - job.startTimestamp;
+                job.totalServiceTime = parseFloat((elapsedMs/(1000*60*60)).toFixed(2));
+            } else job.totalServiceTime = job.totalServiceTime||0;
+            job.status = 'completed'; job.completionTime = new Date().toISOString();
+            if (!vehicle.totalServiceTime) vehicle.totalServiceTime = 0;
+            vehicle.totalServiceTime = (vehicle.totalServiceTime||0) + job.totalServiceTime;
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehicles));
+            let noteText = `✅ Completed ${job.serviceName||'job'} for vehicle ${vehicle.vehicleNumber} (Service time: ${job.totalServiceTime.toFixed(1)} hours)`;
+            if (vehicle.jobs.filter(j=>j.status!=='completed').length > 0) noteText += ` (${vehicle.jobs.filter(j=>j.status!=='completed').length} job${vehicle.jobs.filter(j=>j.status!=='completed').length>1?'s':''} remaining)`;
+            else noteText += `. All jobs completed! Total service time: ${vehicle.totalServiceTime.toFixed(1)} hours. Ready to send to QC.`;
+            const notificationMsg = { id: Date.now(), text: noteText, timestamp: new Date().toISOString(), type: 'sent', sender: currentUser?.name||'Technician' };
+            if (vehicle.assignedAdvisor) {
+                const advisor = serviceAdvisors.find(a=>a.name === vehicle.assignedAdvisor);
+                if (advisor) {
+                    const aid = String(advisor.id); if(!messages[aid]) messages[aid]=[]; messages[aid].push(notificationMsg);
+                    const stored = JSON.parse(localStorage.getItem('vsms_messages'))||{}; stored[aid] = messages[aid]; localStorage.setItem('vsms_messages', JSON.stringify(stored));
+                }
+            }
+            setTimeout(() => { loadAssignedJobs(); if(btn) btn.disabled = false; }, 300);
+            showNotification(`✅ Completed: ${job.serviceName||'Job'} (${job.totalServiceTime.toFixed(1)} hrs)`, 'success');
+        }
+
+        // ===== rest of functions (dashboard stats, QC, modals, etc) – unchanged but essential =====
+        function updateDashboardStats() {
+            const total = assignedJobs.length, completed = assignedJobs.filter(j=>j.status==='completed').length, inProgress = assignedJobs.filter(j=>j.status==='in-progress').length, high = assignedJobs.filter(j=>j.priority==='High'||j.priority==='high'||j.priority==='urgent').length;
+            document.getElementById('total-tasks').textContent = total; document.getElementById('completed-tasks').textContent = completed; document.getElementById('inprogress-tasks').textContent = inProgress; document.getElementById('highpriority-tasks').textContent = high;
+        }
+        function updateLastUpdateTime() { document.getElementById('last-update-time').textContent = `Last updated: ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`; }
+        function loadQualityControllers() {
+            const users = JSON.parse(localStorage.getItem('vsms_users')) || [];
+            qualityControllers = users.filter(u=>u.role && u.role.toLowerCase()==='qc').map((q,i)=>({ id:q.id||`qc_${i+1}`, name:q.name||'Quality Controller', email:q.email||`qc${i}@vsms.com`, specialization:'Quality Assurance', avatarText: (q.name||'QC').split(' ').filter(Boolean).map(n=>n[0]).join('').toUpperCase()||'QC' }));
+            if(qualityControllers.length===0) qualityControllers = [{ id:4, name:'Sarah QC', email:'qc@vsms.com', specialization:'Senior Quality Controller', avatarText:'SQ' }];
+            return qualityControllers;
+        }
+        function openQcAssignModal(vId) {
+            const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            const vehicle = vehicles.find(v=>String(v.id)===String(vId));
+            if(!vehicle||!vehicle.jobs) { showNotification('Vehicle not found!','error'); return; }
+            if(!vehicle.jobs.every(j=>j.status==='completed')) { showNotification('Please complete all jobs before sending to QC!','error'); return; }
+            qcVehicleId = vehicle.id; selectedQcId = null;
+            document.getElementById('qc-send-notes').value = '';
+            document.getElementById('qc-assign-btn').disabled = true;
+            document.getElementById('qc-vehicle-title').textContent = `${vehicle.vehicleNumber||''} • ${(vehicle.carName||'').trim()} ${(vehicle.vehicleModel||'').trim()}`.trim();
+            document.getElementById('qc-vehicle-subtitle').textContent = `Jobs: ${vehicle.jobs.filter(j=>j.status==='completed').length}/${vehicle.jobs.length} completed`;
+            const timeSum = document.getElementById('qc-service-time-summary');
+            if(vehicle.totalServiceTime) timeSum.innerHTML = `<div style="display:flex; align-items:center; gap:0.5rem;"><i class="fas fa-clock" style="color:var(--warning);"></i><strong>Total Service Time:</strong> <span style="font-weight:700; color:var(--warning);">${vehicle.totalServiceTime.toFixed(1)} hours</span></div>`;
+            else timeSum.innerHTML = '';
+            loadQualityControllers(); document.getElementById('qc-search-input').value = ''; renderQualityControllers(); document.getElementById('qcAssignModal').classList.add('show');
+        }
+        function closeQcAssignModal() { document.getElementById('qcAssignModal').classList.remove('show'); qcVehicleId = null; selectedQcId = null; }
+        function renderQualityControllers() {
+            const list = document.getElementById('qc-list'), none = document.getElementById('qc-none'), query = (document.getElementById('qc-search-input')?.value||'').trim().toLowerCase();
+            const filtered = query ? qualityControllers.filter(q=>(`${q.name} ${q.email} ${q.specialization}`).toLowerCase().includes(query)) : qualityControllers;
+            list.innerHTML = '';
+            if(!filtered.length) { none.style.display = 'block'; return; }
+            none.style.display = 'none';
+            filtered.forEach(qc=>{
+                const card = document.createElement('div'); card.className = `qc-card ${String(selectedQcId)===String(qc.id)?'selected':''}`; card.setAttribute('data-qc-id', qc.id);
+                card.innerHTML = `<div class="qc-avatar">${qc.avatarText}</div><div class="qc-info"><h4>${qc.name}</h4><p>${qc.specialization}</p><p style="margin-top:0.35rem;"><i class="fas fa-envelope" style="color:var(--text-muted);"></i> ${qc.email}</p></div>`;
+                card.addEventListener('click',()=>selectQualityController(qc.id));
+                list.appendChild(card);
+            });
+        }
+        function selectQualityController(qcId) { selectedQcId = qcId; document.querySelectorAll('#qc-list .qc-card').forEach(c=>c.classList.remove('selected')); document.querySelector(`#qc-list .qc-card[data-qc-id="${qcId}"]`)?.classList.add('selected'); document.getElementById('qc-assign-btn').disabled = false; }
+        function confirmSendToQC() {
+            if(!qcVehicleId) { showNotification('No vehicle selected.','error'); return; }
+            if(!selectedQcId) { showNotification('Please select a Quality Controller.','error'); return; }
+            const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            const vehicle = vehicles.find(v=>String(v.id)===String(qcVehicleId));
+            if(!vehicle) { showNotification('Vehicle not found!','error'); return; }
+            if(!confirm(`Assign ${vehicle.vehicleNumber} to selected QC and send to QC?`)) return;
+            const qc = qualityControllers.find(q=>String(q.id)===String(selectedQcId));
+            const notes = document.getElementById('qc-send-notes')?.value?.trim()||'';
+            if(!vehicle.jobs.every(j=>j.status==='completed')) { showNotification('All jobs must be completed!','error'); return; }
+            vehicle.serviceStatus = 'awaiting-qc'; vehicle.qcStatus = 'pending'; vehicle.sentToQcTime = new Date().toISOString(); vehicle.qcAssignedTo = selectedQcId;
+            if(qc) { vehicle.qcAssignedToName = qc.name; vehicle.qcAssignedToEmail = qc.email; }
+            if(notes) vehicle.qcNotes = notes;
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehicles));
+            const notif = { id: Date.now(), text: `✅ Vehicle ${vehicle.vehicleNumber} sent to QC${qc?` (Assigned to: ${qc.name})`:''}. Total service time: ${vehicle.totalServiceTime?vehicle.totalServiceTime.toFixed(1):'0'} hours.`, timestamp: new Date().toISOString(), type:'sent', sender:currentUser?.name||'Technician' };
+            if(vehicle.assignedAdvisor) {
+                const advisor = serviceAdvisors.find(a=>a.name===vehicle.assignedAdvisor);
+                if(advisor) {
+                    const aid = String(advisor.id); if(!messages[aid]) messages[aid]=[]; messages[aid].push(notif);
+                    const stored = JSON.parse(localStorage.getItem('vsms_messages'))||{}; stored[aid]=messages[aid]; localStorage.setItem('vsms_messages', JSON.stringify(stored));
+                }
+            }
+            closeQcAssignModal(); loadAssignedJobs(); showNotification(`✅ ${vehicle.vehicleNumber} assigned and sent to QC. Total service time: ${vehicle.totalServiceTime?vehicle.totalServiceTime.toFixed(1):'0'} hrs`, 'success');
+        }
+        function showJobDetails(jobId, vehicleId) {
+            const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles'))||[], vehicle = vehicles.find(v=>String(v.id)===String(vehicleId));
+            if(!vehicle||!vehicle.jobs) { showNotification('Vehicle not found!','error'); return; }
+            const job = vehicle.jobs.find(j=>String(j.id)===String(jobId)); if(!job) { showNotification('Job not found!','error'); return; }
+            document.getElementById('modal-service-name').textContent = job.serviceName||job.type||'General Service';
+            let statusClass = 'status-pending'; if(job.status==='in-progress') statusClass='status-in-progress'; if(job.status==='completed') statusClass='status-completed';
+            document.getElementById('modal-status').innerHTML = `<span class="status-badge ${statusClass}">${job.status||'pending'}</span>`;
+            document.getElementById('modal-estimated-hours').textContent = `${job.estimatedHours||'TBD'} hrs`; document.getElementById('modal-estimated-cost').textContent = job.estimatedCost?`$${job.estimatedCost}`:'TBD';
+            document.getElementById('modal-vehicle-number').textContent = vehicle.vehicleNumber||'-'; document.getElementById('modal-vehicle-model').textContent = vehicle.vehicleModel||'-'; document.getElementById('modal-car-name').textContent = vehicle.carName||'-'; document.getElementById('modal-vehicle-color').textContent = vehicle.color||'-';
+            document.getElementById('modal-owner-email').textContent = vehicle.ownerEmail||'-'; document.getElementById('modal-owner-phone').textContent = vehicle.mobileNumber||'-';
+            document.getElementById('modal-advisor-name').textContent = vehicle.assignedAdvisor||'-'; document.getElementById('modal-assigned-date').textContent = job.assignedDate?formatDate(job.assignedDate):'-';
+            const timingRow = document.getElementById('modal-timing-row');
+            if(job.status!=='pending' && (job.startTime||job.completionTime)) { timingRow.style.display = 'flex'; document.getElementById('modal-start-time').textContent = job.startTime?formatDate(job.startTime):'-'; document.getElementById('modal-complete-time').textContent = job.completionTime?formatDate(job.completionTime):'In Progress'; }
+            else timingRow.style.display = 'none';
+            const timeSec = document.getElementById('modal-service-time-section');
+            if(job.totalServiceTime) { timeSec.style.display = 'block'; document.getElementById('modal-actual-time').textContent = `${job.totalServiceTime.toFixed(1)} hours`; } else timeSec.style.display = 'none';
+            document.getElementById('modal-job-description').textContent = job.description||'No description provided.';
+            document.getElementById('jobDetailsModal').classList.add('show');
+        }
+        function closeJobDetailsModal() { document.getElementById('jobDetailsModal').classList.remove('show'); }
+        function formatDate(d) { if(!d) return '-'; try { const dt = new Date(d); if(isNaN(dt.getTime())) return '-'; return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}); } catch(e){ return '-'; } }
+        function formatTime(ts) { try { return new Date(ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}); } catch(e){ return '--:--'; } }
+        function showNotification(msg, type='info') {
+            const n = document.createElement('div'); n.className = `notification ${type}`;
+            let icon = 'fa-bell'; if(type==='success') icon='fa-check-circle'; else if(type==='error') icon='fa-exclamation-circle'; else if(type==='info') icon='fa-info-circle';
+            n.innerHTML = `<i class="fas ${icon}"></i><div>${msg}</div>`;
+            document.body.appendChild(n);
+            setTimeout(()=>{ n.style.animation = 'slideOut 0.3s ease'; setTimeout(()=>{ if(n.parentNode) n.parentNode.removeChild(n); },300); },5000);
+        }
+        function openServiceManuals() { showNotification('Opening Service Manuals.','info'); }
+        function openWorkOrders() { showNotification('Opening Work Orders.','info'); }
+        function openPartsInventory() { showNotification('Opening Parts Inventory.','info'); }
+        function openTeamChat() { showNotification('Opening Team Chat.','info'); }
+    </script>
+</body>
+</html>

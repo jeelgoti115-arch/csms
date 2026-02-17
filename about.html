@@ -1,0 +1,1715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+   
+    <link rel="icon" type="image/png" href="images/car-service.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+            --gray: #8d99ae;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --gradient: linear-gradient(135deg, #4361ee, #7209b7);
+            --gradient-alt: linear-gradient(135deg, #4cc9f0, #4361ee);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header - Modern Design */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            font-size: 0.8rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .nav-links a.active {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .nav-links a.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Page Header */
+        .page-header {
+            position: relative;
+            padding: 8rem 2rem 6rem;
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7ff 0%, #f0f2ff 100%);
+            overflow: hidden;
+            margin-bottom: 4rem;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(67, 97, 238, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(114, 9, 183, 0.1) 0%, transparent 50%);
+        }
+
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.4;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        .page-header-badge {
+            display: inline-block;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 2px solid rgba(67, 97, 238, 0.2);
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            background: var(--gradient);
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .floating-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+        }
+
+        .floating-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -100px;
+            background: var(--gradient-alt);
+        }
+
+        /* Section Styling */
+        .section {
+            margin-bottom: 6rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            color: var(--dark);
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* About Content */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            margin-bottom: 4rem;
+        }
+
+        @media (max-width: 992px) {
+            .about-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .about-image {
+            position: relative;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            height: 500px;
+        }
+
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .about-image:hover img {
+            transform: scale(1.05);
+        }
+
+        .about-image-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(67, 97, 238, 0.9);
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .about-text h3 {
+            color: var(--dark);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .about-text p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            text-align: justify;
+        }
+
+        /* Mission & Vision */
+        .mission-vision {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        @media (max-width: 768px) {
+            .mission-vision {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .mission-card, .vision-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .mission-card:hover, .vision-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .card-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+            transition: var(--transition);
+        }
+
+        .mission-card:hover .card-icon, 
+        .vision-card:hover .card-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .mission-card h3, .vision-card h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .mission-card p, .vision-card p {
+            color: var(--gray);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        /* Values Section */
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .value-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2.5rem 2rem;
+            box-shadow: var(--shadow);
+            text-align: center;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .value-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .value-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .value-card:hover::before {
+            opacity: 1;
+        }
+
+        .value-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 1.8rem;
+            transition: var(--transition);
+        }
+
+        .value-card:hover .value-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .value-card h4 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .value-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .team-member {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .team-member:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .member-image {
+            height: 250px;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+        }
+
+        .member-info {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .member-info h4 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .member-role {
+            color: var(--primary);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .member-desc {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto 4rem;
+            padding: 2rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0.3;
+        }
+
+        .timeline-item {
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .timeline-item:nth-child(odd) {
+            padding-right: calc(50% + 30px);
+            text-align: right;
+        }
+
+        .timeline-item:nth-child(even) {
+            padding-left: calc(50% + 30px);
+        }
+
+        .timeline-dot {
+            position: absolute;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background: var(--gradient);
+            border-radius: 50%;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            border: 4px solid white;
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.2);
+        }
+
+        .timeline-content {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .timeline-year {
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .timeline-title {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .timeline-desc {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: var(--gradient);
+            padding: 6rem 2rem;
+            margin-bottom: 4rem;
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .stats-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            position: relative;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .stat-item h3 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            padding: 5rem 2rem;
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 4rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(67, 97, 238, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(114, 9, 183, 0.05) 0%, transparent 50%);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-section h2 {
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            font-size: 2.5rem;
+            font-weight: 800;
+        }
+
+        .cta-section p {
+            color: var(--gray);
+            margin-bottom: 2.5rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            font-size: 1.1rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 5rem 2rem 3rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        .footer-links h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideInLeft 0.6s ease forwards;
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Floating animation */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .page-header h1 {
+                font-size: 3.5rem;
+            }
+            
+            .timeline::before {
+                left: 30px;
+            }
+            
+            .timeline-item:nth-child(odd),
+            .timeline-item:nth-child(even) {
+                padding-left: 60px;
+                padding-right: 0;
+                text-align: left;
+            }
+            
+            .timeline-dot {
+                left: 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: var(--shadow);
+                border-radius: 0 0 var(--border-radius) var(--border-radius);
+                display: none;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links li {
+                width: 100%;
+            }
+            
+            .nav-links a {
+                padding: 1rem;
+                justify-content: center;
+            }
+            
+            .page-header {
+                padding: 6rem 1rem 4rem;
+            }
+            
+            .page-header h1 {
+                font-size: 2.8rem;
+            }
+            
+            .page-header p {
+                font-size: 1.1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .section-title h2 {
+                font-size: 2.5rem;
+            }
+        }
+
+        .login-btn {
+            background: var(--gradient) !important;
+            color: white !important;
+            padding: 0.6rem 1.5rem !important;
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            border: none !important;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3) !important;
+            transition: var(--transition) !important;
+            text-decoration: none !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            cursor: pointer !important;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4) !important;
+            background: linear-gradient(135deg, var(--primary-dark), #5a08a5) !important;
+        }
+
+        .login-btn i {
+            font-size: 1rem !important;
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .mission-card, .vision-card,
+            .value-card, .team-member {
+                padding: 1.5rem;
+            }
+            
+            .stats-section {
+                padding: 4rem 1rem;
+            }
+            
+            .stat-item h3 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle-item {
+            list-style: none !important;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--primary);
+            color: var(--dark);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(67, 97, 238, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* Dark Mode Styles */
+        html.dark-mode {
+            --light: #1a1a1a;
+            --dark: #e8e8e8;
+            --card-bg: #2d2d2d;
+            --gray: #b0b0b0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        html.dark-mode body {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        html.dark-mode header {
+            background: rgba(30, 30, 30, 0.98) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+        }
+
+        html.dark-mode .mobile-menu-btn {
+            color: var(--dark);
+        }
+
+        html.dark-mode .nav-links {
+            background: #242424 !important;
+        }
+
+        html.dark-mode .nav-links a {
+            color: var(--dark);
+        }
+
+        html.dark-mode .nav-links a:hover {
+            background: rgba(67, 97, 238, 0.2);
+            color: #4361ee;
+        }
+
+        html.dark-mode .nav-links a.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        html.dark-mode .logo {
+            -webkit-text-fill-color: transparent;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+        }
+
+        html.dark-mode footer {
+            background: #0f0f0f !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        html.dark-mode .footer-logo {
+            -webkit-text-fill-color: transparent;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+        }
+
+        html.dark-mode .footer-description {
+            color: rgba(232, 232, 232, 0.6) !important;
+        }
+
+        html.dark-mode .footer-links h3 {
+            color: var(--dark) !important;
+        }
+
+        html.dark-mode .footer-links a {
+            color: rgba(232, 232, 232, 0.6) !important;
+        }
+
+        html.dark-mode .footer-links a:hover {
+            color: #4361ee !important;
+        }
+
+        html.dark-mode .social-link {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: var(--dark) !important;
+        }
+
+        html.dark-mode .social-link:hover {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+
+        html.dark-mode .footer-bottom {
+            border-top-color: rgba(255, 255, 255, 0.1) !important;
+            color: rgba(232, 232, 232, 0.4) !important;
+        }
+
+        html.dark-mode .page-header {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+        }
+
+        html.dark-mode .btn {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        html.dark-mode .btn:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        html.dark-mode .form-control {
+            background: #1f1f1f;
+            color: var(--dark);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        html.dark-mode .form-control:focus {
+            background: #2d2d2d;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        html.dark-mode input:-webkit-autofill,
+        html.dark-mode textarea:-webkit-autofill,
+        html.dark-mode select:-webkit-autofill {
+            -webkit-text-fill-color: #e8e8e8 !important;
+            -webkit-box-shadow: 0 0 0 1000px #1a1a1a inset !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+        }
+
+        html.dark-mode .feature-card,
+        html.dark-mode .role-card,
+        html.dark-mode .testimonial-card,
+        html.dark-mode .stat-item,
+        html.dark-mode .mission-card,
+        html.dark-mode .vision-card,
+        html.dark-mode .value-card,
+        html.dark-mode .team-member {
+            background: var(--card-bg);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.2);
+            color: var(--dark);
+        }
+
+        html.dark-mode .theme-toggle:hover {
+            background: rgba(67, 97, 238, 0.3);
+        }
+
+        html.dark-mode .theme-toggle i {
+            color: #ffd700;
+        }
+
+        html.dark-mode .login-btn {
+            color: white !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- ======================================= Header ======================================= -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-car"></i>
+                Car<span>Service</span>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="about.html" class="active"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="features.html"><i class="fas fa-star"></i> Features</a></li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li class="theme-toggle-item">
+                    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ======================================= Page Header ======================================= -->
+    <div class="page-header">
+        <div class="floating-element floating-1"></div>
+        <div class="floating-element floating-2"></div>
+        <div class="page-header-content">
+            <div class="page-header-badge floating">
+                <i class="fas fa-shield-alt"></i>
+                About Us
+            </div>
+            <h1 class="fade-in">About Car Service Management System</h1>
+            <p class="fade-in">Transforming vehicle service operations with innovative technology, security, and efficiency since 2020.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- ==================================== About Content =================================== -->
+        <section class="section">
+            <div class="about-content fade-in">
+                <div class="about-image">
+                    <img src="images/bmw-l.png" alt="VSMS Platform">
+                    <div class="about-image-overlay">
+                        <h3>Since 2020</h3>
+                        <p>Serving 500+ vehicles monthly</p>
+                    </div>
+                </div>
+                <div class="about-text">
+                    <h3>Our Story</h3>
+                    <p>Car Service Management System (CSMS) was founded in 2020 with a simple yet powerful vision: to revolutionize how car service centers operate. We recognized the challenges faced by service centers in managing multiple roles, tracking vehicle entries, and ensuring efficient operations.</p>
+                    <p>What started as a small project to help local service centers has now grown into a comprehensive platform used by service centers across the region. Our mission is to provide an intuitive, secure, and efficient system that streamlines operations for all stakeholders.</p>
+                    <p>Today, VSMS stands as a testament to innovation in vehicle service management, combining cutting-edge technology with user-centric design to deliver exceptional value to our clients.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================= Mission & Vision ==================================== -->
+        <section class="section">
+            <div class="section-title slide-in-left">
+                <h2>Our Mission & Vision</h2>
+                <p>Driving excellence in vehicle service management through innovation and commitment</p>
+            </div>
+            <div class="mission-vision">
+                <div class="mission-card fade-in">
+                    <div class="card-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <h3>Our Mission</h3>
+                    <p>To provide a comprehensive, secure, and user-friendly vehicle service management platform that enhances operational efficiency, improves customer satisfaction, and empowers service centers to deliver exceptional service through innovative technology and reliable support.</p>
+                </div>
+                
+                <div class="vision-card fade-in">
+                    <div class="card-icon">
+                        <i class="fas fa-eye"></i>
+                    </div>
+                    <h3>Our Vision</h3>
+                    <p>To become the leading vehicle service management solution globally, recognized for our innovative approach to streamlining service operations, our commitment to security, and our dedication to transforming how vehicle service centers operate in the digital age.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================== Core Values ==================================== -->
+        <section class="section">
+            <div class="section-title slide-in-left">
+                <h2>Our Core Values</h2>
+                <p>The principles that guide everything we do at VSMS</p>
+            </div>
+            
+            <div class="values-grid">
+                <div class="value-card fade-in">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Security First</h4>
+                    <p>We prioritize the security of user data and system integrity above all else, implementing robust security measures and regular audits.</p>
+                </div>
+                
+                <div class="value-card fade-in">
+                    <div class="value-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <h4>Innovation</h4>
+                    <p>We continuously innovate to provide cutting-edge solutions that address the evolving needs of vehicle service management.</p>
+                </div>
+                
+                <div class="value-card fade-in">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4>User-Centric</h4>
+                    <p>Our design and development are guided by user feedback and real-world needs, ensuring an intuitive and efficient experience.</p>
+                </div>
+                
+                <div class="value-card fade-in">
+                    <div class="value-icon">
+                        <i class="fas fa-handshake"></i>
+                    </div>
+                    <h4>Reliability</h4>
+                    <p>We build systems that are dependable and consistent, ensuring uninterrupted service and data integrity for our clients.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================== Team Section ==================================== -->
+        <section class="section">
+            <div class="section-title slide-in-left">
+                <h2>Meet Our Team</h2>
+                <p>The dedicated professionals behind VSMS</p>
+            </div>
+            
+            <div class="team-grid">
+                <div class="team-member fade-in">
+                    <div class="member-image">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="member-info">
+                        <h4>ABC</h4>
+                        <div class="member-role">CEO & Founder</div>
+                        <p class="member-desc">With 15+ years in automotive technology, ABC leads our vision and strategy.</p>
+                    </div>
+                </div>
+                
+                <div class="team-member fade-in">
+                    <div class="member-image">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <div class="member-info">
+                        <h4>MNO</h4>
+                        <div class="member-role">CTO</div>
+                        <p class="member-desc">Expert in system architecture and security protocols, ensuring robust platform performance.</p>
+                    </div>
+                </div>
+                
+                <div class="team-member fade-in">
+                    <div class="member-image">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <div class="member-info">
+                        <h4>XYZ</h4>
+                        <div class="member-role">Lead Developer</div>
+                        <p class="member-desc">Specializes in scalable solutions and user experience optimization.</p>
+                    </div>
+                </div>
+                
+                <div class="team-member fade-in">
+                    <div class="member-image">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <div class="member-info">
+                        <h4>RST</h4>
+                        <div class="member-role">Customer Support Head</div>
+                        <p class="member-desc">Ensures exceptional support and user satisfaction across all platforms.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================================== Timeline ================================== -->
+        <section class="section">
+            <div class="section-title slide-in-left">
+                <h2>Our Journey</h2>
+                <p>Key milestones in the evolution of VSMS</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">2020</div>
+                        <h3 class="timeline-title">CSMS Founded</h3>
+                        <p class="timeline-desc">Conceptualization and development of the initial CSMS platform begins with a focus on basic vehicle tracking.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">2021</div>
+                        <h3 class="timeline-title">First Major Release</h3>
+                        <p class="timeline-desc">Launch of CSMS v1.0 with role-based access control and basic vehicle management features.</p>
+                    </div>
+                </div>
+                
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">2022</div>
+                        <h3 class="timeline-title">Expansion & Growth</h3>
+                        <p class="timeline-desc">Added advanced features including real-time analytics, mobile optimization, and enhanced security protocols.</p>
+                    </div>
+                </div>
+                <div class="timeline-item fade-in">
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-content">
+                        <div class="timeline-year">2023</div>
+                        <h3 class="timeline-title">Current Platform</h3>
+                        <p class="timeline-desc">Complete system overhaul with four distinct user roles, comprehensive vehicle tracking, and contact management.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================== Stats Section ==================================== -->
+        <section class="stats-section">
+            <div class="stats-content">
+                <div class="stats-grid">
+                    <div class="stat-item fade-in">
+                        <h3 id="stat-vehicles">500+</h3>
+                        <p>Vehicles Managed</p>
+                    </div>
+                    <div class="stat-item fade-in">
+                        <h3 id="stat-users">100+</h3>
+                        <p>Active Users</p>
+                    </div>
+                    <div class="stat-item fade-in">
+                        <h3 id="stat-service">50+</h3>
+                        <p>Service Centers</p>
+                    </div>
+                    <div class="stat-item fade-in">
+                        <h3 id="stat-satisfaction">98%</h3>
+                        <p>Satisfaction Rate</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================== CTA Section ==================================== -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2 class="slide-in-left">Ready to Transform Your Vehicle Service Operations?</h2>
+                <p class="fade-in">Join hundreds of service centers already using VSMS to streamline their operations, improve efficiency, and enhance customer satisfaction.</p>
+                <div class="cta-buttons">
+                    <a href="logreg.html" class="btn btn-primary fade-in">
+                        <i class="fas fa-rocket"></i>
+                        Get Started
+                    </a>
+                    <a href="contact.html" class="btn btn-secondary fade-in">
+                        <i class="fas fa-comments"></i>
+                        Contact Our Team
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================== Footer ==================================== -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <i class="fas fa-car"></i>
+                        Car<span>Service</span>
+                    </div>
+                    <p class="footer-description">
+                        Car Service Management System is more than just software—it's a commitment to excellence in vehicle service operations. We're dedicated to continuous improvement and innovation to serve our clients better every day.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="index.html#features"><i class="fas fa-chevron-right"></i> Features</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Pricing</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Case Studies</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Updates</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="about.html" class="active"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Careers</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Press</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> API Docs</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> System Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements
+        document.querySelectorAll('.fade-in, .slide-in-left').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Animate stats on scroll
+        function animateStats() {
+            const statsSection = document.querySelector('.stats-section');
+            if (!statsSection) return;
+            
+            const statsPosition = statsSection.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+
+            if (statsPosition < screenPosition) {
+                // Get data from localStorage
+                const vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+                const usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
+                
+                const totalVehicles = vehiclesDatabase.length;
+                const totalUsers = usersDatabase.length;
+                
+                // Update stats with animation
+                animateNumber('stat-vehicles', Math.max(totalVehicles, 100), 500);
+                animateNumber('stat-users', Math.max(totalUsers, 20), 100);
+                animateNumber('stat-service', Math.max(totalVehicles / 10, 10), 50);
+                animateNumber('stat-satisfaction', 98, 98);
+                
+                // Remove scroll listener after animation
+                window.removeEventListener('scroll', animateStats);
+            }
+        }
+
+        // Animate number counting
+        function animateNumber(elementId, target, baseNumber) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const finalNumber = target > baseNumber ? target : baseNumber;
+            let current = 0;
+            const increment = Math.ceil(finalNumber / 50);
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= finalNumber) {
+                    element.textContent = finalNumber + (elementId === 'stat-satisfaction' ? '%' : '+');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = current + (elementId === 'stat-satisfaction' ? '%' : '+');
+                }
+            }, 20);
+        }
+
+        // Initialize
+        window.addEventListener('scroll', animateStats);
+        
+        // Trigger once on load in case stats are already visible
+        setTimeout(animateStats, 100);
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const navLinks = document.getElementById('navLinks');
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.backdropFilter = 'blur(20px)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            }
+        });
+
+        // Initialize sample data if needed
+        function initializeSampleData() {
+            const vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            const usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
+            
+            if (vehiclesDatabase.length === 0) {
+                const sampleVehicles = [
+                    {
+                        id: 1,
+                        vehicleNumber: "MH12AB1234",
+                        year: 2022,
+                        carName: "Hyundai Creta",
+                        vehicleModel: "SUV",
+                        ownerEmail: "rajesh@gmail.com",
+                        mobileNumber: "9876543210",
+                        entryTime: new Date().toISOString(),
+                        exitTime: null,
+                        status: 'entry'
+                    }
+                ];
+                localStorage.setItem('vsms_vehicles', JSON.stringify(sampleVehicles));
+            }
+            
+            if (usersDatabase.length === 0) {
+                const sampleUsers = [
+                    {
+                        id: 1,
+                        name: "Admin User",
+                        email: "admin@vsms.com",
+                        password: "admin123",
+                        role: "admin",
+                        createdAt: "2023-01-01T00:00:00.000Z"
+                    }
+                ];
+                localStorage.setItem('vsms_users', JSON.stringify(sampleUsers));
+            }
+        }
+        
+        // Initialize sample data
+        initializeSampleData();
+
+        /* Theme Toggle Handler */
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            // Check localStorage for saved preference
+            const savedTheme = localStorage.getItem('theme-preference');
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-regular fa-moon"></i>';
+            }
+            
+            // Toggle button click handler
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-regular fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+        
+        // Initialize theme toggle when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThemeToggle);
+        } else {
+            initThemeToggle();
+        }
+    </script>
+</body>
+</html>

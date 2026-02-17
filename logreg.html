@@ -1,0 +1,2248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VSMS - Login & Register</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/car-service.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+            --gray: #8d99ae;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --gradient: linear-gradient(135deg, #4361ee, #7209b7);
+            --gradient-alt: linear-gradient(135deg, #4cc9f0, #4361ee);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header - Matching Other Pages */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            font-size: 0.8rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .nav-links a.active {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .nav-links a.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Page Header */
+        .page-header {
+            position: relative;
+            padding: 6rem 2rem 4rem;
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7ff 0%, #f0f2ff 100%);
+            overflow: hidden;
+            margin-bottom: 4rem;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+
+        .page-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(67, 97, 238, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(114, 9, 183, 0.1) 0%, transparent 50%);
+        }
+
+        .page-header-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+        }
+
+        .page-header p {
+            font-size: 1.3rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 400;
+        }
+
+        .page-header-badge {
+            display: inline-block;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 2px solid rgba(67, 97, 238, 0.2);
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            background: var(--gradient);
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .floating-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+        }
+
+        .floating-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -100px;
+            background: var(--gradient-alt);
+        }
+
+        /* Section Styling */
+        .section {
+            margin-bottom: 6rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            color: var(--dark);
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Auth Container */
+        .auth-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        @media (max-width: 1024px) {
+            .auth-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        /* Auth Box */
+        .auth-box {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .auth-box:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .auth-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .auth-box:hover::before {
+            opacity: 1;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .auth-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+            transition: var(--transition);
+        }
+
+        .auth-box:hover .auth-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .auth-header h3 {
+            color: var(--dark);
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.6rem;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group label i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(67, 97, 238, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--light);
+            color: var(--dark);
+        }
+
+        .form-control::placeholder {
+            color: rgba(43, 45, 66, 0.5);
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .role-select {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: 2px solid rgba(67, 97, 238, 0.2);
+            border-radius: 12px;
+            font-size: 1rem;
+            background: var(--light);
+            color: var(--dark);
+            cursor: pointer;
+            appearance: none;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234361ee' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.2em;
+            padding-right: 2.5rem;
+        }
+
+        .role-select:focus {
+            border-color: var(--primary);
+            outline: none;
+            background-color: white;
+            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .role-select:hover {
+            border-color: rgba(67, 97, 238, 0.4);
+            background-color: rgba(67, 97, 238, 0.02);
+        }
+
+        .role-option {
+            padding: 0.5rem;
+        }
+
+        /* Button Styles */
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.8rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.3);
+            width: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Auth Switch */
+        .auth-switch {
+            text-align: center;
+            margin-top: 2.5rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+            color: var(--gray);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .auth-switch a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .auth-switch a::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s ease;
+        }
+
+        .auth-switch a:hover::after {
+            width: 100%;
+        }
+
+        .auth-switch a:hover {
+            color: var(--secondary);
+        }
+
+        /* Role Info Box */
+        .role-info {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background: rgba(67, 97, 238, 0.05);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .role-info h4 {
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .role-info h4 i {
+            color: var(--primary);
+        }
+
+        .role-info p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Form Divider */
+        .form-divider {
+            text-align: center;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .form-divider:before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .form-divider span {
+            background: var(--card-bg);
+            padding: 0 1.5rem;
+            color: var(--gray);
+            position: relative;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Social Login */
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .social-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            color: white;
+            font-size: 1.2rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--gradient);
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .social-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .social-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .social-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(67, 97, 238, 0.35);
+        }
+
+        .social-btn i {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Status Banner - New */
+        .status-banner {
+            margin-bottom: 2rem;
+            padding: 1.2rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .status-banner.active {
+            background: rgba(16, 185, 129, 0.1);
+            border-left: 4px solid #10b981;
+        }
+
+        .status-banner.inactive {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 4px solid #ef4444;
+        }
+
+        .status-banner i {
+            font-size: 1.5rem;
+        }
+
+        .status-banner.active i {
+            color: #10b981;
+        }
+
+        .status-banner.inactive i {
+            color: #ef4444;
+        }
+
+        .status-banner-content h4 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .status-banner-content p {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        /* Already Logged In Message */
+        .logged-in-message {
+            background: linear-gradient(135deg, #06d6a0, #04a777);
+            color: white;
+            padding: 2.5rem;
+            border-radius: var(--border-radius);
+            margin-bottom: 3rem;
+            display: none;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logged-in-message.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logged-in-content h3 {
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .logged-in-content p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-group .btn {
+            width: auto;
+            padding: 0.9rem 2rem;
+            min-width: 160px;
+        }
+
+        /* Hidden Class */
+        .hidden {
+            display: none;
+        }
+
+        /* Redirect Overlay */
+        .redirect-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            display: none;
+        }
+
+        .redirect-overlay.show {
+            display: flex;
+        }
+
+        .redirect-content {
+            background: var(--card-bg);
+            padding: 3rem;
+            border-radius: var(--border-radius);
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            animation: scaleIn 0.3s ease;
+        }
+
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .redirect-content h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .redirect-content p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            font-size: 1.1rem;
+        }
+
+        .redirect-role-icon {
+            font-size: 4.5rem;
+            margin-bottom: 1.5rem;
+            display: block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .redirect-countdown {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-top: 1rem;
+        }
+
+        /* Message Box */
+        .message-box {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            padding: 1.2rem 1.8rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 600;
+            box-shadow: var(--shadow);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 320px;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message-box.message-success {
+            background: linear-gradient(135deg, #06d6a0, #04a777);
+        }
+
+        .message-box.message-error {
+            background: linear-gradient(135deg, #ef476f, #ff6b6b);
+        }
+
+        .message-box.message-info {
+            background: var(--gradient);
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(100px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideOut {
+            from { opacity: 1; transform: translateX(0); }
+            to { opacity: 0; transform: translateX(100px); }
+        }
+
+        .message-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            margin-left: 1rem;
+            padding: 0;
+            line-height: 1;
+            opacity: 0.8;
+            transition: var(--transition);
+        }
+
+        .message-close:hover {
+            opacity: 1;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 5rem 2rem 3rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        .footer-links h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideInLeft 0.6s ease forwards;
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Floating animation */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: var(--shadow);
+                border-radius: 0 0 var(--border-radius) var(--border-radius);
+                display: none;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links li {
+                width: 100%;
+            }
+            
+            .nav-links a {
+                padding: 1rem;
+                justify-content: center;
+            }
+            
+            .page-header {
+                padding: 4rem 1rem 3rem;
+            }
+            
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .page-header p {
+                font-size: 1.1rem;
+            }
+            
+            .auth-container {
+                gap: 1.5rem;
+            }
+            
+            .auth-box {
+                padding: 2rem;
+            }
+            
+            .btn-group {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn-group .btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .section-title h2 {
+                font-size: 2.5rem;
+            }
+        }
+
+        .login-btn {
+            background: var(--gradient) !important;
+            color: white !important;
+            padding: 0.6rem 1.5rem !important;
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            border: none !important;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3) !important;
+            transition: var(--transition) !important;
+            text-decoration: none !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            cursor: pointer !important;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4) !important;
+            background: linear-gradient(135deg, var(--primary-dark), #5a08a5) !important;
+        }
+
+        .login-btn i {
+            font-size: 1rem !important;
+        }
+
+        /* Theme Toggle */
+        .theme-toggle-item {
+            list-style: none !important;
+        }
+
+        .theme-toggle {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.1), rgba(114, 9, 183, 0.1));
+            border: 2px solid var(--primary);
+            color: var(--dark);
+            width: 50px;
+            height: 50px;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(67, 97, 238, 0.15);
+        }
+
+        .theme-toggle::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .theme-toggle:hover::before {
+            left: 100%;
+        }
+
+        .theme-toggle:hover {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.2), rgba(114, 9, 183, 0.15));
+            transform: translateY(-2px) scale(1.08);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.25);
+            border-color: rgba(67, 97, 238, 1);
+        }
+
+        .theme-toggle:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .theme-toggle i {
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+
+        .theme-toggle:hover i {
+            transform: rotate(20deg);
+        }
+
+        /* Dark Mode Styles */
+        html.dark-mode {
+            --light: #1a1a1a;
+            --dark: #e8e8e8;
+            --card-bg: #2d2d2d;
+            --gray: #b0b0b0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        html.dark-mode body {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        html.dark-mode header {
+            background: rgba(30, 30, 30, 0.98) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+        }
+
+        html.dark-mode .nav-links {
+            background: #242424 !important;
+        }
+
+        html.dark-mode .nav-links a {
+            color: var(--dark);
+        }
+
+        html.dark-mode .nav-links a:hover {
+            background: rgba(67, 97, 238, 0.2);
+            color: #4361ee;
+        }
+
+        html.dark-mode .theme-toggle {
+            border-color: var(--primary);
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.25), rgba(114, 9, 183, 0.2));
+            color: #ffd700;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.2);
+        }
+
+        html.dark-mode .theme-toggle:hover {
+            background: linear-gradient(135deg, rgba(67, 97, 238, 0.35), rgba(114, 9, 183, 0.3));
+            transform: translateY(-2px) scale(1.08);
+            box-shadow: 0 10px 25px rgba(67, 97, 238, 0.3);
+        }
+
+        html.dark-mode .theme-toggle i {
+            color: #ffd700;
+        }
+        
+
+        html.dark-mode .page-header {
+            background: linear-gradient(135deg, #2d2d2d 0%, #1f1f1f 100%);
+        }
+
+        /* Dark mode footer styles */
+        html.dark-mode footer {
+            background: #0f0f0f !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        html.dark-mode .footer-logo {
+            -webkit-text-fill-color: transparent;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+        }
+
+        html.dark-mode .footer-description {
+            color: rgba(232, 232, 232, 0.6) !important;
+        }
+
+        html.dark-mode .footer-links h3 {
+            color: var(--dark) !important;
+        }
+
+        html.dark-mode .footer-links a {
+            color: rgba(232, 232, 232, 0.6) !important;
+        }
+
+        html.dark-mode .footer-links a:hover {
+            color: #4361ee !important;
+        }
+
+        html.dark-mode .social-link {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: var(--dark) !important;
+        }
+
+        html.dark-mode .social-link:hover {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+
+        html.dark-mode .footer-bottom {
+            border-top-color: rgba(255, 255, 255, 0.1) !important;
+            color: rgba(232, 232, 232, 0.4) !important;
+        }
+
+        html.dark-mode .auth-box {
+            background: #2d2d2d;
+            color: var(--dark);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        html.dark-mode .auth-header h3 {
+            color: var(--dark);
+        }
+
+        html.dark-mode .auth-header p {
+            color: rgba(232, 232, 232, 0.7);
+        }
+
+        html.dark-mode .auth-icon {
+            box-shadow: 0 8px 24px rgba(67, 97, 238, 0.25);
+        }
+
+        html.dark-mode .form-group label {
+            color: var(--dark);
+        }
+
+        html.dark-mode .form-group label i {
+            color: #64a5ff;
+        }
+
+        html.dark-mode .form-control {
+            background: #1f1f1f;
+            color: var(--dark);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        html.dark-mode .form-control::placeholder {
+            color: rgba(232, 232, 232, 0.4);
+        }
+
+        html.dark-mode .form-control:focus {
+            background: #252525;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        html.dark-mode .role-select {
+            background-color: #1f1f1f !important;
+            color: var(--dark) !important;
+            border-color: rgba(255, 255, 255, 0.1) !important;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234361ee' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 1rem center !important;
+            background-size: 1.2em !important;
+            padding-right: 2.5rem !important;
+        }
+
+        html.dark-mode .role-select:focus {
+            background-color: #252525 !important;
+            border-color: #4361ee !important;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234361ee' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 1rem center !important;
+            background-size: 1.2em !important;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2) !important;
+        }
+
+        html.dark-mode .role-select:hover {
+            border-color: rgba(67, 97, 238, 0.4) !important;
+            background-color: rgba(31, 31, 31, 0.8) !important;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234361ee' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e") !important;
+            background-repeat: no-repeat !important;
+            background-position: right 1rem center !important;
+            background-size: 1.2em !important;
+        }
+
+        html.dark-mode .btn-primary {
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.4);
+        }
+
+        html.dark-mode .btn-primary:hover {
+            box-shadow: 0 15px 45px rgba(67, 97, 238, 0.5);
+        }
+
+        html.dark-mode .btn-secondary {
+            background: transparent;
+            color: #64a5ff;
+            border-color: #64a5ff;
+        }
+
+        html.dark-mode .btn-secondary:hover {
+            background: #4361ee;
+            color: white;
+            border-color: #4361ee;
+        }
+
+        html.dark-mode .auth-switch {
+            border-top-color: rgba(255, 255, 255, 0.1);
+            color: rgba(232, 232, 232, 0.6);
+        }
+
+        html.dark-mode .auth-switch a {
+            color: #64a5ff;
+        }
+
+        html.dark-mode .auth-switch a:hover {
+            color: #b8d4ff;
+        }
+
+        html.dark-mode .role-info {
+            background: rgba(67, 97, 238, 0.12);
+            border-left-color: #64a5ff;
+        }
+
+        html.dark-mode .role-info h4 {
+            color: var(--dark);
+        }
+
+        html.dark-mode .role-info h4 i {
+            color: #64a5ff;
+        }
+
+        html.dark-mode .role-info p {
+            color: rgba(232, 232, 232, 0.7);
+        }
+
+        html.dark-mode .form-divider:before {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        html.dark-mode .form-divider span {
+            background: #2d2d2d;
+            color: rgba(232, 232, 232, 0.6);
+        }
+
+        html.dark-mode .social-btn {
+            background: var(--gradient);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
+        }
+
+        html.dark-mode .social-btn:hover {
+            box-shadow: 0 12px 30px rgba(67, 97, 238, 0.35);
+            background: linear-gradient(135deg, #5470f5, #8220c8);
+        }
+
+        html.dark-mode .logged-in-message {
+            background: linear-gradient(135deg, rgba(6, 214, 160, 0.2), rgba(4, 167, 119, 0.2));
+            border: 1px solid rgba(76, 201, 240, 0.2);
+            color: #64e5ff;
+        }
+
+        html.dark-mode .status-banner.active {
+            background: rgba(16, 185, 129, 0.15);
+            border-left-color: #10b981;
+        }
+
+        html.dark-mode .status-banner.inactive {
+            background: rgba(239, 68, 68, 0.15);
+            border-left-color: #ef4444;
+        }
+
+        html.dark-mode input:-webkit-autofill,
+        html.dark-mode textarea:-webkit-autofill,
+        html.dark-mode select:-webkit-autofill {
+            -webkit-text-fill-color: #ffffff !important;
+            -webkit-box-shadow: 0 0 0 1000px #1a1a1a inset !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+        }
+
+        @media (max-width: 480px) {
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .auth-box {
+                padding: 1.5rem;
+            }
+            
+            .auth-header h3 {
+                font-size: 1.5rem;
+            }
+            
+            .message-box {
+                min-width: 280px;
+                right: 10px;
+                left: 10px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ======================================= Header ======================================= -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-car"></i>
+                Car<span>Service</span>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li class="theme-toggle-item">
+                    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- ======================================= Page Header ======================================= -->
+    <div class="page-header">
+        <div class="floating-element floating-1"></div>
+        <div class="floating-element floating-2"></div>
+        <div class="page-header-content">
+            <div class="page-header-badge floating">
+                <i class="fas fa-shield-alt"></i>
+                Secure Login & Register
+            </div>
+            <h1 class="fade-in">Welcome to VSMS</h1>
+            <p class="fade-in">Login or register to access the comprehensive vehicle service management platform</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- ============================== Already Logged In Message ============================= -->
+        <div class="logged-in-message fade-in" id="logged-in-message">
+            <div class="logged-in-content">
+                <h3><i class="fas fa-check-circle"></i> You are already logged in!</h3>
+                <p id="logged-in-details">You are currently logged in as [User Name] with [Role] role.</p>
+                <div class="btn-group">
+                    <a href="#" id="go-to-dashboard" class="btn btn-primary">
+                        <i class="fas fa-tachometer-alt"></i> Go to Dashboard
+                    </a>
+                    <a href="#" id="logout-here" class="btn btn-secondary">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================================== Auth Container ==================================== -->
+        <section class="section">
+            <div class="auth-container">
+                <!-- Login Form -->
+                <div class="auth-box fade-in" id="login-box">
+                    <div class="auth-header">
+                        <div class="auth-icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <h3>Login to VSMS</h3>
+                        <p>Access your account to manage vehicle services</p>
+                    </div>
+                    
+                    <form id="login-form">
+                        <div class="form-group">
+                            <label for="login-email"><i class="fas fa-envelope"></i> Email Address</label>
+                            <input type="email" id="login-email" class="form-control" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-password"><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" id="login-password" class="form-control" placeholder="Enter your password" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="login-role"><i class="fas fa-user-tag"></i> Select Your Role</label>
+                            <select id="login-role" class="role-select" required>
+                                <option value="">--Select--</option>
+                                <option value="admin" class="role-option">👨‍💼 Administrator</option>
+                                <option value="guard" class="role-option">👮 Security Guard</option>
+                                <option value="receptionist" class="role-option">👩‍💼 Receptionist</option>
+                                <option value="advisor" class="role-option">👨‍🔧 Service Advisor</option>
+                                <option value="technician" class="role-option">🔧 Technician</option>
+                                <option value="qc" class="role-option">🔬 Quality Controller</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-sign-in-alt"></i> Login to System
+                            </button>
+                        </div>
+                        
+                        <div class="form-divider">
+                            <span>Or continue with</span>
+                        </div>
+                        
+                        <div class="social-login">
+                            <button type="button" class="social-btn">
+                                <i class="fab fa-google"></i>
+                            </button>
+                            <button type="button" class="social-btn">
+                                <i class="fab fa-facebook-f"></i>
+                            </button>
+                            <button type="button" class="social-btn">
+                                <i class="fab fa-twitter"></i>
+                            </button>
+                        </div>
+                        
+                        <div class="auth-switch">
+                            Don't have an account? <a href="#" id="show-register">Register here</a>
+                        </div>
+                    </form>
+                </div>
+                
+                <!-- Registration Form -->
+                <div class="auth-box fade-in hidden" id="register-box">
+                    <div class="auth-header">
+                        <div class="auth-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <h3>Create VSMS Account</h3>
+                        <p>Register for a new account to access the system</p>
+                    </div>
+                    
+                    <form id="register-form">
+                        <div class="form-group">
+                            <label for="register-name"><i class="fas fa-user"></i> Full Name</label>
+                            <input type="text" id="register-name" class="form-control" placeholder="Enter your full name" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-email"><i class="fas fa-envelope"></i> Email Address</label>
+                            <input type="email" id="register-email" class="form-control" placeholder="Enter your email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-password"><i class="fas fa-lock"></i> Password</label>
+                            <input type="password" id="register-password" class="form-control" placeholder="Create a password (min. 8 characters)" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-confirm-password"><i class="fas fa-lock"></i> Confirm Password</label>
+                            <input type="password" id="register-confirm-password" class="form-control" placeholder="Confirm your password" required>
+                        </div>
+                        
+                        <!-- Technician-Specific Fields -->
+                        <div id="technician-fields" style="display: none;">
+                            <div class="form-group">
+                                <label for="register-phone"><i class="fas fa-phone"></i> Phone Number</label>
+                                <input type="tel" id="register-phone" class="form-control" placeholder="Enter your phone number">
+                            </div>
+                            <div class="form-group">
+                                <label for="register-specialization"><i class="fas fa-wrench"></i> Specialization</label>
+                                <select id="register-specialization" class="role-select">
+                                    <option value="General Technician">General Technician</option>
+                                    <option value="Engine Specialist">Engine Specialist</option>
+                                    <option value="Transmission Expert">Transmission Expert</option>
+                                    <option value="Electrical Specialist">Electrical Specialist</option>
+                                    <option value="Brake System Expert">Brake System Expert</option>
+                                    <option value="Suspension Specialist">Suspension Specialist</option>
+                                    <option value="Paint & Body Specialist">Paint & Body Specialist</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="register-role"><i class="fas fa-user-tag"></i> Select Your Role</label>
+                            <select id="register-role" class="role-select">
+                                <option value="admin" class="role-option">👨‍💼 Administrator</option>
+                                <option value="guard" class="role-option">👮 Security Guard</option>
+                                <option value="receptionist" class="role-option">👩‍💼 Receptionist</option>
+                                <option value="advisor" class="role-option">👨‍🔧 Service Advisor</option>
+                                <option value="technician" class="role-option">🔧 Technician</option>
+                                <option value="qc" class="role-option">🔬 Quality Controller</option>
+                            </select>
+                        </div>
+                        
+                        <div class="role-info" id="role-description">
+                            <h4><i class="fas fa-info-circle"></i> Administrator Role</h4>
+                            <p>Manages the entire system, creates users, assigns roles, and monitors overall operations and reports.</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i> Create Account
+                            </button>
+                        </div>
+                        
+                        <div class="auth-switch">
+                            Already have an account? <a href="#" id="show-login">Login here</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================== Footer ==================================== -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <i class="fas fa-car"></i>
+                        Car<span>Service</span>
+                    </div>
+                    <p class="footer-description">
+                        Car Service Management System is more than just software—it's a commitment to excellence in vehicle service operations. We're dedicated to continuous improvement and innovation to serve our clients better every day.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="index.html#features"><i class="fas fa-chevron-right"></i> Features</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Pricing</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Case Studies</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Updates</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="about.html" class="active"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Careers</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Press</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> API Docs</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> System Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ==================================== Redirect Overlay ==================================== -->
+    <div class="redirect-overlay" id="redirect-overlay">
+        <div class="redirect-content">
+            <div class="redirect-role-icon" id="redirect-role-icon">👨‍💼</div>
+            <h3 id="redirect-title">Login Successful!</h3>
+            <p id="redirect-message">You are being redirected to your dashboard...</p>
+            <div class="redirect-countdown" id="redirect-countdown">Redirecting in 3 seconds...</div>
+        </div>
+    </div>
+
+    <!-- ==================================== Account Inactive Modal ==================================== -->
+    <div class="redirect-overlay" id="inactive-account-modal" style="display: none;">
+        <div class="redirect-content">
+            <div class="redirect-role-icon" style="color: #ef4444;">🔒</div>
+            <h3 style="color: #ef4444;">Account Inactive</h3>
+            <p id="inactive-message">Your account has been deactivated. Please contact the administrator.</p>
+            <button onclick="closeInactiveModal()" class="btn btn-primary" style="margin-top: 1.5rem;">
+                <i class="fas fa-check"></i> OK
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements
+        document.querySelectorAll('.fade-in, .slide-in-left').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Check if user is already logged in
+        function checkExistingSession() {
+            const currentUser = JSON.parse(localStorage.getItem('vsms_current_user'));
+            if (currentUser) {
+                // Show logged in message
+                const messageBox = document.getElementById('logged-in-message');
+                const details = document.getElementById('logged-in-details');
+                const dashboardLink = document.getElementById('go-to-dashboard');
+                const logoutLink = document.getElementById('logout-here');    
+                if (messageBox && details) {
+                    const roleName = getRoleName(currentUser.role);
+                    details.textContent = `You are currently logged in as ${currentUser.name} with ${roleName} role.`;
+                    messageBox.classList.add('show');
+                    // Hide login/register forms
+                    document.getElementById('login-box').style.display = 'none';
+                    document.getElementById('register-box').style.display = 'none';
+                    // Update page header
+                    const pageHeader = document.querySelector('.page-header h1');
+                    const pageSubtitle = document.querySelector('.page-header p');
+                    if (pageHeader) {
+                        pageHeader.textContent = `Welcome back, ${currentUser.name}!`;
+                    }
+                    if (pageSubtitle) {
+                        pageSubtitle.textContent = `You are logged in with ${roleName} role. Access your dashboard to manage vehicle services.`;
+                    }
+                    
+                    // Update section title
+                    const sectionTitle = document.querySelector('.section-title h2');
+                    if (sectionTitle) {
+                        sectionTitle.textContent = `Current Session`;
+                    }
+                    const sectionSubtitle = document.querySelector('.section-title p');
+                    if (sectionSubtitle) {
+                        sectionSubtitle.textContent = `You are already logged in. Please logout first to switch accounts.`;
+                    }
+                }
+                
+                // Set dashboard link
+                if (dashboardLink) {
+                    dashboardLink.href = `${currentUser.role}.html`;
+                }
+                
+                // Set logout functionality
+                if (logoutLink) {
+                    logoutLink.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        localStorage.removeItem('vsms_current_user');
+                        window.location.href = 'logreg.html';
+                    });
+                }
+            }
+        }
+        
+        // DOM Elements
+        const loginBox = document.getElementById('login-box');
+        const registerBox = document.getElementById('register-box');
+        const showRegisterLink = document.getElementById('show-register');
+        const showLoginLink = document.getElementById('show-login');
+        const loginForm = document.getElementById('login-form');
+        const registerForm = document.getElementById('register-form');
+        const registerRoleSelect = document.getElementById('register-role');
+        const roleDescription = document.getElementById('role-description');
+        
+        // User database
+        let usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
+
+        // ===== MIGRATE OLD USERS TO ADD STATUS FIELD =====
+        function migrateUsersDatabase() {
+            let migrated = false;
+            usersDatabase = usersDatabase.map(user => {
+                if (!user.hasOwnProperty('status')) {
+                    migrated = true;
+                    return { ...user, status: 'active' };
+                }
+                return user;
+            });
+            if (migrated) {
+                localStorage.setItem('vsms_users', JSON.stringify(usersDatabase));
+                console.log('Users database migrated: added status field');
+            }
+        }
+        migrateUsersDatabase();
+        
+        // Role descriptions
+        const roleDescriptions = {
+            admin: {
+                title: "Administrator Role",
+                description: "Manages the entire system, creates users, assigns roles, and monitors overall operations and reports.",
+                icon: "👨‍💼"
+            },
+            advisor: {
+                title: "Service Advisor Role",
+                description: "Inspects the vehicle, prepares the job details, and assigns tasks to the technician.",
+                icon: "👨‍🔧"
+            },
+            technician: {
+                title: "Technician Role",
+                description: "Performs the assigned service work and updates job start and completion status.",
+                icon: "🔧"
+            },
+            qc: {
+                title: "Quality Controller Role",
+                description: "Checks the serviced vehicle to ensure quality standards before final approval or delivery.",
+                icon: "🔬"
+            },
+            receptionist: {
+                title: "Receptionist Role",
+                description: "Receives entered vehicles, verifies details, and assigns them to a service advisor.",
+                icon: "👩‍💼"
+            },
+            guard: {
+                title: "Security Guard Role",
+                description: "Registers vehicle entry at the gate and initiates the service workflow.",
+                icon: "👮"
+            }
+        };
+        
+        // Check for existing session on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkExistingSession();
+            
+            // Only setup form events if user is not logged in
+            if (!JSON.parse(localStorage.getItem('vsms_current_user'))) {
+                setupFormEvents();
+            }
+            
+            // Add social login button functionality
+            document.querySelectorAll('.social-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    showMessage('Social login feature is coming soon!', 'info');
+                });
+            });
+        });
+        
+        function setupFormEvents() {
+            // Switch between login and registration forms
+            showRegisterLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                loginBox.classList.add('hidden');
+                registerBox.classList.remove('hidden');
+                updateRoleDescription(registerRoleSelect.value);
+            });
+            
+            showLoginLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                registerBox.classList.add('hidden');
+                loginBox.classList.remove('hidden');
+            });
+            
+            // Update role description
+            function updateRoleDescription(role) {
+                const roleInfo = roleDescriptions[role];
+                roleDescription.innerHTML = `
+                    <h4><i class="fas fa-info-circle"></i> ${roleInfo.title}</h4>
+                    <p>${roleInfo.description}</p>
+                `;
+                
+                // Show/hide technician-specific fields
+                const technicianFields = document.getElementById('technician-fields');
+                if (role === 'technician') {
+                    technicianFields.style.display = 'block';
+                } else {
+                    technicianFields.style.display = 'none';
+                }
+            }
+            
+            registerRoleSelect.addEventListener('change', function() {
+                updateRoleDescription(this.value);
+            });
+            
+            // Initialize with admin role description
+            updateRoleDescription('admin');
+            
+            // Handle login form submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const email = document.getElementById('login-email').value.toLowerCase().trim();
+                const password = document.getElementById('login-password').value;
+                const selectedRole = document.getElementById('login-role').value;
+
+                // Basic validation
+                if (!email || !password || !selectedRole) {
+                    showMessage('Please fill in all fields including role', 'error');
+                    return;
+                }
+
+                // Check in local usersDatabase
+                const user = usersDatabase.find(u => u.email === email && u.password === password);
+                
+                if (!user) {
+                    showMessage('Invalid email or password', 'error');
+                    return;
+                }
+                
+                // ==== CHECK USER STATUS - NEW ====
+                if (user.status === 'inactive') {
+                    // Show inactive account modal
+                    document.getElementById('inactive-account-modal').style.display = 'flex';
+                    document.getElementById('inactive-message').innerHTML = 
+                        `Your account has been deactivated. Please contact the administrator.`;
+                    return;
+                }
+                
+                if (user.role !== selectedRole) {
+                    showMessage(`Your account is registered as ${getRoleName(user.role)}. Please select ${getRoleName(user.role)} role to login.`, 'error');
+                    return;
+                }
+
+                localStorage.setItem('vsms_current_user', JSON.stringify(user));
+                loginSuccess(user);
+            });
+            
+            // Handle registration form submission
+            registerForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const name = document.getElementById('register-name').value.trim();
+                const email = document.getElementById('register-email').value.toLowerCase().trim();
+                const password = document.getElementById('register-password').value;
+                const confirmPassword = document.getElementById('register-confirm-password').value;
+                const role = document.getElementById('register-role').value;
+                
+                // Get technician-specific fields if registering as technician
+                const phone = role === 'technician' ? document.getElementById('register-phone').value.trim() : '';
+                const specialization = role === 'technician' ? document.getElementById('register-specialization').value : '';
+                
+                // Basic validation
+                if (!name || !email || !password || !confirmPassword) {
+                    showMessage('Please fill in all fields', 'error');
+                    return;
+                }
+                
+                // Validate technician fields if registering as technician
+                if (role === 'technician' && !phone) {
+                    showMessage('Please enter your phone number', 'error');
+                    return;
+                }
+                
+                // Check if email already exists
+                if (usersDatabase.some(u => u.email === email)) {
+                    showMessage('This email is already registered. Please login instead.', 'error');
+                    setTimeout(() => {
+                        registerBox.classList.add('hidden');
+                        loginBox.classList.remove('hidden');
+                        document.getElementById('login-email').value = email;
+                    }, 1500);
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    showMessage('Passwords do not match', 'error');
+                    return;
+                }
+                
+                if (password.length < 8) {
+                    showMessage('Password must be at least 8 characters long', 'error');
+                    return;
+                }
+                
+                // Create new user object with ACTIVE status by default
+                const newUser = {
+                    id: Date.now(),
+                    name: name,
+                    email: email,
+                    password: password,
+                    role: role,
+                    status: 'active', // Default status is active
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Add technician-specific fields
+                if (role === 'technician') {
+                    newUser.phone = phone;
+                    newUser.specialization = specialization;
+                }
+                
+                // Add user to database
+                usersDatabase.push(newUser);
+                localStorage.setItem('vsms_users', JSON.stringify(usersDatabase));
+                
+                // Show success message
+                const roleName = getRoleName(role);
+                showMessage(`Account for ${roleName} created successfully! Your account is now active.`, 'success');
+                
+                // Switch to login form after a delay
+                setTimeout(() => {
+                    registerBox.classList.add('hidden');
+                    loginBox.classList.remove('hidden');
+                    
+                    // Pre-fill the login email and set the role
+                    document.getElementById('login-email').value = email;
+                    document.getElementById('login-role').value = role;
+                    
+                    // Show reminder about role lock
+                    showMessage(`Remember: You must select ${roleName} role when logging in.`, 'info');
+                }, 2000);
+            });
+        }
+        
+        // Helper functions
+        function getRoleName(roleCode) {
+            switch(roleCode) {
+                case 'admin': return 'Administrator';
+                case 'advisor': return 'Service Advisor';
+                case 'technician': return 'Technician';
+                case 'qc': return 'Quality Controller';
+                case 'receptionist': return 'Receptionist';
+                case 'guard': return 'Security Guard';
+                default: return 'User';
+            }
+        }
+        
+        function showMessage(message, type) {
+            // Remove any existing message
+            const existingMessage = document.querySelector('.message-box');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+            
+            // Create message element
+            const messageBox = document.createElement('div');
+            messageBox.className = `message-box message-${type}`;
+            messageBox.innerHTML = `
+                <p>${message}</p>
+                <button class="message-close">&times;</button>
+            `;
+            
+            document.body.appendChild(messageBox);
+            
+            // Add close button functionality
+            const closeBtn = messageBox.querySelector('.message-close');
+            closeBtn.addEventListener('click', () => {
+                messageBox.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => messageBox.remove(), 300);
+            });
+            
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (messageBox.parentNode) {
+                    messageBox.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => messageBox.remove(), 300);
+                }
+            }, 5000);
+        }
+        
+        // Close inactive account modal
+        function closeInactiveModal() {
+            document.getElementById('inactive-account-modal').style.display = 'none';
+        }
+        
+        // Handle successful login
+        function loginSuccess(user) {
+            // Set current user in session
+            localStorage.setItem('vsms_current_user', JSON.stringify(user));
+            
+            // Show redirect overlay
+            const redirectOverlay = document.getElementById('redirect-overlay');
+            const redirectRoleIcon = document.getElementById('redirect-role-icon');
+            const redirectTitle = document.getElementById('redirect-title');
+            const redirectMessage = document.getElementById('redirect-message');
+            const redirectCountdown = document.getElementById('redirect-countdown');
+            
+            // Set role-specific info
+            const roleInfo = roleDescriptions[user.role];
+            redirectRoleIcon.textContent = roleInfo.icon;
+            redirectTitle.textContent = `Welcome, ${user.name}!`;
+            redirectMessage.textContent = `You are logged in as ${getRoleName(user.role)}.`;
+            
+            // Show overlay
+            redirectOverlay.classList.add('show');
+            
+            // Start countdown for redirect
+            let countdown = 3;
+            updateCountdown();
+            
+            function updateCountdown() {
+                if (countdown > 0) {
+                    redirectCountdown.textContent = `Redirecting in ${countdown} seconds...`;
+                    countdown--;
+                    setTimeout(updateCountdown, 1000);
+                } else {
+                    // Redirect to the appropriate dashboard
+                    window.location.href = `${user.role}.html`;
+                }
+            }
+        }
+        
+        // Initialize sample users with STATUS field
+        function initializeSampleUsers() {
+            if (usersDatabase.length === 0) {
+                usersDatabase = [
+                    {
+                        id: 1,
+                        name: "Admin User",
+                        email: "admin@vsms.com",
+                        password: "admin123",
+                        role: "admin",
+                        status: "active",
+                        createdAt: "2023-01-01T00:00:00.000Z"
+                    },
+                    {
+                        id: 2,
+                        name: "Security Guard",
+                        email: "guard@vsms.com",
+                        password: "guard123",
+                        role: "guard",
+                        status: "active",
+                        createdAt: "2023-01-02T00:00:00.000Z"
+                    },
+                    {
+                        id: 3,
+                        name: "Receptionist User",
+                        email: "receptionist@vsms.com",
+                        password: "receptionist123",
+                        role: "receptionist",
+                        status: "active",
+                        createdAt: "2023-01-03T00:00:00.000Z"
+                    },
+                    {
+                        id: 4,
+                        name: "Service Advisor",
+                        email: "advisor@vsms.com",
+                        password: "advisor123",
+                        role: "advisor",
+                        status: "active",
+                        createdAt: "2023-01-04T00:00:00.000Z"
+                    },
+                    {
+                        id: 5,
+                        name: "Technician User",
+                        email: "technician@vsms.com",
+                        password: "tech123",
+                        role: "technician",
+                        status: "active",
+                        createdAt: "2023-01-05T00:00:00.000Z"
+                    },
+                    {
+                        id: 6,
+                        name: "Quality Controller",
+                        email: "qc@vsms.com",
+                        password: "qc123",
+                        role: "qc",
+                        status: "active",
+                        createdAt: "2023-01-06T00:00:00.000Z"
+                    },
+                    {
+                        id: 7,
+                        name: "Inactive User",
+                        email: "inactive@vsms.com",
+                        password: "inactive123",
+                        role: "technician",
+                        status: "inactive",
+                        createdAt: "2023-01-07T00:00:00.000Z"
+                    }
+                ];
+                localStorage.setItem('vsms_users', JSON.stringify(usersDatabase));
+            }
+        }
+        
+        // Initialize sample data
+        initializeSampleUsers();
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const navLinks = document.getElementById('navLinks');
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.backdropFilter = 'blur(20px)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            }
+        });
+
+        /* Theme Toggle Handler */
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            // Check localStorage for saved preference
+            const savedTheme = localStorage.getItem('theme-preference');
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-regular fa-moon"></i>';
+            }
+            
+            // Toggle button click handler
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-regular fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+        
+        // Initialize theme toggle when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThemeToggle);
+        } else {
+            initThemeToggle();
+        }
+    </script>
+</body>
+</html>

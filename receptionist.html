@@ -1,0 +1,2770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/car-service.png">
+    <style>
+        /* ===== FULL CSS (unchanged structure, only minor additions) ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2f7 100%);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 1.2rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid #3b82f6;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .user-details h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .user-details p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            text-align: center;
+            border-left: 5px solid #3b82f6;
+        }
+
+        .dashboard-header h1 {
+            color: #1e293b;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .dashboard-header p {
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Statistics Cards */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 16px;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 5px solid;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card.pending { border-left-color: #f59e0b; }
+        .stat-card.inprogress { border-left-color: #3b82f6; }
+        .stat-card.completed { border-left-color: #10b981; }
+        .stat-card.delivered { border-left-color: #8b5cf6; }
+        .stat-card.entry { border-left-color: #94a3b8; }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon.pending { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .stat-icon.inprogress { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .stat-icon.completed { background: linear-gradient(135deg, #10b981, #059669); }
+        .stat-icon.delivered { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .stat-icon.entry { background: linear-gradient(135deg, #64748b, #475569); }
+
+        .stat-card h3 {
+            font-size: 2.2rem;
+            color: #1e293b;
+            margin-bottom: 0.3rem;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            color: #64748b;
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Filter Buttons */
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .filter-btn:hover:not(.active) {
+            background: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        /* Main Content Layout */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Vehicles Section */
+        .vehicles-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+        }
+
+        .section-title {
+            color: #1e293b;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: #3b82f6;
+        }
+
+        .vehicles-table-container {
+            overflow-x: auto;
+            width: 100%;
+        }
+
+        .vehicles-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .vehicles-table th {
+            background: #f8fafc;
+            padding: 1.2rem;
+            text-align: left;
+            color: #475569;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 0.9rem;
+        }
+
+        .vehicles-table td {
+            padding: 1.2rem;
+            border-bottom: 1px solid #f1f5f9;
+            color: #475569;
+            vertical-align: middle;
+        }
+
+        .vehicles-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .vehicle-number {
+            font-family: monospace;
+            font-weight: 600;
+            color: #1e293b;
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        /* Status Badges - UPDATED: added ready-for-delivery */
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-badge.entry { background: #e2e8f0; color: #334155; }
+        .status-badge.pending { background: #fef3c7; color: #92400e; }
+        .status-badge.in-progress { background: #dbeafe; color: #1e40af; }
+        .status-badge.completed { background: #d1fae5; color: #065f46; }
+        .status-badge.ready-for-delivery { background: #dbeafe; color: #1e40af; } /* distinct blue for ready */
+        .status-badge.delivered { background: #ede9fe; color: #5b21b6; }
+
+        /* Assign Button */
+        .assign-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .assign-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .assign-btn:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        /* Advisors Section */
+        .advisors-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            width: 100%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-header .section-title {
+            margin-bottom: 0;
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        /* Advisors Grid */
+        .advisors-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .advisor-card-selection {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .advisor-card-selection:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+            border-color: #3b82f6;
+        }
+
+        .advisor-card-selection.selected {
+            background: #eff6ff;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .advisor-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .advisor-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .advisor-details h4 {
+            color: #1e293b;
+            margin-bottom: 0.2rem;
+            font-size: 1rem;
+        }
+
+        .advisor-details p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .advisor-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.8rem;
+            font-size: 0.85rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #475569;
+        }
+
+        .stat-item i {
+            color: #8b5cf6;
+        }
+
+        /* Vehicle Detail Modal */
+        .vehicle-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 20000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+
+        .vehicle-detail-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 1200px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-header {
+            padding: 2rem 2rem 1rem;
+            border-bottom: 2px solid #f1f5f9;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            color: #1e293b;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #64748b;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .close-modal:hover {
+            color: #ef4444;
+        }
+
+        .modal-body {
+            padding: 2rem;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .vehicle-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .vehicle-detail-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .vehicle-detail-card h4 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .detail-label {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .detail-value {
+            color: #1e293b;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        /* Service Description Input */
+        .service-description-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            margin: 2rem 0;
+        }
+
+        .service-description-section h4 {
+            color: #1e293b;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .service-input {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+            min-height: 120px;
+            font-family: inherit;
+        }
+
+        .service-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        /* Modal Actions */
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            border-top: 2px solid #f1f5f9;
+            background: #f8fafc;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .modal-btn.cancel {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .modal-btn.assign {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+
+        .modal-btn.assign:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .modal-btn.cancel:hover {
+            background: #e2e8f0;
+        }
+
+        /* Live Time */
+        .live-time {
+            font-size: 0.85rem;
+            color: #64748b;
+            background: #f8fafc;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+            margin-left: 1rem;
+            font-family: monospace;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 2rem;
+        }
+
+        /* Create New Advisor Button */
+        .new-advisor-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .new-advisor-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        /* No Data */
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: #94a3b8;
+        }
+
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .no-data h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+
+        .no-data p {
+            font-size: 0.95rem;
+        }
+
+        /* Assigned Advisor */
+        .assigned-advisor {
+            font-weight: 600;
+            color: #1e293b;
+            background: #f0f9ff;
+            padding: 6px 12px;
+            border-radius: 8px;
+            display: inline-block;
+            font-size: 0.9rem;
+        }
+
+        /* Message Box */
+        .message-box {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            padding: 1.2rem 1.8rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 300px;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message-box.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .message-box.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .dashboard-header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+            
+            .vehicles-section,
+            .advisors-section {
+                padding: 2rem 1.5rem;
+            }
+            
+            .filter-buttons {
+                overflow-x: auto;
+                padding-bottom: 1rem;
+            }
+            
+            .filter-btn {
+                white-space: nowrap;
+            }
+            
+            .user-details {
+                display: none;
+            }
+            
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .new-advisor-btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .vehicle-detail-content {
+                width: 95%;
+                margin: 1rem;
+            }
+            
+            .modal-body {
+                padding: 1.5rem;
+            }
+            
+            .vehicle-details-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .advisors-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Large Tablet Responsive (1024px and below) */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 1rem;
+                max-width: 95%;
+            }
+
+            header {
+                padding: 1rem;
+            }
+
+            .dashboard-header {
+                padding: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .vehicles-section,
+            .advisors-section {
+                padding: 1.5rem;
+            }
+
+            .vehicle-actions {
+                flex-direction: column;
+            }
+
+            .vehicle-actions button {
+                width: 100%;
+            }
+
+            .modal-content {
+                width: 90vw;
+                max-height: 85vh;
+            }
+
+            .advisors-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-buttons {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Small Mobile Responsive (480px and below) */
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            header {
+                padding: 0.8rem;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            nav {
+                gap: 1rem;
+            }
+
+            .container {
+                padding: 0 12px;
+            }
+
+            .dashboard-header {
+                padding: 1.2rem;
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.9rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+
+            .vehicles-section,
+            .advisors-section {
+                padding: 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .filter-buttons {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                overflow-x: auto;
+            }
+
+            .filter-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+                white-space: nowrap;
+            }
+
+            .vehicle-card {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .vehicle-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .vehicle-details-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .vehicle-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .vehicle-actions button {
+                width: 100%;
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .advisor-card-selection {
+                padding: 1rem;
+            }
+
+            .advisors-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .advisor-selection-card {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                width: 95vw;
+                padding: 1.2rem;
+            }
+
+            .modal-header {
+                padding: 1rem;
+            }
+
+            .modal-header h3 {
+                font-size: 1.2rem;
+            }
+
+            .modal-body {
+                padding: 1rem;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .vehicle-detail-content {
+                width: 95%;
+                margin: 1rem auto;
+                padding: 1rem;
+            }
+
+            .service-description-section {
+                padding: 1rem;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                width: 100%;
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+
+            .user-details {
+                display: none;
+            }
+
+            .live-time {
+                font-size: 0.85rem;
+            }
+
+            .role-badge {
+                font-size: 0.85rem;
+            }
+
+            .message-box {
+                right: 10px;
+                left: 10px;
+                width: auto;
+                max-width: none;
+                font-size: 0.9rem;
+            }
+
+            .new-advisor-btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .vehicles-table {
+                font-size: 0.85rem;
+            }
+
+            .vehicles-table th {
+                padding: 0.8rem;
+            }
+
+            .vehicles-table td {
+                padding: 0.8rem;
+            }
+        }
+
+        /* Extra Small Mobile Responsive (360px and below) */
+        @media (max-width: 360px) {
+            body {
+                font-size: 13px;
+            }
+
+            header {
+                padding: 0.6rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            nav {
+                gap: 0.5rem;
+            }
+
+            .container {
+                padding: 0 8px;
+            }
+
+            .dashboard-header {
+                padding: 0.8rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.3rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.8rem;
+            }
+
+            .stats-grid {
+                gap: 0.6rem;
+            }
+
+            .stat-card {
+                padding: 0.8rem;
+            }
+
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .vehicles-section,
+            .advisors-section {
+                padding: 0.8rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .filter-buttons {
+                gap: 0.3rem;
+            }
+
+            .filter-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .vehicle-card {
+                padding: 0.8rem;
+            }
+
+            .vehicle-header {
+                gap: 0.4rem;
+            }
+
+            .vehicle-details-grid {
+                gap: 0.6rem;
+                font-size: 0.85rem;
+            }
+
+            .vehicle-detail-item {
+                font-size: 0.8rem;
+            }
+
+            .vehicle-actions {
+                gap: 0.4rem;
+            }
+
+            .vehicle-actions button {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .advisors-grid {
+                gap: 0.6rem;
+            }
+
+            .advisor-selection-card {
+                padding: 0.8rem;
+            }
+
+            .modal-content {
+                width: 100%;
+                padding: 1rem;
+            }
+
+            .modal-header h3 {
+                font-size: 1.1rem;
+            }
+
+            .modal-body {
+                padding: 0.8rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.8rem;
+            }
+
+            .form-group label {
+                font-size: 0.85rem;
+            }
+
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 8px;
+                font-size: 0.85rem;
+            }
+
+            .btn-primary,
+            .btn-secondary {
+                padding: 0.6rem;
+                font-size: 0.85rem;
+            }
+
+            .vehicle-detail-content {
+                width: 100%;
+                padding: 0.8rem;
+                margin: 0.5rem auto;
+            }
+
+            .service-description-section {
+                padding: 0.8rem;
+            }
+
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+
+            .live-time {
+                font-size: 0.75rem;
+                gap: 0.3rem;
+            }
+
+            .role-badge {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.6rem;
+            }
+
+            .message-box {
+                right: 5px;
+                left: 5px;
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .vehicles-table {
+                font-size: 0.8rem;
+            }
+
+            .vehicles-table th,
+            .vehicles-table td {
+                padding: 0.6rem;
+            }
+
+            .assigned-advisor {
+                font-size: 0.8rem;
+                padding: 4px 8px;
+            }
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: none;
+            border: 2px solid #f59e0b;
+            color: #2b2d42;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(245, 158, 11, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* ===== FIXED DARK MODE IMPLEMENTATION ===== */
+        /* Dark mode variables and overrides */
+        html.dark-mode {
+            --bg-gradient-from: #0f172a;
+            --bg-gradient-to: #1e293b;
+            --card-bg: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --hover-bg: #2d3b4f;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+        }
+
+        html.dark-mode body {
+            background: linear-gradient(135deg, var(--bg-gradient-from), var(--bg-gradient-to));
+            color: var(--text-primary);
+        }
+
+        html.dark-mode header {
+            background: linear-gradient(135deg, #0a0f1a, #1a1f2a) !important;
+            border-bottom-color: #f59e0b !important;
+        }
+
+        html.dark-mode .logo span {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .dashboard-header,
+        html.dark-mode .vehicles-section,
+        html.dark-mode .advisors-section,
+        html.dark-mode .vehicle-detail-content,
+        html.dark-mode .service-description-section,
+        html.dark-mode .stat-card,
+        html.dark-mode .advisor-card-selection {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+            box-shadow: 0 10px 30px var(--shadow-color);
+        }
+
+        html.dark-mode .dashboard-header h1 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .dashboard-header p {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .section-title {
+            color: var(--text-primary);
+            border-bottom-color: var(--border-color);
+        }
+
+        html.dark-mode .section-title i {
+            color: #f59e0b;
+        }
+
+        html.dark-mode .vehicles-table th {
+            background: #2d3b4f;
+            color: var(--text-primary);
+            border-bottom-color: var(--border-color);
+        }
+
+        html.dark-mode .vehicles-table td {
+            color: var(--text-secondary);
+            border-bottom-color: var(--border-color);
+        }
+
+        html.dark-mode .vehicles-table tr:hover {
+            background: var(--hover-bg);
+        }
+
+        html.dark-mode .vehicle-number {
+            background: #2d3b4f;
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .stat-card h3 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .stat-card p {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .filter-btn {
+            background: #2d3b4f;
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .filter-btn.active {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        html.dark-mode .filter-btn:hover:not(.active) {
+            background: #3d4b5f;
+        }
+
+        html.dark-mode .advisor-card-selection {
+            background: #2d3b4f;
+            border-color: var(--border-color);
+        }
+
+        html.dark-mode .advisor-card-selection:hover {
+            border-color: #f59e0b;
+        }
+
+        html.dark-mode .advisor-card-selection.selected {
+            background: #374151;
+            border-color: #f59e0b;
+        }
+
+        html.dark-mode .advisor-details h4 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .advisor-details p,
+        html.dark-mode .stat-item {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .advisor-stats .stat-item i {
+            color: #f59e0b;
+        }
+
+        html.dark-mode .modal-header {
+            border-bottom-color: var(--border-color);
+        }
+
+        html.dark-mode .modal-header h3 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .close-modal {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .close-modal:hover {
+            color: #fca5a5;
+        }
+
+        html.dark-mode .vehicle-detail-card {
+            background: #2d3b4f;
+            border-left-color: #f59e0b;
+        }
+
+        html.dark-mode .vehicle-detail-card h4 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .detail-label {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .detail-value {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .detail-row {
+            border-bottom-color: var(--border-color);
+        }
+
+        html.dark-mode .service-description-section {
+            background: var(--card-bg);
+            border-color: var(--border-color);
+        }
+
+        html.dark-mode .service-description-section h4 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .service-input {
+            background: #2d3b4f;
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        html.dark-mode .service-input:focus {
+            border-color: #f59e0b;
+        }
+
+        html.dark-mode .modal-actions {
+            background: #2d3b4f;
+            border-top-color: var(--border-color);
+        }
+
+        html.dark-mode .modal-btn.cancel {
+            background: #374151;
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .modal-btn.cancel:hover {
+            background: #4b5563;
+        }
+
+        html.dark-mode .live-time {
+            background: #2d3b4f;
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .footer {
+            color: var(--text-secondary);
+            border-top-color: var(--border-color);
+        }
+
+        html.dark-mode .no-data {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .assigned-advisor {
+            background: #374151;
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .user-details h4 {
+            color: white;
+        }
+
+        html.dark-mode .user-details p {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        html.dark-mode .theme-toggle {
+            border-color: #f59e0b;
+            background: #2d3b4f;
+            color: #ffd700;
+        }
+
+        html.dark-mode .theme-toggle:hover {
+            background: #374151;
+        }
+
+        html.dark-mode .logout-btn {
+            background: #ef4444 !important;
+            color: white !important;
+        }
+
+        html.dark-mode .logout-btn:hover {
+            background: #dc2626 !important;
+        }
+
+        html.dark-mode #access-denied {
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        html.dark-mode #access-denied h2 {
+            color: #fca5a5;
+        }
+
+        html.dark-mode #access-denied p {
+            color: var(--text-secondary);
+        }
+
+        /* Dark mode status badges */
+        html.dark-mode .status-badge.entry { background: #374151; color: #e2e8f0; }
+        html.dark-mode .status-badge.pending { background: #92400e; color: #fef3c7; }
+        html.dark-mode .status-badge.in-progress { background: #1e40af; color: #dbeafe; }
+        html.dark-mode .status-badge.completed { background: #065f46; color: #d1fae5; }
+        html.dark-mode .status-badge.ready-for-delivery { background: #1e40af; color: #dbeafe; }
+        html.dark-mode .status-badge.delivered { background: #5b21b6; color: #ede9fe; }
+
+        /* Dark mode form inputs */
+        html.dark-mode input,
+        html.dark-mode select,
+        html.dark-mode textarea {
+            background: #2d3b4f;
+            color: var(--text-primary);
+            border-color: var(--border-color);
+        }
+
+        html.dark-mode input:focus,
+        html.dark-mode select:focus,
+        html.dark-mode textarea:focus {
+            border-color: #f59e0b;
+            outline: none;
+        }
+
+        html.dark-mode input:-webkit-autofill,
+        html.dark-mode textarea:-webkit-autofill,
+        html.dark-mode select:-webkit-autofill {
+            -webkit-text-fill-color: var(--text-primary) !important;
+            -webkit-box-shadow: 0 0 0 1000px #2d3b4f inset !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+        }
+
+        /* Dark mode modal advisor cards */
+        html.dark-mode .modal-advisor-card {
+            background: #2d3b4f;
+            border-color: var(--border-color);
+        }
+
+        html.dark-mode .modal-advisor-card:hover {
+            border-color: #f59e0b;
+        }
+
+        html.dark-mode .modal-advisor-card.selected {
+            background: #374151;
+            border-color: #f59e0b;
+        }
+
+        /* Dark mode advisor avatar */
+        html.dark-mode .advisor-avatar {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        /* Dark mode placeholder text */
+        html.dark-mode ::placeholder {
+            color: #94a3b8 !important;
+            opacity: 0.7;
+        }
+
+        /* Dark mode select options */
+        html.dark-mode select option {
+            background: #1e293b;
+            color: var(--text-primary);
+        }
+
+        /* Access Denied */
+        #access-denied {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin: 5rem auto;
+            max-width: 600px;
+            padding: 4rem;
+            text-align: center;
+        }
+
+        #access-denied h2 {
+            color: #ef4444;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #access-denied p {
+            color: #64748b;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+    </style>
+
+    <!-- Unified theme overrides: ensure all dashboards share the same color palette and UI tokens -->
+    <style>
+        :root{
+            --primary: #3b82f6;
+            --accent-primary: #8b5cf6;
+            --accent: var(--primary);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --card-bg: #ffffff;
+            --bg-gradient-from: #f8fafc;
+            --bg-gradient-to: #eef2f7;
+            --text-primary: #1f2937;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0,0,0,0.06);
+        }
+
+        body { background: linear-gradient(135deg,var(--bg-gradient-from),var(--bg-gradient-to)); color:var(--text-primary); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        header { background: linear-gradient(135deg,#0f172a 0%, #1f2937 100%); border-bottom: 3px solid var(--primary); }
+        .btn, button { background: var(--primary); color: #fff; border: none; border-radius: 8px; }
+        .btn-primary { background: var(--primary); }
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); }
+        .btn-danger { background: var(--error); }
+        .role-badge, .status-badge { border-color: var(--primary); }
+        .card, .stat-card, .vehicle-card, .modal-content { background: var(--card-bg); box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+        a { color: var(--primary); }
+    </style>
+
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-user-headset"></i>
+                <span>CSMS Receptionist</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <i class="fa-solid fa-sun" style="color: rgba(255, 255, 255, 1.00);"></i>
+                </button>
+                
+                <div class="user-info">
+                    <div class="user-details">
+                        <h4 id="user-name">Receptionist</h4>
+                        <p>Service Coordination</p>
+                    </div>
+                    <div class="user-avatar" id="user-avatar">R</div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Access Denied -->
+        <div id="access-denied" style="display: none;">
+            <h2><i class="fas fa-exclamation-triangle"></i> Access Denied</h2>
+            <p>Receptionist access only</p>
+            <a href="logreg.html" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Go to Login Page
+            </a>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard-content">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Receptionist Dashboard</h1>
+                <p>Manage vehicle service requests, assign advisors, and track service progress</p>
+                <div class="role-badge">
+                    <i class="fas fa-user-headset"></i>
+                    Service Coordination Center
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="dashboard-stats">
+                <div class="stat-card entry">
+                    <div class="stat-icon entry">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <div>
+                        <h3 id="entry-count">0</h3>
+                        <p>New Arrival</p>
+                    </div>
+                </div>
+                <div class="stat-card pending">
+                    <div class="stat-icon pending">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                        <h3 id="pending-count">0</h3>
+                        <p>Pending</p>
+                    </div>
+                </div>
+                <div class="stat-card inprogress">
+                    <div class="stat-icon inprogress">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div>
+                        <h3 id="inprogress-count">0</h3>
+                        <p>In-Progress</p>
+                    </div>
+                </div>
+                <div class="stat-card completed">
+                    <div class="stat-icon completed">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h3 id="completed-count">0</h3>
+                        <p>Completed</p>
+                    </div>
+                </div>
+                <div class="stat-card delivered">
+                    <div class="stat-icon delivered">
+                        <i class="fas fa-car-side"></i>
+                    </div>
+                    <div>
+                        <h3 id="delivered-count">0</h3>
+                        <p>Delivered</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Buttons -->
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="all">
+                    <i class="fas fa-list"></i> All Vehicles
+                </button>
+                <button class="filter-btn" data-filter="entry">
+                    <i class="fas fa-sign-in-alt"></i> New Arrival
+                </button>
+                <button class="filter-btn" data-filter="pending">
+                    <i class="fas fa-clock"></i> Pending
+                </button>
+                <button class="filter-btn" data-filter="in-progress">
+                    <i class="fas fa-tools"></i> In-Progress
+                </button>
+                <button class="filter-btn" data-filter="completed">
+                    <i class="fas fa-check-circle"></i> Completed
+                </button>
+                <!-- NEW FILTER: Ready for Delivery -->
+                <button class="filter-btn" data-filter="ready-for-delivery">
+                    <i class="fas fa-check-double"></i> Ready for Delivery
+                </button>
+                <button class="filter-btn" data-filter="delivered">
+                    <i class="fas fa-car-side"></i> Delivered
+                </button>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Vehicles Section - Full Width -->
+                <div class="vehicles-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-car"></i> Car Management
+                        <span id="live-time" class="live-time"></span>
+                    </h2>
+                    
+                    <div class="vehicles-table-container">
+                        <table class="vehicles-table">
+                            <thead>
+                                <tr>
+                                    <th>Vehicle No.</th>
+                                    <th>Car Details</th>
+                                    <th>Owner Info</th>
+                                    <th>Entry Time</th>
+                                    <th>Status</th>
+                                    <th>Assigned To</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="vehicles-table-body">
+                                <!-- Dynamic content -->
+                            </tbody>
+                        </table>
+                        
+                        <div id="no-vehicles" class="no-data">
+                            <i class="fas fa-car"></i>
+                            <h3>No Vehicles Found</h3>
+                            <p>No vehicles match the selected filter</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Service Advisors Section -->
+                <div class="advisors-section">
+                    <div class="section-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-users-cog"></i> Service Advisors
+                            <span id="advisors-count" class="live-time" style="margin-left: 0.5rem; font-size: 0.8rem;">0 available</span>
+                        </h2>
+                        <button class="new-advisor-btn" onclick="createNewAdvisor()">
+                            <i class="fas fa-user-plus"></i> Add New Advisor
+                        </button>
+                    </div>
+                    
+                    <div class="advisors-grid" id="advisors-list">
+                        <!-- Dynamic content -->
+                    </div>
+                    
+                    <div id="no-advisors" class="no-data">
+                        <i class="fas fa-user-cog"></i>
+                        <h3>No Service Advisors</h3>
+                        <p>No service advisors are currently registered in the system</p>
+                        <button class="new-advisor-btn" onclick="createNewAdvisor()" style="width: auto; margin-top: 2rem;">
+                            <i class="fas fa-user-plus"></i> Create First Advisor
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>            
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Detail Modal for Assignment -->
+    <div id="vehicle-detail-modal" class="vehicle-detail-modal">
+        <div class="vehicle-detail-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-car"></i>
+                    Assign Service Advisor
+                </h3>
+                <button class="close-modal" onclick="closeVehicleModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Vehicle Details -->
+                <div class="vehicle-details-grid" id="modal-vehicle-details">
+                    <!-- Will be populated dynamically -->
+                </div>
+                
+                <!-- Service Description -->
+                <div class="service-description-section">
+                    <h4><i class="fas fa-clipboard-list"></i> Service Description</h4>
+                    <textarea 
+                        id="service-description-input" 
+                        class="service-input" 
+                        placeholder="Enter detailed service description..."></textarea>
+                </div> 
+                
+                <!-- Advisors Selection -->
+                <h3 style="color: #1e293b; margin-bottom: 1.5rem; font-size: 1.3rem;">
+                    <i class="fas fa-user-tie"></i> Select Service Advisor
+                </h3>
+                <div class="advisors-grid" id="modal-advisors-list">
+                    <!-- Will be populated dynamically -->
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeVehicleModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="modal-btn assign" onclick="confirmAssignment()" disabled>
+                    <i class="fas fa-user-check"></i> Assign Selected Advisor
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Advisor Modal -->
+    <div id="create-advisor-modal" class="vehicle-detail-modal" style="display: none;">
+        <div class="vehicle-detail-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-user-plus"></i>
+                    Create New Service Advisor
+                </h3>
+                <button class="close-modal" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 8px; color: #475569; font-weight: 500;">Full Name *</label>
+                    <input type="text" id="advisor-name" placeholder="Enter advisor's full name" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem;">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 8px; color: #475569; font-weight: 500;">Email Address *</label>
+                    <input type="email" id="advisor-email" placeholder="Enter advisor's email" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem;">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 8px; color: #475569; font-weight: 500;">Phone Number *</label>
+                    <input type="tel" id="advisor-phone" placeholder="Enter advisor's phone number" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem;">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 1.5rem;">
+                    <label style="display: block; margin-bottom: 8px; color: #475569; font-weight: 500;">Specialization *</label>
+                    <select id="advisor-specialization" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 1rem;">
+                        <option value="">Select Specialization</option>
+                        <option value="Engine & Transmission">Engine & Transmission</option>
+                        <option value="Electrical & AC">Electrical & AC</option>
+                        <option value="Body & Paint">Body & Paint</option>
+                        <option value="General Service">General Service</option>
+                        <option value="Brakes & Suspension">Brakes & Suspension</option>
+                        <option value="Computer Diagnostics">Computer Diagnostics</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="modal-btn assign" onclick="saveNewAdvisor()">
+                    <i class="fas fa-user-plus"></i> Create Advisor
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== AUTHENTICATION =====
+        function checkAuthentication() {
+            const user = JSON.parse(localStorage.getItem('vsms_current_user'));
+            if (!user || user.role !== 'receptionist') {
+                document.getElementById('dashboard-content').style.display = 'none';
+                document.getElementById('access-denied').style.display = 'block';
+                return null;
+            }
+            return user;
+        }
+
+        const user = checkAuthentication();
+        if (user) {
+            document.getElementById('user-name').textContent = user.name || 'Receptionist';
+            const initials = user.name 
+                ? user.name.split(' ').map(n => n[0]).join('').toUpperCase()
+                : 'R';
+            document.getElementById('user-avatar').textContent = initials;
+        }
+
+        // ===== DATABASE =====
+        let vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+        let usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
+
+        // ===== FIX: Normalize vehicles to support "ready-for-delivery" status =====
+        function normalizeVehicles() {
+            vehiclesDatabase = vehiclesDatabase.map(v => {
+                const id = v.id || v.vehicleId || Date.now();
+                
+                // Ensure we respect "ready-for-delivery" status set by QC
+                let serviceStatus = v.serviceStatus || 'pending';
+                
+                // Critical: if serviceStatus is 'completed' AND qcCheck is 'passed' (or ready flag), set to 'ready-for-delivery'
+                // This logic simulates QC marking. For demo, we also check for explicit ready-for-delivery.
+                if (v.serviceStatus === 'completed' && v.qcCheck === 'passed' && !v.assignedAdvisor) {
+                    serviceStatus = 'ready-for-delivery';
+                }
+                if (v.serviceStatus === 'ready-for-delivery') {
+                    serviceStatus = 'ready-for-delivery';
+                }
+                
+                return {
+                    id: id,
+                    vehicleNumber: v.vehicleNumber || v.plate || 'UNKNOWN',
+                    carName: v.carName || v.make || 'Vehicle',
+                    vehicleModel: v.vehicleModel || v.model || '',
+                    year: v.year || '',
+                    color: v.color || '',
+                    ownerEmail: v.ownerEmail || v.email || v.owner || 'N/A',
+                    mobileNumber: v.mobileNumber || v.phone || 'N/A',
+                    entryTime: v.entryTime || new Date().toISOString(),
+                    exitTime: v.exitTime || null,
+                    status: v.status === 'exit' ? 'exit' : 'entry', // receptionist only sees entry
+                    serviceStatus: serviceStatus,
+                    assignedAdvisor: v.assignedAdvisor || null,
+                    serviceDescription: v.serviceDescription || '',
+                    inspectionStatus: v.inspectionStatus || 'not-started',
+                    qcCheck: v.qcCheck || 'pending', // preserve
+                };
+            });
+            
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+        }
+        
+        normalizeVehicles();
+
+        // ===== STATE =====
+        let currentFilter = 'all';
+        let selectedVehicleForAssignment = null;
+        let selectedAdvisorForAssignment = null;
+
+        // ===== GET SERVICE ADVISORS =====
+        function getServiceAdvisors() {
+            const advisors = usersDatabase.filter(user => user.role === 'advisor');
+            
+            return advisors.map(advisor => ({
+                id: advisor.id,
+                name: advisor.name || 'Advisor',
+                email: advisor.email || '',
+                phone: advisor.phone || 'N/A',
+                specialization: advisor.specialization || "General Service",
+                assignedVehicles: advisor.assignedVehicles || 0,
+                completedServices: advisor.completedServices || 0,
+                createdAt: advisor.createdAt || new Date().toISOString()
+            }));
+        }
+
+        // ===== UPDATE STATISTICS (FIXED: includes ready-for-delivery) =====
+        function updateStatistics() {
+            const entry = vehiclesDatabase.filter(v => 
+                v.status === 'entry' && v.serviceStatus === 'pending' && !v.assignedAdvisor
+            ).length;
+            
+            const pending = vehiclesDatabase.filter(v => 
+                v.serviceStatus === "pending" && v.status === 'entry' && v.assignedAdvisor
+            ).length;
+            
+            const inProgress = vehiclesDatabase.filter(v => 
+                v.serviceStatus === "in-progress" && v.status === 'entry'
+            ).length;
+            
+            const completed = vehiclesDatabase.filter(v => 
+                v.serviceStatus === "completed" && v.status === 'entry'
+            ).length;
+
+            // NEW: count ready-for-delivery
+            const readyForDelivery = vehiclesDatabase.filter(v => 
+                v.serviceStatus === "ready-for-delivery" && v.status === 'entry'
+            ).length;
+            
+            const delivered = vehiclesDatabase.filter(v => 
+                v.serviceStatus === "delivered" && v.status === 'exit'
+            ).length;
+            
+            document.getElementById('entry-count').textContent = entry;
+            document.getElementById('pending-count').textContent = pending;
+            document.getElementById('inprogress-count').textContent = inProgress;
+            document.getElementById('completed-count').textContent = completed;
+            document.getElementById('delivered-count').textContent = delivered;
+            // optional: we don't have a stat card for ready, but we could add later
+        }
+
+        // ===== UPDATE LIVE TIME =====
+        function updateLiveTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('live-time').textContent = `Live: ${timeString}`;
+        }
+
+        // ===== LOAD SERVICE ADVISORS =====
+        function loadServiceAdvisors() {
+            const advisorsList = document.getElementById('advisors-list');
+            const noAdvisors = document.getElementById('no-advisors');
+            const advisorsCount = document.getElementById('advisors-count');
+            
+            const serviceAdvisors = getServiceAdvisors();
+            
+            advisorsCount.textContent = `${serviceAdvisors.length} available`;
+            
+            if (serviceAdvisors.length === 0) {
+                advisorsList.innerHTML = '';
+                noAdvisors.style.display = 'block';
+                return;
+            }
+            
+            noAdvisors.style.display = 'none';
+            
+            advisorsList.innerHTML = serviceAdvisors.map(advisor => {
+                const assignedCount = vehiclesDatabase.filter(v => 
+                    v.assignedAdvisor === advisor.id && v.serviceStatus !== "delivered"
+                ).length;
+                
+                const joinDate = new Date(advisor.createdAt);
+                const joinString = joinDate.toLocaleDateString([], { 
+                    month: 'short', 
+                    year: 'numeric'
+                });
+                
+                return `
+                    <div class="advisor-card-selection" data-advisor-id="${advisor.id}" id="advisor-card-${advisor.id}">
+                        <div class="advisor-info">
+                            <div class="advisor-avatar">
+                                ${advisor.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                            </div>
+                            <div class="advisor-details">
+                                <h4>${advisor.name}</h4>
+                                <p>${advisor.specialization}</p>
+                                <small style="color:#94a3b8; font-size:0.8rem;">
+                                    Joined ${joinString}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="advisor-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-phone"></i>
+                                <span>${advisor.phone}</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-car"></i>
+                                <span>Assigned: ${assignedCount}</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-tasks"></i>
+                                <span>Completed: ${advisor.completedServices}</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-envelope"></i>
+                                <span>${advisor.email}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== FILTER VEHICLES - FIXED: includes ready-for-delivery and enables Deliver button =====
+        function filterVehicles() {
+            const tbody = document.getElementById('vehicles-table-body');
+            const noVehicles = document.getElementById('no-vehicles');
+            
+            if (!tbody || !noVehicles) return;
+            
+            let filteredVehicles = [];
+            
+            // Apply filter based on selection
+            switch(currentFilter) {
+                case 'entry':
+                    filteredVehicles = vehiclesDatabase.filter(v => 
+                        v.status === 'entry' && v.serviceStatus === 'pending' && !v.assignedAdvisor
+                    );
+                    break;
+                case 'pending':
+                    filteredVehicles = vehiclesDatabase.filter(v => 
+                        v.status === 'entry' && v.serviceStatus === 'pending' && v.assignedAdvisor
+                    );
+                    break;
+                case 'in-progress':
+                    filteredVehicles = vehiclesDatabase.filter(v => 
+                        v.status === 'entry' && v.serviceStatus === 'in-progress'
+                    );
+                    break;
+                case 'completed':
+                    filteredVehicles = vehiclesDatabase.filter(v => 
+                        v.status === 'entry' && v.serviceStatus === 'completed'
+                    );
+                    break;
+                // NEW CASE: ready-for-delivery
+                case 'ready-for-delivery':
+                    filteredVehicles = vehiclesDatabase.filter(v => 
+                        v.status === 'entry' && v.serviceStatus === 'ready-for-delivery'
+                    );
+                    break;
+                case 'delivered':
+                    filteredVehicles = vehiclesDatabase.filter(v => 
+                        v.serviceStatus === 'delivered' && v.status === 'exit'
+                    );
+                    break;
+                case 'all':
+                default:
+                    filteredVehicles = vehiclesDatabase.filter(v => 
+                        v.status === 'entry' && v.serviceStatus !== 'delivered'
+                    );
+                    break;
+            }
+            
+            // Sort by entry time (newest first)
+            filteredVehicles.sort((a, b) => new Date(b.entryTime) - new Date(a.entryTime));
+            
+            if (filteredVehicles.length === 0) {
+                tbody.innerHTML = '';
+                noVehicles.style.display = 'block';
+                return;
+            }
+            
+            noVehicles.style.display = 'none';
+            
+            const serviceAdvisors = getServiceAdvisors();
+            
+            tbody.innerHTML = filteredVehicles.map(vehicle => {
+                const entryTime = new Date(vehicle.entryTime);
+                const timeString = entryTime.toLocaleString([], { 
+                    month: 'short', 
+                    day: 'numeric',
+                    hour: '2-digit', 
+                    minute: '2-digit'
+                });
+                
+                // Find assigned advisor
+                let advisor = null;
+                if (vehicle.assignedAdvisor) {
+                    advisor = serviceAdvisors.find(a => a.id === vehicle.assignedAdvisor);
+                }
+                
+                // Determine status badge class - IMPORTANT: add ready-for-delivery
+                let statusClass = vehicle.serviceStatus || 'pending';
+                if (vehicle.status === 'entry' && vehicle.serviceStatus === 'pending' && !vehicle.assignedAdvisor) {
+                    statusClass = 'entry';
+                }
+                
+                // Action buttons - FIX: deliver button activates when status is 'ready-for-delivery'
+                let actionButton = '';
+                let assignDisplay = '';
+                
+                if (vehicle.status === 'entry' && vehicle.serviceStatus === 'pending' && !vehicle.assignedAdvisor) {
+                    // New entry, needs assignment
+                    if (serviceAdvisors.length > 0) {
+                        actionButton = `
+                            <button class="assign-btn" onclick="openAssignmentModal(${vehicle.id})">
+                                <i class="fas fa-user-plus"></i> Assign
+                            </button>
+                        `;
+                        assignDisplay = '<span style="color:#f59e0b; font-size:0.9rem;"><i class="fas fa-hourglass-half"></i> Awaiting</span>';
+                    } else {
+                        actionButton = '<button class="assign-btn" disabled><i class="fas fa-user-plus"></i> No Advisors</button>';
+                        assignDisplay = '<span style="color:#ef4444; font-size:0.9rem;">Create Advisor</span>';
+                    }
+                } 
+                // ***** CRITICAL FIX: Deliver button for READY-FOR-DELIVERY status *****
+                else if (vehicle.serviceStatus === 'ready-for-delivery' && vehicle.status === 'entry') {
+                    // Vehicle passed QC, ready to deliver -> Show DELIVER button
+                    actionButton = `
+                        <button class="assign-btn" onclick="markAsDelivered(${vehicle.id})" style="background: linear-gradient(135deg, #10b981, #059669);">
+                            <i class="fas fa-car-side"></i> Deliver
+                        </button>
+                    `;
+                    assignDisplay = advisor 
+                        ? `<span class="assigned-advisor">${advisor.name}</span>` 
+                        : '<span style="color:#94a3b8;">Not Assigned</span>';
+                }
+                else {
+                    // Other statuses - no action or disabled
+                    actionButton = `<button class="assign-btn" disabled>No Action</button>`;
+                    assignDisplay = advisor 
+                        ? `<span class="assigned-advisor">${advisor.name}</span>` 
+                        : '<span style="color:#94a3b8;">Not Assigned</span>';
+                }
+                
+                return `
+                    <tr>
+                        <td><span class="vehicle-number">${vehicle.vehicleNumber}</span></td>
+                        <td>
+                            <strong>${vehicle.carName} ${vehicle.vehicleModel}</strong><br>
+                            <small style="color:#64748b;font-size:0.85rem">
+                                ${vehicle.color} • ${vehicle.year}
+                            </small>
+                        </td>
+                        <td>
+                            <strong>${vehicle.ownerEmail}</strong><br>
+                            <small style="color:#64748b;font-size:0.85rem">
+                                <i class="fas fa-phone"></i> ${vehicle.mobileNumber}
+                            </small>
+                        </td>
+                        <td>
+                            <small style="color:#64748b;font-size:0.85rem">
+                                <i class="far fa-clock"></i> ${timeString}
+                            </small>
+                        </td>
+                        <td>
+                            <span class="status-badge ${statusClass}">
+                                ${statusClass === 'entry' ? 'NEW' : statusClass.replace('-', ' ').toUpperCase()}
+                            </span>
+                        </td>
+                        <td>${assignDisplay}</td>
+                        <td>${actionButton}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ===== OPEN ASSIGNMENT MODAL =====
+        function openAssignmentModal(vehicleId) {
+            selectedVehicleForAssignment = vehicleId;
+            selectedAdvisorForAssignment = null;
+            
+            const vehicle = vehiclesDatabase.find(v => v.id === vehicleId);
+            if (!vehicle) return;
+            
+            const entryTime = new Date(vehicle.entryTime);
+            const timeString = entryTime.toLocaleString([], { 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit'
+            });
+            
+            document.getElementById('modal-vehicle-details').innerHTML = `
+                <div class="vehicle-detail-card">
+                    <h4><i class="fas fa-car"></i> Vehicle Details</h4>
+                    <div class="detail-row">
+                        <span class="detail-label">Vehicle Number:</span>
+                        <span class="detail-value">${vehicle.vehicleNumber}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Make & Model:</span>
+                        <span class="detail-value">${vehicle.carName} ${vehicle.vehicleModel}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Year & Color:</span>
+                        <span class="detail-value">${vehicle.year} • ${vehicle.color}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Entry Time:</span>
+                        <span class="detail-value">${timeString}</span>
+                    </div>
+                </div>
+                
+                <div class="vehicle-detail-card">
+                    <h4><i class="fas fa-user"></i> Owner Details</h4>
+                    <div class="detail-row">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value">${vehicle.ownerEmail}</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Mobile:</span>
+                        <span class="detail-value">${vehicle.mobileNumber}</span>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('service-description-input').value = vehicle.serviceDescription || '';
+            
+            const serviceAdvisors = getServiceAdvisors();
+            const advisorsList = document.getElementById('modal-advisors-list');
+            
+            advisorsList.innerHTML = serviceAdvisors.map(advisor => {
+                const assignedCount = vehiclesDatabase.filter(v => 
+                    v.assignedAdvisor === advisor.id && v.serviceStatus !== "delivered"
+                ).length;
+                
+                return `
+                    <div class="advisor-card-selection modal-advisor-card" 
+                         data-advisor-id="${advisor.id}" 
+                         id="modal-advisor-${advisor.id}"
+                         onclick="handleAdvisorSelection(${advisor.id})">
+                        <div class="advisor-info">
+                            <div class="advisor-avatar">
+                                ${advisor.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                            </div>
+                            <div class="advisor-details">
+                                <h4>${advisor.name}</h4>
+                                <p>${advisor.specialization}</p>
+                                <small style="color:#94a3b8; font-size:0.8rem;">
+                                    ${advisor.email}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="advisor-stats">
+                            <div class="stat-item">
+                                <i class="fas fa-phone"></i>
+                                <span>${advisor.phone}</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-car"></i>
+                                <span>Assigned: ${assignedCount}</span>
+                            </div>
+                            <div class="stat-item">
+                                <i class="fas fa-tasks"></i>
+                                <span>Completed: ${advisor.completedServices}</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            const assignBtn = document.querySelector('.modal-btn.assign');
+            if (assignBtn) assignBtn.disabled = true;
+            
+            document.getElementById('vehicle-detail-modal').style.display = 'flex';
+        }
+
+        function handleAdvisorSelection(advisorId) {
+            selectedAdvisorForAssignment = advisorId;
+            
+            document.querySelectorAll('.modal-advisor-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            
+            const selectedCard = document.getElementById(`modal-advisor-${advisorId}`);
+            if (selectedCard) selectedCard.classList.add('selected');
+            
+            const serviceDesc = document.getElementById('service-description-input').value.trim();
+            const assignBtn = document.querySelector('.modal-btn.assign');
+            if (assignBtn) {
+                assignBtn.disabled = !serviceDesc || !selectedAdvisorForAssignment;
+            }
+        }
+
+        function confirmAssignment() {
+            const serviceDesc = document.getElementById('service-description-input').value.trim();
+            
+            if (!serviceDesc) {
+                showMessage("Please enter service description!", "error");
+                return;
+            }
+            if (!selectedAdvisorForAssignment) {
+                showMessage("Please select an advisor!", "error");
+                return;
+            }
+            
+            assignAdvisor(selectedVehicleForAssignment, selectedAdvisorForAssignment, serviceDesc);
+            closeVehicleModal();
+        }
+
+        function assignAdvisor(vehicleId, advisorId, serviceDescription) {
+            const vehicleIndex = vehiclesDatabase.findIndex(v => v.id === vehicleId);
+            if (vehicleIndex !== -1) {
+                vehiclesDatabase[vehicleIndex].assignedAdvisor = advisorId;
+                vehiclesDatabase[vehicleIndex].serviceStatus = "pending";
+                vehiclesDatabase[vehicleIndex].serviceDescription = serviceDescription;
+                vehiclesDatabase[vehicleIndex].serviceStartTime = new Date().toISOString();
+                vehiclesDatabase[vehicleIndex].inspectionStatus = "not-started";
+                
+                localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                
+                const userIndex = usersDatabase.findIndex(u => u.id === advisorId && u.role === 'advisor');
+                if (userIndex !== -1) {
+                    usersDatabase[userIndex].assignedVehicles = (usersDatabase[userIndex].assignedVehicles || 0) + 1;
+                    localStorage.setItem('vsms_users', JSON.stringify(usersDatabase));
+                }
+                
+                showMessage("Vehicle assigned successfully!", "success");
+                
+                updateStatistics();
+                filterVehicles();
+                loadServiceAdvisors();
+                
+                window.dispatchEvent(new Event('storage'));
+            }
+        }
+
+        // ===== MARK AS DELIVERED (unchanged, but now called for ready-for-delivery) =====
+        function markAsDelivered(vehicleId) {
+            if (confirm("Mark this vehicle as delivered to customer?")) {
+                const vehicleIndex = vehiclesDatabase.findIndex(v => v.id === vehicleId);
+                if (vehicleIndex !== -1) {
+                    vehiclesDatabase[vehicleIndex].serviceStatus = "delivered";
+                    vehiclesDatabase[vehicleIndex].status = "exit";
+                    vehiclesDatabase[vehicleIndex].exitTime = new Date().toISOString();
+                    
+                    const advisorId = vehiclesDatabase[vehicleIndex].assignedAdvisor;
+                    if (advisorId) {
+                        const userIndex = usersDatabase.findIndex(u => u.id === advisorId && u.role === 'advisor');
+                        if (userIndex !== -1) {
+                            usersDatabase[userIndex].assignedVehicles = Math.max(0, (usersDatabase[userIndex].assignedVehicles || 1) - 1);
+                            usersDatabase[userIndex].completedServices = (usersDatabase[userIndex].completedServices || 0) + 1;
+                            localStorage.setItem('vsms_users', JSON.stringify(usersDatabase));
+                        }
+                    }
+                    
+                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                    showMessage("Vehicle delivered!", "success");
+                    
+                    updateStatistics();
+                    filterVehicles();
+                    loadServiceAdvisors();
+                    
+                    window.dispatchEvent(new Event('storage'));
+                }
+            }
+        }
+        function closeVehicleModal() {
+            document.getElementById('vehicle-detail-modal').style.display = 'none';
+            selectedVehicleForAssignment = null;
+            selectedAdvisorForAssignment = null;
+        }
+        function createNewAdvisor() {
+            document.getElementById('create-advisor-modal').style.display = 'flex';
+            document.getElementById('advisor-name').value = '';
+            document.getElementById('advisor-email').value = '';
+            document.getElementById('advisor-phone').value = '';
+            document.getElementById('advisor-specialization').value = '';
+        }
+        function closeModal() {
+            document.getElementById('create-advisor-modal').style.display = 'none';
+        }
+        function saveNewAdvisor() {
+            const name = document.getElementById('advisor-name').value.trim();
+            const email = document.getElementById('advisor-email').value.trim();
+            const phone = document.getElementById('advisor-phone').value.trim();
+            const specialization = document.getElementById('advisor-specialization').value;
+            
+            if (!name || !email || !phone || !specialization) {
+                showMessage("Please fill all fields!", "error");
+                return;
+            }
+            
+            if (!isValidEmail(email)) {
+                showMessage("Please enter a valid email address!", "error");
+                return;
+            }
+            
+            if (usersDatabase.find(u => u.email === email)) {
+                showMessage("Email already registered!", "error");
+                return;
+            }
+            
+            const newId = usersDatabase.length > 0 
+                ? Math.max(...usersDatabase.map(u => u.id || 0)) + 1 
+                : 1;
+            
+            const newAdvisor = {
+                id: newId,
+                email: email,
+                password: "advisor123",
+                name: name,
+                role: "advisor",
+                phone: phone,
+                specialization: specialization,
+                assignedVehicles: 0,
+                completedServices: 0,
+                createdAt: new Date().toISOString()
+            };
+            
+            usersDatabase.push(newAdvisor);
+            localStorage.setItem('vsms_users', JSON.stringify(usersDatabase));
+            
+            showMessage(`Advisor ${name} created successfully! Default password: advisor123`, "success");
+            closeModal();
+            loadServiceAdvisors();
+            filterVehicles();
+        }
+
+        function isValidEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showMessage(message, type) {
+            const existing = document.querySelector('.message-box');
+            if (existing) existing.remove();
+            
+            const msgBox = document.createElement('div');
+            msgBox.className = `message-box ${type}`;
+            msgBox.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(msgBox);
+            
+            setTimeout(() => {
+                msgBox.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => msgBox.remove(), 300);
+            }, 3000);
+        }
+
+        function logout() {
+            localStorage.removeItem('vsms_current_user');
+            window.location.href = 'logreg.html';
+        }
+
+        function initStorageListener() {
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'vsms_vehicles') {
+                    console.log('Vehicles updated from another tab/window');
+                    vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+                    normalizeVehicles();
+                    usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
+                    updateStatistics();
+                    filterVehicles();
+                    loadServiceAdvisors();
+                }
+                if (e.key === 'vsms_users') {
+                    usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
+                    loadServiceAdvisors();
+                    filterVehicles();
+                }
+            });
+        }
+
+        // ===== FIXED THEME TOGGLE =====
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            const savedTheme = localStorage.getItem('theme-preference');
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+            
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fa-solid fa-sun" style="color: rgba(255, 255, 255, 1.00);"></i>';
+                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+
+        // ===== EVENT LISTENERS =====
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                currentFilter = this.dataset.filter;
+                filterVehicles();
+            });
+        });
+
+        const serviceDescriptionInput = document.getElementById('service-description-input');
+        if (serviceDescriptionInput) {
+            serviceDescriptionInput.addEventListener('input', function() {
+                const assignBtn = document.querySelector('.modal-btn.assign');
+                if (assignBtn) {
+                    assignBtn.disabled = !this.value.trim() || !selectedAdvisorForAssignment;
+                }
+            });
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (document.getElementById('vehicle-detail-modal').style.display === 'flex') {
+                    closeVehicleModal();
+                }
+                if (document.getElementById('create-advisor-modal').style.display === 'flex') {
+                    closeModal();
+                }
+            }
+        });
+
+        window.addEventListener('click', (e) => {
+            const vehicleModal = document.getElementById('vehicle-detail-modal');
+            const advisorModal = document.getElementById('create-advisor-modal');
+            
+            if (e.target === vehicleModal) closeVehicleModal();
+            if (e.target === advisorModal) closeModal();
+        });
+
+        // ===== INITIALIZE =====
+        function initialize() {
+            initThemeToggle();
+            initStorageListener();
+            
+            updateLiveTime();
+            updateStatistics();
+            filterVehicles();
+            loadServiceAdvisors();
+            
+            setInterval(updateLiveTime, 1000);
+            setInterval(() => {
+                vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+                normalizeVehicles();
+                usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
+                updateStatistics();
+                filterVehicles();
+                loadServiceAdvisors();
+            }, 3000);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            initialize();
+        }
+
+        // ===== DEMO: Inject a ready-for-delivery vehicle if none exists (FOR TESTING) =====
+        // This ensures the Deliver button is visible immediately. Remove in production.
+        setTimeout(() => {
+            const hasReadyVehicle = vehiclesDatabase.some(v => v.serviceStatus === 'ready-for-delivery' && v.status === 'entry');
+            if (!hasReadyVehicle && vehiclesDatabase.length > 0) {
+                // find a completed vehicle or create one
+                let demoVehicle = vehiclesDatabase.find(v => v.serviceStatus === 'completed' && v.status === 'entry');
+                if (demoVehicle) {
+                    demoVehicle.serviceStatus = 'ready-for-delivery';
+                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                    filterVehicles();
+                    showMessage("Demo: Completed vehicle marked as READY FOR DELIVERY. Deliver button active!", "success");
+                } else {
+                    // create dummy ready vehicle
+                    const dummyId = vehiclesDatabase.length + 100;
+                    vehiclesDatabase.push({
+                        id: dummyId,
+                        vehicleNumber: 'READY-01',
+                        carName: 'Demo Ready',
+                        vehicleModel: 'QC Passed',
+                        year: '2024',
+                        color: 'Silver',
+                        ownerEmail: 'ready@demo.com',
+                        mobileNumber: '555-READY',
+                        entryTime: new Date().toISOString(),
+                        status: 'entry',
+                        serviceStatus: 'ready-for-delivery',
+                        assignedAdvisor: 1, // assuming advisor id 1 exists
+                        serviceDescription: 'QC completed, ready for delivery',
+                        qcCheck: 'passed'
+                    });
+                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                    filterVehicles();
+                    showMessage("Demo: Created a READY FOR DELIVERY vehicle. Deliver button active!", "success");
+                }
+            }
+        }, 500);
+    </script>
+</body>
+</html>

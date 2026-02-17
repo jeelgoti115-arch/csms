@@ -1,0 +1,3458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="icon" type="image/png" href="images/car-service.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        :root {
+            --light-bg: #f8fafc;
+            --light-secondary: #eef2f7;
+            --card-bg: #ffffff;
+            --card-hover: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --border-hover: #cbd5e1;
+            --accent-primary: #8b5cf6;
+            --accent-secondary: #7c3aed;
+            --accent-light: rgba(139, 92, 246, 0.1);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --info: #3b82f6;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        html.dark-mode {
+            --light-bg: #0f172a;
+            --light-secondary: #1e293b;
+            --card-bg: #1e293b;
+            --card-hover: #334155;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #475569;
+            --border-hover: #64748b;
+            --accent-primary: #a78bfa;
+            --accent-secondary: #8b5cf6;
+            --accent-light: rgba(167, 139, 250, 0.15);
+            --success: #34d399;
+            --warning: #fbbf24;
+            --error: #f87171;
+            --info: #60a5fa;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--light-bg) 0%, var(--light-secondary) 100%);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--card-bg) 0%, var(--card-hover) 100%);
+            color: var(--text-primary);
+            padding: 1.2rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-primary);
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--text-primary);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .user-details h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: var(--text-primary);
+        }
+
+        .user-details p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .logout-btn {
+            background: var(--accent-light);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            text-align: center;
+            border-left: 5px solid var(--accent-primary);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-header h1 {
+            color: var(--text-primary);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .dashboard-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--accent-light);
+            color: var(--accent-primary);
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        /* Statistics Cards */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.8rem;
+            border-radius: 16px;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            border-left: 5px solid;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-card.assigned { border-left-color: var(--info); }
+        .stat-card.in-progress { border-left-color: var(--warning); }
+        .stat-card.qc { border-left-color: var(--accent-primary); }
+        .stat-card.completed { border-left-color: var(--success); }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-icon.assigned { background: linear-gradient(135deg, var(--info), #1d4ed8); }
+        .stat-icon.in-progress { background: linear-gradient(135deg, var(--warning), #d97706); }
+        .stat-icon.qc { background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); }
+        .stat-icon.completed { background: linear-gradient(135deg, var(--success), #059669); }
+
+        .stat-card h3 {
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Assigned Vehicles */
+        .vehicles-section {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .section-title {
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title i {
+            color: var(--accent-primary);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: var(--accent-light);
+            color: var(--accent-primary);
+        }
+
+        /* Vehicles Grid */
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .vehicles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .vehicle-card {
+            background: var(--card-hover);
+            padding: 1.8rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--info);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--accent-primary);
+        }
+
+        .vehicle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .vehicle-number {
+            font-family: monospace;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--accent-light);
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .vehicle-status {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        .vehicle-status.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .vehicle-status.in-progress {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--info);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .vehicle-status.awaiting-qc {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-primary);
+            border-color: rgba(139, 92, 246, 0.3);
+        }
+
+        .vehicle-status.in-qc {
+            background: rgba(139, 92, 246, 0.25);
+            color: var(--accent-primary);
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+
+        .vehicle-status.qc-approved {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .vehicle-status.qc-rejected {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .vehicle-status.completed {
+            background: rgba(16, 185, 129, 0.25);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+
+        .vehicle-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .detail-row i {
+            color: var(--accent-primary);
+            width: 16px;
+        }
+
+        /* Job Cards */
+        .job-cards {
+            margin: 1rem 0;
+        }
+
+        .job-card {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            border-left: 3px solid var(--info);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .job-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .job-status {
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            border: 1px solid;
+        }
+
+        .job-status.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        .job-status.in-progress {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--info);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        .job-status.completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        .job-description {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-estimate {
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 500;
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        /* Timer Display */
+        .timer-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: var(--accent-light);
+            border-radius: 8px;
+            border-left: 3px solid var(--info);
+            border: 1px solid var(--border-color);
+        }
+
+        .timer-icon {
+            color: var(--error);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .timer-text {
+            font-family: monospace;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Service Description */
+        .service-description {
+            background: var(--accent-light);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border-left: 3px solid var(--info);
+            border: 1px solid var(--border-color);
+        }
+
+        .service-description h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .service-description p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Vehicle Actions */
+        .vehicle-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .action-btn.assign-job {
+            background: linear-gradient(135deg, var(--info), #1d4ed8);
+            color: white;
+        }
+
+        .action-btn.job-complete {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .action-btn.start-service {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+        }
+
+        .action-btn.send-to-qc {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+
+        .action-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+
+        .action-btn:not(:disabled):hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        /* No Data */
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 2px dashed var(--border-color);
+        }
+
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+            color: var(--text-muted);
+        }
+
+        .no-data h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        /* Live Time */
+        .live-time {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: var(--accent-light);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-family: monospace;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+            background: var(--card-bg);
+            border-radius: 12px;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: var(--shadow-hover);
+            animation: modalIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-subtitle {
+            color: var(--text-secondary);
+            margin: 0.5rem 0 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: var(--card-hover);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+
+        /* Multi-select styling */
+        .form-group select[multiple] {
+            min-height: 120px;
+            padding: 8px;
+        }
+
+        .form-group select[multiple] option {
+            padding: 8px 12px;
+            margin-bottom: 4px;
+            background: var(--card-hover);
+            color: var(--text-primary);
+            border-radius: 4px;
+        }
+
+        .form-group select[multiple] option:checked {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+
+        /* Selected services tags */
+        #selected-services-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .service-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--accent-light);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: var(--accent-primary);
+            font-weight: 500;
+        }
+
+        .service-tag i {
+            font-size: 0.75rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .job-list {
+            margin: 1.5rem 0;
+        }
+
+        .job-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem;
+            background: var(--card-hover);
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+            border-left: 3px solid var(--accent-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .job-item-info h5 {
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+            font-size: 0.95rem;
+        }
+
+        .job-item-info p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .job-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .icon-btn:hover {
+            background: var(--error);
+            color: white;
+            border-color: var(--error);
+        }
+
+        .add-job-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--card-hover);
+            border: 2px dashed var(--border-color);
+            border-radius: 10px;
+            color: var(--text-secondary);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .add-job-btn:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.cancel {
+            background: var(--card-hover);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-btn.cancel:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .modal-btn.assign {
+            background: linear-gradient(135deg, var(--info), #1d4ed8);
+            color: white;
+        }
+
+        .modal-btn.assign:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        .modal-btn.submit {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: white;
+        }
+
+        .modal-btn.submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        /* QC Status Badge */
+        .qc-status {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            border-left: 3px solid;
+        }
+
+        .qc-status.awaiting {
+            background: rgba(139, 92, 246, 0.15);
+            color: var(--accent-primary);
+            border-left-color: var(--accent-primary);
+        }
+
+        .qc-status.approved {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border-left-color: var(--success);
+        }
+
+        .qc-status.rejected {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+            border-left-color: var(--error);
+        }
+
+        /* Time Summary */
+        .time-summary {
+            background: var(--accent-light);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 3px solid var(--success);
+            border: 1px solid var(--border-color);
+        }
+
+        .time-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+        }
+
+        .time-item .label {
+            color: var(--text-secondary);
+        }
+
+        .time-item .value {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Technician Card */
+        .technician-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .technician-card:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-primary);
+            transform: translateY(-2px);
+        }
+
+        .technician-card.selected {
+            background: var(--accent-light);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--accent-light);
+        }
+
+        .technician-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--info), #1d4ed8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .technician-info h4 {
+            font-size: 1rem;
+            color: var(--text-primary);
+            margin-bottom: 0.2rem;
+        }
+
+        .technician-info p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .technician-status {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.online {
+            background-color: var(--success);
+        }
+
+        .status-dot.offline {
+            background-color: var(--error);
+        }
+
+        .status-dot.busy {
+            background-color: var(--warning);
+        }
+
+        .technician-workload {
+            margin-top: 0.3rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Technician picker (Assign Job modal) */
+        .tech-picker-search {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.65rem 0.8rem;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            margin-bottom: 0.75rem;
+        }
+
+        .tech-picker-search i {
+            color: var(--text-muted);
+        }
+
+        .tech-picker-search input {
+            width: 100%;
+            border: none;
+            outline: none;
+            font-size: 0.95rem;
+            background: transparent;
+            color: var(--text-primary);
+        }
+
+        .technician-list {
+            background: var(--card-hover);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.75rem;
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        /* Message Box */
+        .message-box {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--card-bg);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: var(--shadow-hover);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+            border-left: 4px solid;
+        }
+
+        .message-box.success {
+            border-left-color: var(--success);
+        }
+
+        .message-box.error {
+            border-left-color: var(--error);
+        }
+
+        .message-box.info {
+            border-left-color: var(--info);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: var(--accent-light);
+            border: 2px solid var(--accent-primary);
+            color: var(--text-primary);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent-primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Scrollbar Styling */
+        .technician-list::-webkit-scrollbar,
+        .vehicles-list::-webkit-scrollbar,
+        .modal-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .technician-list::-webkit-scrollbar-track,
+        .vehicles-list::-webkit-scrollbar-track,
+        .modal-content::-webkit-scrollbar-track {
+            background: var(--card-hover);
+            border-radius: 10px;
+        }
+
+        .technician-list::-webkit-scrollbar-thumb,
+        .vehicles-list::-webkit-scrollbar-thumb,
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 10px;
+        }
+
+        .technician-list::-webkit-scrollbar-thumb:hover,
+        .vehicles-list::-webkit-scrollbar-thumb:hover,
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Autofill styles for dark mode */
+        html.dark-mode input:-webkit-autofill,
+        html.dark-mode textarea:-webkit-autofill,
+        html.dark-mode select:-webkit-autofill {
+            -webkit-text-fill-color: var(--text-primary) !important;
+            -webkit-box-shadow: 0 0 0 1000px var(--card-hover) inset !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+        }
+
+        /* Focus styles */
+        *:focus-visible {
+            outline: 2px solid var(--accent-primary);
+            outline-offset: 2px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .dashboard-header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+            
+            .vehicles-section {
+                padding: 2rem 1.5rem;
+            }
+            
+            .vehicle-actions {
+                flex-direction: column;
+            }
+            
+            .user-details {
+                display: none;
+            }
+            
+            .modal-content {
+                padding: 2rem 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+            
+            .message-box {
+                right: 15px;
+                left: 15px;
+                max-width: none;
+            }
+        }
+
+        /* Tablet/Medium Device Responsive */
+        @media (max-width: 1024px) {
+            header {
+                padding: 1rem;
+            }
+
+            nav {
+                gap: 1.5rem;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .stat-card {
+                padding: 1.2rem;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .vehicles-section,
+            .vehicle-detail-modal {
+                padding: 1.5rem;
+            }
+
+            .modal-content {
+                width: 90vw;
+                max-height: 85vh;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .vehicle-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 0.8rem;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+            }
+
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .vehicles-section,
+            .advisors-section {
+                padding: 1rem;
+            }
+
+            .modal-content {
+                padding: 1.5rem;
+                width: 95vw;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .section-title {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .vehicle-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .vehicle-actions button {
+                width: 100%;
+            }
+
+            .new-advisor-btn {
+                width: 100%;
+            }
+
+            .user-details {
+                display: none;
+            }
+        }
+
+        /* Small Mobile Devices */
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            header {
+                padding: 0.6rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            nav {
+                gap: 0.5rem;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+
+            .stat-card {
+                padding: 0.8rem;
+                gap: 0.8rem;
+            }
+
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .stat-info h3 {
+                font-size: 0.8rem;
+            }
+
+            .stat-info .value {
+                font-size: 1.3rem;
+            }
+
+            .main-content {
+                gap: 0.8rem;
+            }
+
+            .vehicles-section,
+            .advisors-section {
+                padding: 0.8rem;
+            }
+
+            .modal-content {
+                padding: 1rem;
+                width: 100%;
+            }
+
+            .modal-header {
+                padding: 0.8rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.8rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            .form-group input,
+            .form-group select {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .dashboard-header {
+                padding: 0.8rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.85rem;
+            }
+
+            .role-badge {
+                padding: 0.5rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.85rem;
+            }
+
+            .live-time {
+                font-size: 0.75rem;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                gap: 0.3rem;
+            }
+
+            .vehicle-card {
+                padding: 0.8rem;
+            }
+
+            .vehicle-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .vehicle-actions button,
+            .vehicle-actions .btn {
+                width: 100%;
+                padding: 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .new-advisor-btn {
+                width: 100%;
+                padding: 0.8rem;
+            }
+
+            .message-box {
+                right: 10px;
+                left: 10px;
+                width: auto;
+                max-width: none;
+                font-size: 0.85rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .technician-card {
+                padding: 0.8rem;
+            }
+
+            .filter-buttons {
+                gap: 0.5rem;
+            }
+
+            .filter-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Extra Small Devices */
+        @media (max-width: 360px) {
+            body {
+                font-size: 13px;
+            }
+
+            header {
+                padding: 0.5rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            nav {
+                gap: 0.3rem;
+            }
+
+            .dashboard-stats {
+                gap: 0.5rem;
+            }
+
+            .stat-card {
+                padding: 0.6rem;
+            }
+
+            .stat-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 1rem;
+            }
+
+            .dashboard-header {
+                padding: 0.6rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.2rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.8rem;
+            }
+
+            .role-badge {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .user-avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 0.75rem;
+            }
+
+            .modal-header {
+                padding: 0.6rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.6rem;
+            }
+
+            .vehicle-card {
+                padding: 0.6rem;
+            }
+
+            .vehicle-actions button,
+            .btn {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+
+            .filter-buttons {
+                gap: 0.3rem;
+            }
+
+            .filter-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        /* Enhancement for disabled elements */
+        :disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Loading state */
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+
+        /* Success/Error colors */
+        .text-success { color: var(--success); }
+        .text-warning { color: var(--warning); }
+        .text-error { color: var(--error); }
+        .text-info { color: var(--info); }
+        .text-accent { color: var(--accent-primary); }
+
+        /* Status indicator */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-indicator.success {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-indicator.warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-indicator.error {
+            background: rgba(239, 68, 68, 0.15);
+            color: var(--error);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .status-indicator.info {
+            background: rgba(59, 130, 246, 0.15);
+            color: var(--info);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+    </style>
+
+    <!-- Unified theme overrides: ensure all dashboards share the same color palette and UI tokens -->
+    <style>
+        :root{
+            --primary: #3b82f6;
+            --accent-primary: #8b5cf6;
+            --accent: var(--primary);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --card-bg: #ffffff;
+            --bg-gradient-from: #f8fafc;
+            --bg-gradient-to: #eef2f7;
+            --text-primary: #1f2937;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0,0,0,0.06);
+        }
+
+        body { background: linear-gradient(135deg,var(--bg-gradient-from),var(--bg-gradient-to)); color:var(--text-primary); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        header { background: linear-gradient(135deg,#0f172a 0%, #1f2937 100%); border-bottom: 3px solid var(--primary); }
+        .btn, button { background: var(--primary); color: #fff; border: none; border-radius: 8px; }
+        .btn-primary { background: var(--primary); }
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); }
+        .btn-danger { background: var(--error); }
+        .role-badge, .status-badge { border-color: var(--primary); }
+        .card, .stat-card, .vehicle-card, .modal-content { background: var(--card-bg); box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+        a { color: var(--primary); }
+    </style>
+
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-user-cog"></i>
+                <span>CSMS Service Advisor</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                
+                <div class="user-info">
+                    <div class="user-details">
+                        <h4 id="user-name">Service Advisor</h4>
+                        <p id="user-specialization">Specialization</p>
+                    </div>
+                    <div class="user-avatar" id="user-avatar">SA</div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Access Denied -->
+        <div id="access-denied" style="display: none; text-align: center; padding: 5rem;">
+            <h2>Access Denied</h2>
+            <p>Service advisor access only</p>
+            <a href="index.html" style="color: var(--accent-primary);">Return to Login</a>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard-content">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Service Advisor Dashboard</h1>
+                <p>Manage assigned vehicles, assign jobs with timers, and track service completion time</p>
+                <div class="live-time" id="live-time">
+                    <i class="fas fa-clock"></i>
+                    <span id="current-time">Loading...</span>
+                </div>
+                <div class="role-badge">
+                    <i class="fas fa-user-cog"></i>
+                    Service Management Center
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="dashboard-stats">
+                <div class="stat-card assigned">
+                    <div class="stat-icon assigned">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <div>
+                        <h3 id="assigned-count">0</h3>
+                        <p>Total Assigned</p>
+                    </div>
+                </div>
+                <div class="stat-card in-progress">
+                    <div class="stat-icon in-progress">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <div>
+                        <h3 id="in-progress-count">0</h3>
+                        <p>In Progress</p>
+                    </div>
+                </div>
+                <div class="stat-card qc">
+                    <div class="stat-icon qc">
+                        <i class="fas fa-clipboard-check"></i>
+                    </div>
+                    <div>
+                        <h3 id="qc-count">0</h3>
+                        <p>In QC</p>
+                    </div>
+                </div>
+                <div class="stat-card completed">
+                    <div class="stat-icon completed">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h3 id="completed-count">0</h3>
+                        <p>Total Completed</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Assigned Vehicles -->
+                <div class="vehicles-section">
+                    <div class="section-title">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-car"></i>
+                            <span>My Vehicles</span>
+                        </div>
+                        <div class="live-time" id="update-time"></div>
+                    </div>
+                    
+                    <!-- Tabs -->
+                    <div class="tabs">
+                        <button class="tab active" onclick="filterVehicles('all')">
+                            <i class="fas fa-list"></i> All
+                        </button>
+                        <button class="tab" onclick="filterVehicles('pending')">
+                            <i class="fas fa-clock"></i> Pending
+                        </button>
+                        <button class="tab" onclick="filterVehicles('in-progress')">
+                            <i class="fas fa-tools"></i> In Progress
+                        </button>
+                        <button class="tab" onclick="filterVehicles('awaiting-qc')">
+                            <i class="fas fa-clipboard-check"></i> Awaiting QC
+                        </button>
+                        <button class="tab" onclick="filterVehicles('qc')">
+                            <i class="fas fa-search"></i> In QC
+                        </button>
+                    </div>
+                    
+                    <div class="vehicles-grid" id="vehicles-grid">
+                        <!-- Dynamic content -->
+                    </div>
+                    
+                    <div id="no-vehicles" class="no-data">
+                        <i class="fas fa-car"></i>
+                        <h3>No Vehicles Assigned</h3>
+                        <p>You don't have any vehicles assigned to you yet</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inspection Modal -->
+    <div id="inspection-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-search"></i>
+                    Vehicle Inspection Report
+                </h3>
+                <p class="modal-subtitle" id="inspection-vehicle-info"></p>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="inspection-exterior">Exterior Condition *</label>
+                    <textarea id="inspection-exterior" placeholder="Inspect and document exterior damage, scratches, dents, paint condition, tires condition, etc." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inspection-interior">Interior Condition *</label>
+                    <textarea id="inspection-interior" placeholder="Inspect and document interior condition, seats, carpets, dashboard, steering wheel, electronics, etc." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inspection-engine">Engine & Mechanical *</label>
+                    <textarea id="inspection-engine" placeholder="Check engine condition, fluid levels, belts, hoses, battery, alternator, cooling system, etc." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inspection-fluids">Fluid Levels *</label>
+                    <textarea id="inspection-fluids" placeholder="Check and document: Engine oil, coolant, transmission fluid, brake fluid, washer fluid levels" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inspection-issues">Identified Issues & Recommendations *</label>
+                    <textarea id="inspection-issues" placeholder="Document any issues found and recommended services/repairs" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inspection-mileage">Current Mileage (km) *</label>
+                    <input type="number" id="inspection-mileage" placeholder="Enter current vehicle mileage" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="inspection-notes">Additional Notes</label>
+                    <textarea id="inspection-notes" placeholder="Any other observations or notes..."></textarea>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal('inspection')">Cancel</button>
+                <button class="modal-btn assign" onclick="completeInspection()">
+                    <i class="fas fa-check-circle"></i> Complete Inspection
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Assign Job Modal -->
+    <div id="assign-job-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-tasks"></i>
+                    Assign Job to Vehicle
+                </h3>
+                <p class="modal-subtitle" id="assign-job-vehicle-info"></p>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="job-type">Select Part/Service(s) * <span style="font-size: 0.85rem; color: var(--text-secondary);">(Can select multiple)</span></label>
+                    <select id="job-type" multiple onchange="updateJobDescription()">
+                        <optgroup label="Oil & Fluids">
+                            <option value="oil-change">Oil Change</option>
+                            <option value="transmission-fluid">Transmission Fluid Change</option>
+                            <option value="coolant-flush">Coolant Flush</option>
+                            <option value="brake-fluid">Brake Fluid Change</option>
+                        </optgroup>
+                        <optgroup label="Brakes">
+                            <option value="brake-pads">Brake Pads Replacement</option>
+                            <option value="brake-rotors">Brake Rotors Replacement</option>
+                            <option value="brake-caliper">Brake Caliper Repair</option>
+                            <option value="brake-line">Brake Line Replacement</option>
+                        </optgroup>
+                        <optgroup label="Engine">
+                            <option value="engine-diagnostic">Engine Diagnostic</option>
+                            <option value="spark-plugs">Spark Plugs Replacement</option>
+                            <option value="timing-belt">Timing Belt Replacement</option>
+                            <option value="engine-mount">Engine Mount Replacement</option>
+                        </optgroup>
+                        <optgroup label="Suspension">
+                            <option value="shock-absorbers">Shock Absorbers Replacement</option>
+                            <option value="struts">Struts Replacement</option>
+                            <option value="ball-joints">Ball Joints Replacement</option>
+                            <option value="control-arms">Control Arms Replacement</option>
+                        </optgroup>
+                        <optgroup label="Electrical">
+                            <option value="battery">Battery Replacement</option>
+                            <option value="alternator">Alternator Replacement</option>
+                            <option value="starter">Starter Replacement</option>
+                            <option value="wiring">Electrical Wiring Repair</option>
+                        </optgroup>
+                        <optgroup label="Body & Interior">
+                            <option value="door-repair">Door Repair</option>
+                            <option value="window-repair">Window Repair</option>
+                            <option value="seat-repair">Seat Repair</option>
+                            <option value="dashboard">Dashboard Repair</option>
+                        </optgroup>
+                        <optgroup label="General Service">
+                            <option value="general-service">General Service</option>
+                            <option value="ac-service">AC Service</option>
+                            <option value="wheel-alignment">Wheel Alignment</option>
+                            <option value="tire-rotation">Tire Rotation</option>
+                        </optgroup>
+                        <option value="custom">Custom Service</option>
+                    </select>
+                    
+                    <!-- Display selected services as tags -->
+                    <div id="selected-services-tags" style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem;">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="estimated-hours">Estimated Hours *</label>
+                        <input type="number" id="estimated-hours" min="0.5" max="24" step="0.5" placeholder="2.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="estimated-cost">Estimated Cost ($) *</label>
+                        <input type="number" id="estimated-cost" min="0" step="10" placeholder="150" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="job-description">Job Description *</label>
+                    <textarea id="job-description" placeholder="Detailed description of the job..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Select Technician</label>
+                    <div class="tech-picker-search">
+                        <i class="fas fa-search"></i>
+                        <input id="technician-picker-search" type="text" placeholder="Search technician..." autocomplete="off">
+                    </div>
+                    <div id="technician-list" class="technician-list">
+                        <!-- Technicians will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal('assign-job')">Cancel</button>
+                <button class="modal-btn assign" onclick="addJobToList()">
+                    <i class="fas fa-plus"></i> Add Job
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job List Modal -->
+    <div id="job-list-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-tasks"></i>
+                    Assigned Jobs
+                </h3>
+                <p class="modal-subtitle" id="job-list-vehicle-info"></p>
+            </div>
+            
+            <div class="modal-body">
+                <div class="job-list" id="job-list-container">
+                    <!-- Jobs will be added here -->
+                </div>
+                
+                <button class="add-job-btn" onclick="openAssignJobModal()">
+                    <i class="fas fa-plus"></i> Add Another Job
+                </button>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal('job-list')">Cancel</button>
+                <button class="modal-btn assign" onclick="saveJobs()">
+                    <i class="fas fa-check"></i> Assign Jobs
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Complete Modal -->
+    <div id="job-complete-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-check-circle"></i>
+                    Complete Job
+                </h3>
+                <p class="modal-subtitle" id="complete-job-vehicle-info"></p>
+            </div>
+            
+            <div class="modal-body">
+                <div id="auto-time-display" class="time-summary" style="display: none;">
+                    <h4><i class="fas fa-clock"></i> Auto-calculated Time</h4>
+                    <div class="time-item">
+                        <span class="label">Elapsed Time:</span>
+                        <span class="value" id="elapsed-time-display">0 hours 0 minutes</span>
+                    </div>
+                    <div class="time-item">
+                        <span class="label">Start Time:</span>
+                        <span class="value" id="start-time-display">--:--:--</span>
+                    </div>
+                    <div class="time-item">
+                        <span class="label">End Time:</span>
+                        <span class="value" id="end-time-display">--:--:--</span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="actual-time">Actual Time Taken (hours) *</label>
+                    <input type="number" id="actual-time" min="0.1" max="24" step="0.1" placeholder="Enter actual time" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="completion-notes">Completion Notes *</label>
+                    <textarea id="completion-notes" placeholder="Enter details of work completed, parts used, etc." required></textarea>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal('job-complete')">Cancel</button>
+                <button class="modal-btn submit" onclick="completeJob()">
+                    <i class="fas fa-check-circle"></i> Complete Job
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Send to QC Modal -->
+    <div id="qc-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-clipboard-check"></i>
+                    Send Vehicle to Quality Control
+                </h3>
+            </div>
+            
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="qc-notes">QC Notes (Optional)</label>
+                    <textarea id="qc-notes" placeholder="Add any notes for the quality controller..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="qc-priority">Priority Level</label>
+                    <select id="qc-priority">
+                        <option value="normal">Normal</option>
+                        <option value="high">High Priority</option>
+                        <option value="urgent">Urgent</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal('qc')">Cancel</button>
+                <button class="modal-btn submit" onclick="sendToQC()">
+                    <i class="fas fa-paper-plane"></i> Send to QC
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== THEME MANAGEMENT =====
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            // Check localStorage for saved preference
+            const savedTheme = localStorage.getItem('vsms-theme-preference');
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+            
+            // Toggle button click handler
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    localStorage.setItem('vsms-theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+        
+        // ===== AUTHENTICATION =====
+        const user = JSON.parse(localStorage.getItem('vsms_current_user'));
+        
+        // Debug logging
+        console.log('=== PAGE LOAD DEBUG ===');
+        console.log('User data from localStorage:', user);
+        console.log('User role:', user?.role);
+        
+        if(!user || user.role !== 'advisor'){
+            console.error('Access denied - user is not an advisor');
+            document.getElementById('dashboard-content').style.display = 'none';
+            document.getElementById('access-denied').style.display = 'block';
+            throw new Error("Access denied");
+        }
+
+        // Update user info
+        document.getElementById('user-name').textContent = user.name;
+        document.getElementById('user-specialization').textContent = user.specialization || "General Service";
+        document.getElementById('user-avatar').textContent = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+
+        // ===== DATABASE =====
+        let vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+        let technicians = [];
+        let currentAdvisorId = user.id;
+        
+        console.log('Initial data:');
+        console.log('- currentAdvisorId:', currentAdvisorId);
+        console.log('- vehiclesDatabase:', vehiclesDatabase);
+        console.log('- vehiclesDatabase length:', vehiclesDatabase.length);
+        let currentVehicleId = null;
+        let currentJobs = [];
+        let activeTab = 'all';
+        let activeTimers = {};
+        let selectedTechnicianId = null;
+
+        // Job descriptions for different job types
+        const jobDescriptions = {
+            'oil-change': 'Complete oil change with oil filter replacement. Includes inspection of fluid levels and basic undercarriage check.',
+            'transmission-fluid': 'Transmission fluid change, filter replacement, and transmission system diagnostic.',
+            'coolant-flush': 'Coolant system flush and refill. Includes radiator inspection and pressure test.',
+            'brake-fluid': 'Brake fluid change and bleeding. Includes brake system inspection.',
+            'brake-pads': 'Brake pad replacement, rotor inspection, and brake system test.',
+            'brake-rotors': 'Brake rotor replacement or resurfacing. Includes brake system test.',
+            'brake-caliper': 'Brake caliper repair or replacement. Includes brake system bleed.',
+            'brake-line': 'Brake line replacement and system bleed. Includes brake system test.',
+            'engine-diagnostic': 'Full engine diagnostic using computer systems. Check engine light diagnosis and system testing.',
+            'spark-plugs': 'Spark plug replacement. Includes ignition system check.',
+            'timing-belt': 'Timing belt replacement. Includes belt tension adjustment.',
+            'engine-mount': 'Engine mount replacement. Includes engine alignment check.',
+            'shock-absorbers': 'Shock absorber replacement. Includes suspension system test.',
+            'struts': 'Strut replacement. Includes wheel alignment check.',
+            'ball-joints': 'Ball joint replacement. Includes suspension system inspection.',
+            'control-arms': 'Control arm replacement. Includes wheel alignment.',
+            'battery': 'Battery testing, replacement if needed, terminal cleaning, charging system check.',
+            'alternator': 'Alternator replacement. Includes charging system test.',
+            'starter': 'Starter replacement. Includes electrical system test.',
+            'wiring': 'Electrical wiring repair. Includes circuit testing.',
+            'door-repair': 'Door mechanism repair, lock system check, window regulator inspection.',
+            'window-repair': 'Window mechanism repair or replacement, glass replacement if needed.',
+            'seat-repair': 'Seat mechanism repair or replacement. Includes safety inspection.',
+            'dashboard': 'Dashboard repair. Includes instrument cluster check.',
+            'general-service': 'Complete vehicle inspection, fluid top-up, filter check, and safety inspection.',
+            'ac-service': 'AC system check, refrigerant recharge, compressor inspection, and cooling performance test.',
+            'wheel-alignment': 'Wheel alignment service. Includes tire inspection.',
+            'tire-rotation': 'Rotate tires according to manufacturer specifications. Includes tire pressure check and tread depth inspection.',
+            'custom': ''
+        };
+
+        // ===== LOAD REGISTERED TECHNICIANS =====
+        function loadRegisteredTechnicians() {
+            try {
+                // Get all registered users from localStorage
+                const registeredUsers = JSON.parse(localStorage.getItem('vsms_users')) || [];
+                
+                // Filter only technicians
+                technicians = registeredUsers
+                    .filter(u => String(u?.role || '').toLowerCase() === 'technician')
+                    .map((tech, index) => {
+                        // Generate avatar text
+                        const safeName = String(tech?.name || '').trim() || 'Technician';
+                        const nameParts = safeName.split(' ');
+                        const avatarText = nameParts.length >= 2 
+                            ? (nameParts[0][0] + nameParts[1][0]).toUpperCase()
+                            : safeName.substring(0, 2).toUpperCase();
+                        
+                        // Calculate current workload
+                        const workload = calculateTechnicianWorkload(tech.id);
+                        
+                        return {
+                            id: tech.id || index + 1,
+                            name: safeName,
+                            specialization: tech.specialization || "General Technician",
+                            email: tech.email || `${safeName.toLowerCase().replace(/\s+/g, '.')}@vsms.com`,
+                            phone: tech.phone || "N/A",
+                            avatarText: avatarText,
+                            workload: workload,
+                            status: getTechnicianStatus(tech.id, workload),
+                            joinDate: tech.createdAt || new Date().toISOString(),
+                            completedJobs: 0
+                        };
+                    });
+                
+                // If no technicians found, show message
+                if (technicians.length === 0) {
+                    console.log("No technicians registered yet.");
+                }
+                
+                console.log("Loaded technicians:", technicians);
+                return technicians;
+            } catch (error) {
+                console.error("Error loading technicians:", error);
+                showMessage("Error loading technician data", "error");
+                return [];
+            }
+        }
+
+        // ===== CALCULATE TECHNICIAN WORKLOAD =====
+        function calculateTechnicianWorkload(technicianId) {
+            try {
+                // Get all vehicles and count jobs assigned to this technician
+                const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+                let pendingJobs = 0;
+                let inProgressJobs = 0;
+                
+                vehicles.forEach(vehicle => {
+                    if (vehicle.jobs && Array.isArray(vehicle.jobs)) {
+                        vehicle.jobs.forEach(job => {
+                            if (job.technicianId == technicianId) {
+                                if (job.status === 'pending') pendingJobs++;
+                                if (job.status === 'in-progress') inProgressJobs++;
+                            }
+                        });
+                    }
+                });
+                
+                return {
+                    pending: pendingJobs,
+                    inProgress: inProgressJobs,
+                    total: pendingJobs + inProgressJobs
+                };
+            } catch (error) {
+                console.error("Error calculating workload:", error);
+                return { pending: 0, inProgress: 0, total: 0 };
+            }
+        }
+
+        // ===== GET TECHNICIAN STATUS =====
+        function getTechnicianStatus(technicianId, workload) {
+            // NOTE: This app currently only stores one `vsms_current_user` in localStorage,
+            // so we cannot reliably know who else is "logged in".
+            // For a useful UI, infer "busy" from workload and otherwise mark as available.
+            if (workload && workload.inProgress > 0) return 'busy';
+            return 'online';
+        }
+
+        // ===== LOAD TECHNICIANS FOR SELECTION =====
+        function loadTechniciansForSelection() {
+            const technicianList = document.getElementById('technician-list');
+            const searchEl = document.getElementById('technician-picker-search');
+            
+            // Load fresh data
+            technicians = loadRegisteredTechnicians();
+            
+            if (technicians.length === 0) {
+                technicianList.innerHTML = `
+                    <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                        <i class="fas fa-user-cog" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                        <h4 style="color: var(--text-secondary); margin-bottom: 0.5rem;">No Technicians Available</h4>
+                        <p style="font-size: 0.9rem;">No technicians have registered yet.</p>
+                        <p style="font-size: 0.85rem; margin-top: 0.5rem;">Ask technicians to register through the login page.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            const renderTechnicianPicker = () => {
+                const query = (searchEl?.value || '').trim().toLowerCase();
+
+                technicianList.innerHTML = '';
+
+                // Sort technicians by status (online first, then busy, then offline)
+                const sortedTechnicians = [...technicians].sort((a, b) => {
+                    const statusOrder = { 'online': 1, 'busy': 2, 'offline': 3 };
+                    return (statusOrder[a.status] || 99) - (statusOrder[b.status] || 99);
+                });
+
+                const filtered = query
+                    ? sortedTechnicians.filter(t => {
+                        const hay = `${t.name} ${t.specialization} ${t.email} ${t.phone}`.toLowerCase();
+                        return hay.includes(query);
+                    })
+                    : sortedTechnicians;
+
+                if (filtered.length === 0) {
+                    technicianList.innerHTML = `
+                        <div style="text-align: center; padding: 1.5rem; color: var(--text-muted);">
+                            <i class="fas fa-search" style="font-size: 1.5rem; margin-bottom: 0.75rem;"></i>
+                            <h4 style="color: var(--text-secondary); margin-bottom: 0.5rem;">No matches</h4>
+                            <p style="font-size: 0.9rem;">Try a different search.</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                filtered.forEach(technician => {
+                    const statusText = getStatusText(technician.status);
+                    const statusClass = getStatusClass(technician.status);
+                    const workloadText = technician.workload.total > 0
+                        ? `${technician.workload.total} job${technician.workload.total !== 1 ? 's' : ''} assigned`
+                        : 'No current assignments';
+
+                    const techCard = document.createElement('div');
+                    techCard.className = `technician-card ${selectedTechnicianId === technician.id ? 'selected' : ''}`;
+                    techCard.setAttribute('data-id', technician.id);
+
+                    techCard.innerHTML = `
+                        <div class="technician-avatar">${technician.avatarText}</div>
+                        <div class="technician-info">
+                            <h4>${technician.name}</h4>
+                            <p>${technician.specialization}</p>
+                            <div class="technician-status">
+                                <span class="status-dot ${statusClass}"></span>
+                                <span>${statusText}</span>
+                            </div>
+                            <div class="technician-workload">
+                                ${workloadText}
+                            </div>
+                        </div>
+                    `;
+
+                    techCard.addEventListener('click', () => selectTechnician(technician.id));
+                    technicianList.appendChild(techCard);
+                });
+            };
+
+            if (searchEl && !searchEl.dataset.bound) {
+                searchEl.dataset.bound = '1';
+                searchEl.addEventListener('input', renderTechnicianPicker);
+            }
+
+            renderTechnicianPicker();
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'online': return 'Available';
+                case 'offline': return 'Offline';
+                case 'busy': return 'Busy';
+                default: return 'Unknown';
+            }
+        }
+
+        function getStatusClass(status) {
+            switch(status) {
+                case 'online': return 'online';
+                case 'offline': return 'offline';
+                case 'busy': return 'busy';
+                default: return 'offline';
+            }
+        }
+
+        function selectTechnician(technicianId) {
+            selectedTechnicianId = technicianId;
+            
+            // Update UI
+            document.querySelectorAll('.technician-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`.technician-card[data-id="${technicianId}"]`).classList.add('selected');
+        }
+
+        // ===== UPDATE STATISTICS =====
+        function updateStatistics() {
+            const assignedVehicles = vehiclesDatabase.filter(v => 
+                v.assignedAdvisor == currentAdvisorId && v.serviceStatus !== "delivered"
+            ).length;
+            
+            const inProgressVehicles = vehiclesDatabase.filter(v => 
+                v.assignedAdvisor == currentAdvisorId && v.serviceStatus === "in-progress"
+            ).length;
+            
+            const qcVehicles = vehiclesDatabase.filter(v => 
+                v.assignedAdvisor == currentAdvisorId && 
+                (v.serviceStatus === "awaiting-qc" || v.serviceStatus === "in-qc")
+            ).length;
+            
+            const completedVehicles = vehiclesDatabase.filter(v => 
+                v.assignedAdvisor == currentAdvisorId && v.serviceStatus === "completed"
+            ).length;
+            
+            document.getElementById('assigned-count').textContent = assignedVehicles;
+            document.getElementById('in-progress-count').textContent = inProgressVehicles;
+            document.getElementById('qc-count').textContent = qcVehicles;
+            document.getElementById('completed-count').textContent = completedVehicles;
+        }
+
+        // ===== UPDATE TIME =====
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = timeString;
+            document.getElementById('update-time').textContent = `Last updated: ${timeString}`;
+        }
+
+        // ===== LOAD ASSIGNED VEHICLES =====
+        function loadAssignedVehicles() {
+            const vehiclesGrid = document.getElementById('vehicles-grid');
+            const noVehicles = document.getElementById('no-vehicles');
+            
+            if (!vehiclesGrid || !noVehicles) {
+                console.error('Grid or no-vehicles element not found!');
+                return;
+            }
+            
+            // Refresh database from localStorage
+            vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            
+            console.log('=== LOAD ASSIGNED VEHICLES ===');
+            console.log('Current Advisor ID:', currentAdvisorId);
+            console.log('Total Vehicles in DB:', vehiclesDatabase.length);
+            console.log('All vehicles:', vehiclesDatabase);
+            
+            // Update vehicle statuses based on job completion
+            vehiclesDatabase.forEach((vehicle, index) => {
+                if (vehicle.jobs && Array.isArray(vehicle.jobs)) {
+                    const allJobsCompleted = vehicle.jobs.every(job => job.status === 'completed');
+                    const hasCompletedJobs = vehicle.jobs.some(job => job.status === 'completed');
+                    
+                    // If all jobs are completed and not yet sent to QC, mark as awaiting-qc automatically
+                    if (allJobsCompleted && hasCompletedJobs && 
+                        (vehicle.serviceStatus === 'in-progress' || vehicle.serviceStatus === 'pending')) {
+                        vehicle.serviceStatus = 'awaiting-qc';
+                        vehicle.qcStatus = 'pending';
+                    }
+                }
+            });
+            
+            // Save updated statuses
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+            
+            // ONLY show vehicles explicitly assigned by receptionist to this advisor
+            let assignedVehicles = vehiclesDatabase.filter(v => {
+                return v.assignedAdvisor == currentAdvisorId;
+            }).filter(v => v.serviceStatus !== "delivered");
+            
+            // Show all assigned vehicles that are not completed (pending, in-progress, awaiting-qc, etc.)
+            // Filter out ONLY those where all jobs are completed
+            assignedVehicles = assignedVehicles.filter(v => {
+                // If no jobs exist yet, ALWAYS show the vehicle (needs inspection/job assignment)
+                if (!v.jobs || !Array.isArray(v.jobs) || v.jobs.length === 0) {
+                    console.log(`Vehicle ${v.id} has no jobs - showing it for inspection/job assignment`);
+                    return true;
+                }
+                
+                // If jobs exist, show unless ALL are completed
+                const allJobsCompleted = v.jobs.every(job => job.status === 'completed');
+                if (allJobsCompleted) {
+                    console.log(`Hiding vehicle ${v.id} from advisor view because all jobs are completed`);
+                    return false;
+                }
+                
+                // Show vehicles with pending, in-progress, or partial jobs
+                console.log(`Showing vehicle ${v.id} - has ${v.jobs.length} jobs`);
+                return true;
+            });
+            
+            console.log('After advisor filter:', assignedVehicles.length, assignedVehicles);
+            console.log('Active tab:', activeTab);
+            console.log('Total vehicles after filtering:', assignedVehicles.length);
+            
+            // Apply filter based on active tab
+            if (activeTab !== 'all') {
+                if (activeTab === 'qc') {
+                    assignedVehicles = assignedVehicles.filter(v => 
+                        v.serviceStatus === "awaiting-qc" || v.serviceStatus === "in-qc"
+                    );
+                } else {
+                    assignedVehicles = assignedVehicles.filter(v => v.serviceStatus === activeTab);
+                }
+            }
+            
+            // Sort by status and entry time
+            const statusOrder = { 
+                "pending": 1, 
+                "in-progress": 2, 
+                "awaiting-qc": 3, 
+                "in-qc": 4, 
+                "qc-approved": 5,
+                "qc-rejected": 6,
+                "completed": 7 
+            };
+            
+            assignedVehicles.sort((a, b) => {
+                const statusDiff = statusOrder[a.serviceStatus] - statusOrder[b.serviceStatus];
+                if (statusDiff !== 0) return statusDiff;
+                return new Date(b.entryTime) - new Date(a.entryTime);
+            });
+            
+            console.log('Final Vehicles to Display:', assignedVehicles);
+            
+            if (assignedVehicles.length === 0) {
+                vehiclesGrid.innerHTML = '';
+                noVehicles.style.display = 'block';
+                return;
+            }
+            
+            noVehicles.style.display = 'none';
+            
+            try {
+                vehiclesGrid.innerHTML = assignedVehicles.map(vehicle => {
+                    const card = generateVehicleCard(vehicle);
+                    console.log('Generated card for vehicle', vehicle.id, 'length:', card.length);
+                    return card;
+                }).join('');
+                
+                console.log('Rendered HTML to vehiclesGrid:');
+                console.log('vehiclesGrid.innerHTML.length:', vehiclesGrid.innerHTML.length);
+                console.log('vehiclesGrid.childNodes.length:', vehiclesGrid.childNodes.length);
+            } catch (error) {
+                console.error('Error rendering vehicles:', error);
+                vehiclesGrid.innerHTML = `<div style="color: var(--error); padding: 20px;">Error rendering vehicles: ${error.message}</div>`;
+            }
+        }
+
+        // ===== GENERATE VEHICLE CARD =====
+        function generateVehicleCard(vehicle) {
+            const entryTime = new Date(vehicle.entryTime);
+            const timeString = entryTime.toLocaleString([], { 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit'
+            });
+            
+            // SIMPLIFIED WORKFLOW: Inspect → Assign Jobs → Hide (auto-remove when technician completes)
+            let actionButtons = '';
+            
+            // Check inspection status REGARDLESS of serviceStatus to show correct action
+            if (!vehicle.inspectionStatus || vehicle.inspectionStatus === "not-started") {
+                // STEP 1: Show ONLY Inspect button (not yet inspected)
+                actionButtons = `<button class="action-btn start-service" onclick="openInspectionModal(${vehicle.id})"><i class="fas fa-search"></i> Inspect Vehicle</button>`;
+            } else if (vehicle.inspectionStatus === "completed" && (!vehicle.jobs || vehicle.jobs.length === 0)) {
+                // STEP 2: Show ONLY Assign Jobs button (inspected but no jobs assigned yet)
+                actionButtons = `<button class="action-btn assign-job" onclick="openJobListModal(${vehicle.id})"><i class="fas fa-tasks"></i> Assign Jobs</button>`;
+            }
+            // STEP 3: Jobs assigned, with technician - NO buttons (auto-removes when technician completes)
+            
+            // HIDDEN: job cards not shown in advisor dashboard (minimal data view)
+            let jobCardsHTML = '';
+            if (false && vehicle.jobs && vehicle.jobs.length > 0) {
+                jobCardsHTML = `
+                    <div class="job-cards">
+                        ${vehicle.jobs.map(job => {
+                            let timerHTML = '';
+                            if (job.status === 'in-progress' && job.startTime) {
+                                const elapsed = calculateElapsedTime(job.startTime);
+                                timerHTML = `
+                                    <div class="timer-display">
+                                        <i class="fas fa-clock timer-icon"></i>
+                                        <span class="timer-text">${elapsed}</span>
+                                        <small style="color: var(--text-secondary); margin-left: auto;">In Progress</small>
+                                    </div>
+                                `;
+                            } else if (job.actualTime !== undefined && job.actualTime !== null && !isNaN(Number(job.actualTime))) {
+                                // Ensure numeric values for calculations (handles strings or other types)
+                                const actualHours = Number(job.actualTime);
+                                const estimatedHours = Number(job.estimatedHours) || 0;
+                                const diff = actualHours - estimatedHours;
+                                const diffText = diff >= 0 ? `+${diff.toFixed(1)}` : diff.toFixed(1);
+                                const diffColor = diff > 0 ? 'var(--error)' : diff < 0 ? 'var(--success)' : 'var(--text-secondary)';
+
+                                timerHTML = `
+                                    <div style="margin-top: 0.5rem; padding: 0.5rem; background: var(--accent-light); border-radius: 8px;">
+                                        <small style="color: var(--text-secondary);">
+                                            <i class="fas fa-clock"></i> Completed in: <strong>${actualHours.toFixed(1)} hours</strong>
+                                            <span style="margin-left: 10px; color: ${diffColor}">
+                                                (Est: ${estimatedHours} hours, ${diffText} hours)
+                                            </span>
+                                        </small>
+                                    </div>
+                                `;
+                            }
+                            
+                            return `
+                                <div class="job-card">
+                                    <div class="job-header">
+                                        <span class="job-title">${formatJobType(job.type)}</span>
+                                        <span class="job-status ${job.status}">${job.status.replace('-', ' ').toUpperCase()}</span>
+                                    </div>
+                                    <p class="job-description">${job.description}</p>
+                                    <div class="job-estimate">
+                                        <i class="far fa-clock"></i>
+                                        <span>${job.estimatedHours} hours</span>
+                                        <i class="fas fa-dollar-sign"></i>
+                                        <span>$${job.estimatedCost}</span>
+                                        ${job.technician ? `<i class="fas fa-user"></i><span>${job.technician}</span>` : ''}
+                                    </div>
+                                    ${timerHTML}
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                `;
+            }
+            
+            // HIDDEN: QC status not relevant to advisor workflow
+            let qcStatusHTML = '';
+            if (false && vehicle.qcStatus) {
+                let qcClass = '';
+                let qcIcon = '';
+                let qcText = '';
+                
+                if (vehicle.serviceStatus === "awaiting-qc" || vehicle.serviceStatus === "in-qc") {
+                    qcClass = 'awaiting';
+                    qcIcon = 'fas fa-clock';
+                    qcText = 'Awaiting QC Inspection';
+                } else if (vehicle.qcStatus === "approved") {
+                    qcClass = 'approved';
+                    qcIcon = 'fas fa-check-circle';
+                    qcText = 'QC Approved - Ready for Delivery';
+                } else if (vehicle.qcStatus === "rejected") {
+                    qcClass = 'rejected';
+                    qcIcon = 'fas fa-times-circle';
+                    qcText = 'QC Rejected - Requires Re-work';
+                }
+                
+                qcStatusHTML = `
+                    <div class="qc-status ${qcClass}">
+                        <i class="${qcIcon}"></i>
+                        <span>${qcText}</span>
+                        ${vehicle.qcNotes ? `<p style="margin-top: 5px; font-size: 0.85rem;">${vehicle.qcNotes}</p>` : ''}
+                    </div>
+                `;
+            }
+            
+            // HIDDEN: time summary not shown in advisor view
+            let timeSummaryHTML = '';
+            if (false && vehicle.serviceStatus === "completed" && vehicle.totalServiceTime !== undefined && vehicle.totalServiceTime !== null && !isNaN(Number(vehicle.totalServiceTime))) {
+                const totalEstimate = vehicle.jobs ? vehicle.jobs.reduce((sum, job) => sum + (Number(job.estimatedHours) || 0), 0) : 0;
+                const totalActual = Number(vehicle.totalServiceTime) || 0;
+                const timeDiff = totalActual - totalEstimate;
+                const diffText = timeDiff >= 0 ? `+${timeDiff.toFixed(1)}` : timeDiff.toFixed(1);
+                const diffColor = timeDiff > 0 ? 'var(--error)' : timeDiff < 0 ? 'var(--success)' : 'var(--text-secondary)';
+
+                timeSummaryHTML = `
+                    <div class="time-summary">
+                        <h4><i class="fas fa-clock"></i> Service Time Summary</h4>
+                        <div class="time-item">
+                            <span class="label">Total Estimated:</span>
+                            <span class="value">${totalEstimate.toFixed(1)} hours</span>
+                        </div>
+                        <div class="time-item">
+                            <span class="label">Total Actual:</span>
+                            <span class="value">${totalActual.toFixed(1)} hours</span>
+                        </div>
+                        <div class="time-item">
+                            <span class="label">Difference:</span>
+                            <span class="value" style="color: ${diffColor}">${diffText} hours</span>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="vehicle-card">
+                    <div class="vehicle-header">
+                        <span class="vehicle-number">${vehicle.vehicleNumber}</span>
+                        <span class="vehicle-status ${vehicle.serviceStatus}">
+                            ${vehicle.serviceStatus.replace('-', ' ').toUpperCase()}
+                        </span>
+                    </div>
+                    
+                    <div class="vehicle-details">
+                        <div class="detail-row">
+                            <i class="fas fa-car"></i>
+                            <span>${vehicle.carName} ${vehicle.vehicleModel}</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-palette"></i>
+                            <span>${vehicle.color} • ${vehicle.year}</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-user"></i>
+                            <span>${vehicle.ownerEmail}</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-phone"></i>
+                            <span>${vehicle.mobileNumber}</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="far fa-clock"></i>
+                            <span>Arrived: ${timeString}</span>
+                        </div>
+                    </div>
+                    
+                    ${jobCardsHTML}
+                    
+                    ${vehicle.inspectionReport ? `
+                        <div class="service-description">
+                            <h4><i class="fas fa-search"></i> Inspection Report</h4>
+                            <div style="margin-top: 1rem;">
+                                <p><strong>Exterior:</strong> ${vehicle.inspectionReport.exterior}</p>
+                                <p><strong>Interior:</strong> ${vehicle.inspectionReport.interior}</p>
+                                <p><strong>Engine & Mechanical:</strong> ${vehicle.inspectionReport.engine}</p>
+                                <p><strong>Fluid Levels:</strong> ${vehicle.inspectionReport.fluids}</p>
+                                <p><strong>Issues & Recommendations:</strong> ${vehicle.inspectionReport.issues}</p>
+                                <p><strong>Mileage:</strong> ${vehicle.inspectionReport.mileage} km</p>
+                                ${vehicle.inspectionReport.notes ? `<p><strong>Notes:</strong> ${vehicle.inspectionReport.notes}</p>` : ''}
+                                <p style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 1rem;">
+                                    Inspected by: ${vehicle.inspectionReport.inspectedBy} on ${new Date(vehicle.inspectionReport.inspectionDate).toLocaleString()}
+                                </p>
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    ${vehicle.serviceDescription ? `
+                        <div class="service-description">
+                            <h4><i class="fas fa-clipboard-list"></i> Service Description</h4>
+                            <p>${vehicle.serviceDescription}</p>
+                        </div>
+                    ` : ''}
+                    
+                    ${timeSummaryHTML}
+                    
+                    ${qcStatusHTML}
+                    
+                    <div class="vehicle-actions">
+                        ${actionButtons}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== FORMAT JOB TYPE =====
+        function formatJobType(jobType) {
+            return jobType.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+
+        // ===== CALCULATE ELAPSED TIME =====
+        function calculateElapsedTime(startTime) {
+            const start = new Date(startTime);
+            const now = new Date();
+            const diffMs = now - start;
+            
+            const hours = Math.floor(diffMs / (1000 * 60 * 60));
+            const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diffMs % (1000 * 60)) / 1000);
+            
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+
+        // ===== CALCULATE ELAPSED HOURS =====
+        function calculateElapsedHours(startTime) {
+            const start = new Date(startTime);
+            const now = new Date();
+            const diffMs = now - start;
+            return diffMs / (1000 * 60 * 60); // Convert milliseconds to hours
+        }
+
+        // ===== FILTER VEHICLES =====
+        function filterVehicles(status) {
+            activeTab = status;
+            
+            // Update active tab - find tab with matching status
+            document.querySelectorAll('.tab').forEach(tab => {
+                // Check if this tab matches the status we're filtering by
+                const isMatch = 
+                    (status === 'all' && tab.textContent.includes('All')) ||
+                    (status === 'pending' && tab.textContent.includes('Pending')) ||
+                    (status === 'in-progress' && tab.textContent.includes('In Progress')) ||
+                    (status === 'awaiting-qc' && tab.textContent.includes('Awaiting QC')) ||
+                    (status === 'qc' && tab.textContent.includes('In QC'));
+                
+                if (isMatch) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+            
+            loadAssignedVehicles();
+        }
+
+        // ===== MODAL FUNCTIONS =====
+        function openJobListModal(vehicleId) {
+            currentVehicleId = vehicleId;
+            const vehicle = vehiclesDatabase.find(v => v.id == vehicleId);
+            
+            if (!vehicle) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            document.getElementById('job-list-vehicle-info').textContent = 
+                `${vehicle.vehicleNumber} - ${vehicle.carName} ${vehicle.vehicleModel}`;
+            
+            // Load existing jobs
+            currentJobs = vehicle.jobs ? [...vehicle.jobs] : [];
+            updateJobListDisplay();
+            
+            closeAllModals();
+            document.getElementById('job-list-modal').style.display = 'flex';
+        }
+
+        // ===== INSPECTION FUNCTIONS - NEW =====
+        function openInspectionModal(vehicleId) {
+            currentVehicleId = vehicleId;
+            const vehicle = vehiclesDatabase.find(v => v.id == vehicleId);
+            
+            if (!vehicle) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            document.getElementById('inspection-vehicle-info').textContent = 
+                `${vehicle.vehicleNumber} - ${vehicle.carName} ${vehicle.vehicleModel}`;
+            
+            // Reset form
+            document.getElementById('inspection-exterior').value = vehicle.inspectionReport?.exterior || '';
+            document.getElementById('inspection-interior').value = vehicle.inspectionReport?.interior || '';
+            document.getElementById('inspection-engine').value = vehicle.inspectionReport?.engine || '';
+            document.getElementById('inspection-fluids').value = vehicle.inspectionReport?.fluids || '';
+            document.getElementById('inspection-issues').value = vehicle.inspectionReport?.issues || '';
+            document.getElementById('inspection-mileage').value = vehicle.inspectionReport?.mileage || '';
+            document.getElementById('inspection-notes').value = vehicle.inspectionReport?.notes || '';
+            
+            closeAllModals();
+            document.getElementById('inspection-modal').style.display = 'flex';
+        }
+
+        function completeInspection() {
+            const exterior = document.getElementById('inspection-exterior').value.trim();
+            const interior = document.getElementById('inspection-interior').value.trim();
+            const engine = document.getElementById('inspection-engine').value.trim();
+            const fluids = document.getElementById('inspection-fluids').value.trim();
+            const issues = document.getElementById('inspection-issues').value.trim();
+            const mileage = document.getElementById('inspection-mileage').value.trim();
+            
+            // Validation
+            if (!exterior || !interior || !engine || !fluids || !issues || !mileage) {
+                showMessage("Please fill in all required inspection fields!", "error");
+                return;
+            }
+            
+            // Update vehicle with inspection data
+            const vehicleIndex = vehiclesDatabase.findIndex(v => v.id == currentVehicleId);
+            if (vehicleIndex !== -1) {
+                vehiclesDatabase[vehicleIndex].inspectionStatus = "completed";
+                vehiclesDatabase[vehicleIndex].inspectionReport = {
+                    exterior: exterior,
+                    interior: interior,
+                    engine: engine,
+                    fluids: fluids,
+                    issues: issues,
+                    mileage: mileage,
+                    notes: document.getElementById('inspection-notes').value.trim(),
+                    inspectionDate: new Date().toISOString(),
+                    inspectedBy: user.name
+                };
+                
+                localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                showMessage("Vehicle inspection completed successfully! Now assign jobs to technicians.", "success");
+                closeModal('inspection');
+                loadAssignedVehicles();
+            }
+        }
+
+        function openAssignJobModal() {
+            const vehicle = vehiclesDatabase.find(v => v.id == currentVehicleId);
+            
+            if (!vehicle) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            document.getElementById('assign-job-vehicle-info').textContent = 
+                `${vehicle.vehicleNumber} - ${vehicle.carName} ${vehicle.vehicleModel}`;
+            
+            // Reset form
+            const jobTypeSelect = document.getElementById('job-type');
+            jobTypeSelect.value = '';
+            // Clear all selected options for multi-select
+            Array.from(jobTypeSelect.options).forEach(option => option.selected = false);
+            document.getElementById('estimated-hours').value = '';
+            document.getElementById('estimated-cost').value = '';
+            document.getElementById('job-description').value = '';
+            document.getElementById('selected-services-tags').innerHTML = '';
+            selectedTechnicianId = null;
+            
+            // Load fresh technician data
+            loadTechniciansForSelection();
+            
+            closeAllModals();
+            document.getElementById('assign-job-modal').style.display = 'flex';
+        }
+
+        function openJobCompleteModal(vehicleId) {
+            currentVehicleId = vehicleId;
+            const vehicle = vehiclesDatabase.find(v => v.id == vehicleId);
+            
+            if (!vehicle) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            document.getElementById('complete-job-vehicle-info').textContent = 
+                `${vehicle.vehicleNumber} - ${vehicle.carName} ${vehicle.vehicleModel}`;
+            
+            // Find the job that's in progress
+            const inProgressJob = vehicle.jobs?.find(job => job.status === 'in-progress');
+            if (inProgressJob && inProgressJob.startTime) {
+                const elapsedHours = calculateElapsedHours(inProgressJob.startTime);
+                const elapsedTime = calculateElapsedTime(inProgressJob.startTime);
+                
+                // Show auto-calculated time
+                document.getElementById('auto-time-display').style.display = 'block';
+                document.getElementById('elapsed-time-display').textContent = 
+                    `${elapsedHours.toFixed(1)} hours (${elapsedTime})`;
+                document.getElementById('start-time-display').textContent = 
+                    new Date(inProgressJob.startTime).toLocaleTimeString();
+                document.getElementById('end-time-display').textContent = 
+                    new Date().toLocaleTimeString();
+                
+                // Auto-fill the actual time field with calculated hours
+                document.getElementById('actual-time').value = elapsedHours.toFixed(1);
+            } else {
+                document.getElementById('auto-time-display').style.display = 'none';
+            }
+            
+            // Reset form
+            document.getElementById('completion-notes').value = '';
+            
+            closeAllModals();
+            document.getElementById('job-complete-modal').style.display = 'flex';
+        }
+
+        function openQCModal(vehicleId) {
+            currentVehicleId = vehicleId;
+            document.getElementById('qc-notes').value = '';
+            document.getElementById('qc-priority').value = 'normal';
+            closeAllModals();
+            document.getElementById('qc-modal').style.display = 'flex';
+        }
+
+        function closeAllModals() {
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.style.display = 'none';
+            });
+        }
+
+        function closeModal(modalType) {
+            document.getElementById(`${modalType}-modal`).style.display = 'none';
+        }
+
+        // ===== JOB MANAGEMENT =====
+        function updateJobDescription() {
+            const jobTypeSelect = document.getElementById('job-type');
+            const selectedOptions = Array.from(jobTypeSelect.selectedOptions);
+            const descriptionField = document.getElementById('job-description');
+            const selectedServicesContainer = document.getElementById('selected-services-tags');
+            
+            // Clear previous tags
+            selectedServicesContainer.innerHTML = '';
+            
+            if (selectedOptions.length === 0) {
+                descriptionField.value = '';
+                return;
+            }
+            
+            // Create description from all selected services
+            let descriptions = [];
+            selectedOptions.forEach(option => {
+                const value = option.value;
+                if (value in jobDescriptions && value !== 'custom') {
+                    descriptions.push(jobDescriptions[value]);
+                }
+                
+                // Create tag for each selected service
+                const tag = document.createElement('span');
+                tag.className = 'service-tag';
+                tag.innerHTML = `
+                    <i class="fas fa-check-circle"></i>
+                    ${option.text}
+                `;
+                selectedServicesContainer.appendChild(tag);
+            });
+            
+            // Check if custom is selected
+            const hasCustom = selectedOptions.some(opt => opt.value === 'custom');
+            
+            if (descriptions.length > 0 && !hasCustom) {
+                descriptionField.value = descriptions.join('\n\n');
+            } else if (hasCustom) {
+                descriptionField.value = '';
+                descriptionField.placeholder = 'Enter custom job description for selected services...';
+            }
+        }
+
+        function addJobToList() {
+            const jobTypeSelect = document.getElementById('job-type');
+            const selectedOptions = Array.from(jobTypeSelect.selectedOptions);
+            const estimatedHours = document.getElementById('estimated-hours').value;
+            const estimatedCost = document.getElementById('estimated-cost').value;
+            const jobDescription = document.getElementById('job-description').value;
+            
+            // Validation
+            if (selectedOptions.length === 0) {
+                showMessage("Please select at least one service type!", "error");
+                return;
+            }
+            
+            if (!estimatedHours || estimatedHours <= 0) {
+                showMessage("Please enter valid estimated hours!", "error");
+                return;
+            }
+            
+            if (!estimatedCost || estimatedCost <= 0) {
+                showMessage("Please enter valid estimated cost!", "error");
+                return;
+            }
+            
+            if (!jobDescription.trim()) {
+                showMessage("Please enter job description!", "error");
+                return;
+            }
+            
+            if (!selectedTechnicianId) {
+                showMessage("Please select a technician!", "error");
+                return;
+            }
+            
+            const technician = technicians.find(t => t.id == selectedTechnicianId);
+            if (!technician) {
+                showMessage("Selected technician not found!", "error");
+                return;
+            }
+            
+            const technicianName = `${technician.name} - ${technician.specialization}`;
+            
+            // Create a separate job for each selected service
+            const hoursPerService = parseFloat(estimatedHours) / selectedOptions.length;
+            const costPerService = parseFloat(estimatedCost) / selectedOptions.length;
+            
+            selectedOptions.forEach((option, index) => {
+                const job = {
+                    id: Date.now() + index,
+                    type: option.value,
+                    description: jobDescription.trim(),
+                    estimatedHours: parseFloat(hoursPerService.toFixed(2)),
+                    estimatedCost: parseFloat(costPerService.toFixed(2)),
+                    technician: technicianName,
+                    technicianId: selectedTechnicianId,
+                    status: 'pending',
+                    assignedDate: new Date().toISOString(),
+                    serviceName: option.text
+                };
+                
+                currentJobs.push(job);
+            });
+            
+            showMessage(`${selectedOptions.length} job(s) added successfully!`, "success");
+            updateJobListDisplay();
+            closeModal('assign-job');
+            document.getElementById('job-list-modal').style.display = 'flex';
+        }
+
+        function updateJobListDisplay() {
+            const container = document.getElementById('job-list-container');
+            
+            if (currentJobs.length === 0) {
+                container.innerHTML = '<div class="no-data" style="padding: 2rem;"><p>No jobs assigned yet</p></div>';
+                return;
+            }
+            
+            container.innerHTML = currentJobs.map(job => `
+                <div class="job-item">
+                    <div class="job-item-info">
+                        <h5>${formatJobType(job.type)}</h5>
+                        <p>${job.description.substring(0, 60)}${job.description.length > 60 ? '...' : ''}</p>
+                        <p><small>${job.estimatedHours} hours • $${job.estimatedCost} • ${job.technician}</small></p>
+                    </div>
+                    <div class="job-item-actions">
+                        <button class="icon-btn" onclick="removeJob(${job.id})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function removeJob(jobId) {
+            currentJobs = currentJobs.filter(job => job.id !== jobId);
+            updateJobListDisplay();
+        }
+
+        function saveJobs() {
+            const vehicleIndex = vehiclesDatabase.findIndex(v => v.id == currentVehicleId);
+            if (vehicleIndex === -1) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            // Update vehicle with jobs and advisor info
+            vehiclesDatabase[vehicleIndex].jobs = currentJobs;
+            vehiclesDatabase[vehicleIndex].assignedAdvisor = currentAdvisorId;
+            
+            // Update vehicle status: Once jobs are assigned, vehicle goes to technician
+            // Status should be "with_technician" to indicate technician should work on it
+            vehiclesDatabase[vehicleIndex].serviceStatus = 'in-progress';
+            
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+            
+            // Update technician assignments
+            updateTechnicianAssignments();
+            
+            showMessage("Jobs assigned successfully!", "success");
+            closeModal('job-list');
+            updateStatistics();
+            loadAssignedVehicles();
+        }
+
+        // ===== UPDATE TECHNICIAN ASSIGNMENTS =====
+        function updateTechnicianAssignments() {
+            try {
+                // Get current technician assignments
+                let techAssignments = JSON.parse(localStorage.getItem('vsms_technician_assignments')) || [];
+                
+                // Add new assignments
+                currentJobs.forEach(job => {
+                    if (job.technicianId) {
+                        techAssignments.push({
+                            technicianId: job.technicianId,
+                            jobId: job.id,
+                            jobType: job.type,
+                            description: job.description,
+                            estimatedHours: job.estimatedHours,
+                            vehicleId: currentVehicleId,
+                            vehicle: vehiclesDatabase.find(v => v.id == currentVehicleId)?.vehicleNumber || 'Unknown',
+                            assignedBy: user.name,
+                            assignedDate: new Date().toISOString(),
+                            status: 'pending'
+                        });
+                    }
+                });
+                
+                localStorage.setItem('vsms_technician_assignments', JSON.stringify(techAssignments));
+            } catch (error) {
+                console.error("Error updating technician assignments:", error);
+            }
+        }
+
+        // ===== START SERVICE =====
+        function startService(vehicleId) {
+            const vehicleIndex = vehiclesDatabase.findIndex(v => v.id == vehicleId);
+            if (vehicleIndex === -1) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            if (vehiclesDatabase[vehicleIndex].serviceStatus !== "pending") {
+                showMessage("Service already started!", "error");
+                return;
+            }
+            
+            // Check if jobs are assigned
+            if (!vehiclesDatabase[vehicleIndex].jobs || vehiclesDatabase[vehicleIndex].jobs.length === 0) {
+                showMessage("Please assign jobs before starting service!", "error");
+                return;
+            }
+            
+            // Update vehicle status
+            vehiclesDatabase[vehicleIndex].serviceStatus = "in-progress";
+            vehiclesDatabase[vehicleIndex].serviceStartTime = new Date().toISOString();
+            
+            // Start timer for first pending job
+            const pendingJob = vehiclesDatabase[vehicleIndex].jobs.find(job => job.status === 'pending');
+            if (pendingJob) {
+                pendingJob.status = 'in-progress';
+                pendingJob.startTime = new Date().toISOString();
+                
+                // Start timer for this job
+                startJobTimer(vehicleId, pendingJob.id);
+            }
+            
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+            showMessage("Service started! Timer started for first job.", "success");
+            updateStatistics();
+            loadAssignedVehicles();
+        }
+
+        // ===== START JOB TIMER =====
+        function startJobTimer(vehicleId, jobId) {
+            const key = `${vehicleId}-${jobId}`;
+            if (activeTimers[key]) {
+                clearInterval(activeTimers[key]);
+            }
+            
+            // Update timer every second
+            activeTimers[key] = setInterval(() => {
+                // This will be handled by the loadAssignedVehicles refresh
+            }, 1000);
+        }
+
+        // ===== COMPLETE JOB =====
+        function completeJob() {
+            const actualTime = parseFloat(document.getElementById('actual-time').value);
+            const completionNotes = document.getElementById('completion-notes').value.trim();
+            
+            if (!actualTime || actualTime <= 0) {
+                showMessage("Please enter valid actual time!", "error");
+                return;
+            }
+            
+            if (!completionNotes) {
+                showMessage("Please enter completion notes!", "error");
+                return;
+            }
+            
+            const vehicleIndex = vehiclesDatabase.findIndex(v => v.id == currentVehicleId);
+            if (vehicleIndex === -1) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            const vehicle = vehiclesDatabase[vehicleIndex];
+            
+            // Find the job that's in progress
+            const jobIndex = vehicle.jobs?.findIndex(job => job.status === 'in-progress');
+            if (jobIndex === -1) {
+                showMessage("No job in progress to complete!", "error");
+                return;
+            }
+            
+            // Update job with completion details
+            const job = vehiclesDatabase[vehicleIndex].jobs[jobIndex];
+            job.status = 'completed';
+            job.actualTime = actualTime;
+            job.completionNotes = completionNotes;
+            job.completionTime = new Date().toISOString();
+            
+            // Stop timer for this job
+            const jobId = job.id;
+            const timerKey = `${currentVehicleId}-${jobId}`;
+            if (activeTimers[timerKey]) {
+                clearInterval(activeTimers[timerKey]);
+                delete activeTimers[timerKey];
+            }
+            
+            // Start next pending job if available
+            const nextJobIndex = vehicle.jobs.findIndex(job => job.status === 'pending');
+            if (nextJobIndex !== -1) {
+                const nextJob = vehicle.jobs[nextJobIndex];
+                nextJob.status = 'in-progress';
+                nextJob.startTime = new Date().toISOString();
+                
+                // Start timer for next job
+                const nextJobId = nextJob.id;
+                startJobTimer(currentVehicleId, nextJobId);
+                
+                showMessage("Job completed! Timer started for next job.", "success");
+            } else {
+                showMessage("All jobs completed! Ready for QC.", "success");
+            }
+            
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+            
+            closeModal('job-complete');
+            updateStatistics();
+            loadAssignedVehicles();
+        }
+
+        // ===== SEND TO QC =====
+        function sendToQC() {
+            const qcNotes = document.getElementById('qc-notes').value.trim();
+            const qcPriority = document.getElementById('qc-priority').value;
+            
+            const vehicleIndex = vehiclesDatabase.findIndex(v => v.id == currentVehicleId);
+            if (vehicleIndex === -1) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            if (vehiclesDatabase[vehicleIndex].serviceStatus !== "in-progress") {
+                showMessage("Vehicle must be in progress to send to QC!", "error");
+                return;
+            }
+            
+            // Check if all jobs are completed
+            const allJobsCompleted = vehiclesDatabase[vehicleIndex].jobs && 
+                vehiclesDatabase[vehicleIndex].jobs.every(job => job.status === 'completed');
+            
+            if (!allJobsCompleted) {
+                showMessage("All jobs must be completed before sending to QC!", "error");
+                return;
+            }
+            
+            vehiclesDatabase[vehicleIndex].serviceStatus = "awaiting-qc";
+            vehiclesDatabase[vehicleIndex].qcStatus = "pending";
+            vehiclesDatabase[vehicleIndex].qcNotes = qcNotes;
+            vehiclesDatabase[vehicleIndex].qcPriority = qcPriority;
+            vehiclesDatabase[vehicleIndex].sentToQcTime = new Date().toISOString();
+            
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+            showMessage("Vehicle sent to Quality Control!", "success");
+            
+            closeModal('qc');
+            updateStatistics();
+            loadAssignedVehicles();
+        }
+
+        // ===== COMPLETE SERVICE =====
+        function completeService(vehicleId) {
+            const vehicleIndex = vehiclesDatabase.findIndex(v => v.id == vehicleId);
+            if (vehicleIndex === -1) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            if (vehiclesDatabase[vehicleIndex].serviceStatus !== "qc-approved") {
+                showMessage("Vehicle must be QC approved to mark as complete!", "error");
+                return;
+            }
+            
+            vehiclesDatabase[vehicleIndex].serviceStatus = "completed";
+            vehiclesDatabase[vehicleIndex].serviceCompletionTime = new Date().toISOString();
+            
+            // Calculate total actual time
+            if (vehiclesDatabase[vehicleIndex].jobs) {
+                const totalActualTime = vehiclesDatabase[vehicleIndex].jobs
+                    .filter(job => job.actualTime)
+                    .reduce((sum, job) => sum + job.actualTime, 0);
+                vehiclesDatabase[vehicleIndex].totalServiceTime = totalActualTime;
+            }
+            
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+            showMessage("Service marked as completed!", "success");
+            
+            updateStatistics();
+            loadAssignedVehicles();
+        }
+
+        // ===== HELPER FUNCTIONS =====
+        function showMessage(message, type) {
+            const existing = document.querySelector('.message-box');
+            if (existing) existing.remove();
+            
+            const msgBox = document.createElement('div');
+            msgBox.className = `message-box ${type}`;
+            msgBox.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(msgBox);
+            
+            setTimeout(() => {
+                msgBox.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => msgBox.remove(), 300);
+            }, 3000);
+        }
+
+        function logout() {
+            localStorage.removeItem('vsms_current_user');
+            window.location.href = 'logreg.html';
+        }
+
+        // ===== INITIALIZE =====
+        function initialize() {
+            // Initialize theme toggle
+            initThemeToggle();
+            
+            // Load fresh data
+            vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            
+            console.log('Initializing... Current Advisor ID:', currentAdvisorId);
+            console.log('Existing vehicles:', vehiclesDatabase);
+            
+            loadRegisteredTechnicians();
+            updateTime();
+            updateStatistics();
+            loadAssignedVehicles();
+
+            console.log('Advisor dashboard loaded');
+            
+            // Refresh timers every second
+            setInterval(() => {
+                loadAssignedVehicles();
+            }, 1000);
+        }
+
+        // Run initialization
+        initialize();
+        
+        // Update time every second
+        setInterval(updateTime, 1000);
+        
+        // Auto-refresh data every 10 seconds
+        setInterval(() => {
+            vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            technicians = loadRegisteredTechnicians();
+            updateStatistics();
+        }, 10000);
+        
+        // Close modal on escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeAllModals();
+            }
+        });
+
+        // Close modal on background click
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

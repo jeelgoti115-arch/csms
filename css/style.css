@@ -1,0 +1,79 @@
+:root{--accent:#2b7a78;--muted:#666}
+*{box-sizing:border-box;font-family:Segoe UI,Arial,Helvetica,sans-serif}
+body{margin:0;color:#222;background:#f7f7f8}
+header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;padding:12px 20px;background:var(--accent);color:#fff}
+.brand{font-weight:700;font-size:1.1rem}
+nav{display:flex;align-items:center;gap:12px}
+nav a{color:#fff;text-decoration:none;padding:6px 10px;border-radius:4px}
+nav a:hover{background:rgba(255,255,255,0.08)}
+.user-area{margin-left:12px;color:#fff;font-size:0.95rem}
+main{padding:24px;max-width:1000px;margin:20px auto;background:#fff;border-radius:8px;box-shadow:0 6px 18px rgba(17,24,39,0.06)}
+footer{text-align:center;padding:12px;color:var(--muted)}
+.hero{padding:10px}
+form input,form select{padding:10px;margin:8px 0;display:block;width:100%;max-width:420px;border:1px solid #e6e6e9;border-radius:6px}
+/* utility classes used across pages */
+.form-control, input.form-control, textarea.form-control, select.form-control {
+		width:100%;
+		padding:10px 12px;
+		border:1px solid #e6e6e9;
+		border-radius:6px;
+		background:#fff;
+		color:#222;
+		font-family:inherit;
+}
+.form-control:focus{outline:none;box-shadow:0 0 0 3px rgba(43,122,120,0.12);border-color:var(--accent)}
+
+/* buttons */
+button, .btn {background:var(--accent);color:#fff;padding:10px 14px;border:0;border-radius:6px;cursor:pointer}
+
+/* make browser autofill fit dark/light themes better */
+input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill {
+	-webkit-text-fill-color: #222 !important;
+	-webkit-box-shadow: 0 0 0px 1000px #fff inset !important;
+	transition: background-color 5000s ease-in-out 0s !important;
+}
+.card{background:#fafafa;padding:14px;border-radius:8px;margin:10px 0;border:1px solid #eef2f2}
+.hidden{display:none}
+.vehicle{border:1px solid #eef2f2;padding:12px;margin:12px 0;border-radius:8px;background:linear-gradient(180deg,#fff,#fbfcfc)}
+.vehicle .meta{font-size:13px;color:var(--muted);margin-top:6px}
+.vehicle .actions{margin-top:8px;display:flex;gap:8px;flex-wrap:wrap}
+.vehicle .history{margin-top:10px;padding:8px;background:#f8f9f9;border-radius:6px;border:1px solid #f0f3f3;font-size:13px;color:#333}
+.counts{font-size:0.95rem;color:var(--muted);margin-bottom:8px}
+.notify{position:fixed;top:16px;right:16px;z-index:9999;padding:12px 16px;border-radius:8px;color:#fff;box-shadow:0 6px 18px rgba(17,24,39,0.12)}
+.notify.info{background:#2b7a78}
+.notify.success{background:#2d9f6a}
+.notify.warn{background:#f59e0b}
+.notify.error{background:#ef4444}
+.small{font-size:0.85rem;color:var(--muted)}
+
+@media (max-width:640px){
+	nav{flex-wrap:wrap}
+	main{margin:12px}
+}
+
+/* Dark-mode autofill and focused input fixes */
+html.dark-mode input:-webkit-autofill,
+html.dark-mode textarea:-webkit-autofill,
+html.dark-mode select:-webkit-autofill {
+	-webkit-text-fill-color: #e8e8e8 !important;
+	-webkit-box-shadow: 0 0 0 1000px #1a1a1a inset !important;
+	transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* Stronger dark-mode form control rules to override inline/light styles */
+html.dark-mode .form-control,
+html.dark-mode input.form-control,
+html.dark-mode textarea.form-control,
+html.dark-mode select.form-control {
+	background: #1f1f1f !important;
+	color: #e8e8e8 !important;
+	border-color: rgba(255,255,255,0.08) !important;
+}
+
+/* Make select elements consistent across pages */
+select.form-control, select.role-select {
+	appearance: none;
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	padding-right: 2.2rem;
+}

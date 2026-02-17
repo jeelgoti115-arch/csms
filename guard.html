@@ -1,0 +1,2126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/car-service.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2f9 100%);
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 1.2rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid #10b981;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #10b981;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: white;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .user-details h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .user-details p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            text-align: center;
+            border-left: 5px solid #10b981;
+            border: 1px solid #e2e8f0;
+        }
+
+        .dashboard-header h1 {
+            color: #1e293b;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .dashboard-header p {
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Two Column Layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Form Section */
+        .form-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            color: #1e293b;
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+        }
+
+        .section-title i {
+            color: #10b981;
+            font-size: 1.6rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: white;
+            color: #1e293b;
+        }
+
+        .form-group input::placeholder,
+        .form-group select::placeholder {
+            color: #cbd5e1;
+        }
+
+        .form-group input:hover,
+        .form-group select:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Today's Entries Section */
+        .entries-section {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            height: fit-content;
+            border: 1px solid #e2e8f0;
+        }
+
+        .entries-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .stats-badge {
+            background: #f0fdf4;
+            color: #065f46;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid #a7f3d0;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+        }
+
+        .stats-badge:hover {
+            background: #dcfce7;
+            border-color: #86efac;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+        }
+
+        .vehicles-list {
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        /* Light mode scrollbar */
+        .vehicles-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .vehicles-list::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
+        }
+
+        .vehicles-list::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .vehicles-list::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .vehicle-card {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 1rem;
+            border-left: 4px solid #10b981;
+            transition: all 0.3s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .vehicle-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border-color: #cbd5e1;
+        }
+
+        .vehicle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .vehicle-number {
+            font-family: monospace;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e293b;
+            background: #e2e8f0;
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .vehicle-time {
+            color: #64748b;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .vehicle-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #475569;
+        }
+
+        .detail-item i {
+            color: #10b981;
+            width: 16px;
+        }
+
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            border: 1px solid;
+            transition: all 0.2s;
+        }
+
+        .status-badge.entry {
+            background: #d1fae5;
+            color: #065f46;
+            border-color: #a7f3d0;
+        }
+
+        .status-badge.exit {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+
+        /* Service Status Badge */
+        .service-status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            display: inline-block;
+            border: 1px solid;
+            transition: all 0.2s;
+        }
+
+        .service-status-badge.pending {
+            background: #fef3c7;
+            color: #92400e;
+            border-color: #fde68a;
+        }
+
+        .service-status-badge.in-progress {
+            background: #dbeafe;
+            color: #1e40af;
+            border-color: #bfdbfe;
+        }
+
+        .service-status-badge.completed {
+            background: #d1fae5;
+            color: #065f46;
+            border-color: #a7f3d0;
+        }
+
+        .service-status-badge.delivered {
+            background: #e0e7ff;
+            color: #3730a3;
+            border-color: #c7d2fe;
+        }
+
+        /* Live Time */
+        .live-time {
+            background: #1e293b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        /* No Data */
+        .no-data {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #94a3b8;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border: 2px dashed #e2e8f0;
+            border-radius: 12px;
+            background: #f8fafc;
+        }
+
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.4;
+            color: #cbd5e1;
+        }
+
+        .no-data h3 {
+            margin-bottom: 0.5rem;
+            color: #64748b;
+            font-size: 1.2rem;
+        }
+
+        .no-data p {
+            color: #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 2rem;
+            background: #f8fafc;
+            border-radius: 12px;
+        }
+
+        /* Message Box */
+        .message-box {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            padding: 1.2rem 1.8rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 300px;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .message-box.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-left-color: #d1fae5;
+        }
+
+        .message-box.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            border-left-color: #fecaca;
+        }
+
+        .message-box.info {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            border-left-color: #bfdbfe;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Refresh Button */
+        .refresh-btn {
+            background: #e2e8f0;
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background: #cbd5e1;
+            border-color: #94a3b8;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.98);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .dashboard-header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-section,
+            .entries-section {
+                padding: 2rem 1.5rem;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .vehicle-details {
+                grid-template-columns: 1fr;
+            }
+            
+            .user-details {
+                display: none;
+            }
+
+            .message-box {
+                right: 15px;
+                left: 15px;
+                min-width: auto;
+                max-width: none;
+            }
+
+            .entries-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .stats-badge {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Small Mobile Devices */
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            header {
+                padding: 0.8rem 1rem;
+                flex-direction: column;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            nav {
+                gap: 1rem;
+                width: 100%;
+            }
+
+            .container {
+                padding: 0 12px;
+            }
+
+            .main-content {
+                gap: 1rem;
+            }
+
+            .form-section,
+            .entries-section {
+                padding: 1.2rem;
+                border-radius: 16px;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            .form-group input,
+            .form-group select {
+                padding: 12px;
+                font-size: 0.95rem;
+                border-radius: 10px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .submit-btn {
+                padding: 14px 24px;
+                font-size: 1rem;
+            }
+
+            .dashboard-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .role-badge {
+                align-self: flex-start;
+            }
+
+            .live-time {
+                font-size: 0.9rem;
+            }
+
+            .vehicle-card {
+                padding: 1rem;
+            }
+
+            .vehicle-header {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .vehicle-details {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-item {
+                font-size: 0.9rem;
+            }
+
+            .vehicle-number {
+                font-size: 1rem;
+            }
+
+            .vehicle-time {
+                font-size: 0.8rem;
+            }
+
+            .status-badge {
+                font-size: 0.75rem;
+            }
+
+            .service-status-badge {
+                font-size: 0.7rem;
+            }
+
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+
+            .message-box {
+                right: 10px;
+                left: 10px;
+                min-width: auto;
+                width: auto;
+                max-width: none;
+                font-size: 0.9rem;
+                padding: 1rem;
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .entries-header {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+
+            .stats-badge {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+
+            .no-data {
+                padding: 2rem 1rem;
+                min-height: 200px;
+            }
+
+            .no-data i {
+                font-size: 2.5rem;
+            }
+
+            .footer {
+                padding: 1.5rem;
+                font-size: 0.85rem;
+            }
+
+            .refresh-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Extra Small Devices */
+        @media (max-width: 360px) {
+            body {
+                font-size: 13px;
+            }
+
+            header {
+                padding: 0.6rem 0.8rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            nav {
+                gap: 0.5rem;
+            }
+
+            .form-section,
+            .entries-section {
+                padding: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.8rem;
+            }
+
+            .form-group label {
+                font-size: 0.85rem;
+            }
+
+            .form-group input,
+            .form-group select {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .submit-btn {
+                padding: 12px 20px;
+                font-size: 0.95rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .vehicle-card {
+                padding: 0.8rem;
+            }
+
+            .vehicle-number {
+                font-size: 0.95rem;
+            }
+
+            .detail-item {
+                font-size: 0.85rem;
+            }
+
+            .no-data {
+                padding: 1.5rem 1rem;
+                min-height: 150px;
+            }
+
+            .no-data i {
+                font-size: 2rem;
+            }
+
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+
+            .live-time {
+                font-size: 0.8rem;
+            }
+
+            .role-badge {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.75rem;
+            }
+
+            .entries-header {
+                gap: 0.5rem;
+            }
+
+            .stats-badge {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.75rem;
+            }
+
+            .message-box {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: none;
+            border: 2px solid #10b981;
+            color: #2b2d42;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(16, 185, 129, 0.1);
+            transform: scale(1.05);
+        }
+
+        .theme-toggle i {
+            transition: all 0.3s ease;
+            color: inherit;
+        }
+
+        /* Dark Mode Styles */
+        html.dark-mode {
+            --light-bg: #0f0f0f;
+            --card-bg: #1e1e1e;
+            --card-bg-hover: #252525;
+            --text-primary: #e8e8e8;
+            --text-secondary: #b8b8b8;
+            --text-muted: #888888;
+            --border-color: rgba(255, 255, 255, 0.12);
+            --border-color-focus: rgba(255, 255, 255, 0.25);
+            --input-bg: #161616;
+            --input-border: rgba(255, 255, 255, 0.1);
+            --accent-primary: #10b981;
+            --accent-secondary: #4361ee;
+            --success-light: #064e3b;
+            --error-light: #5f1f1a;
+            --warning-light: #4a2311;
+            --info-light: #1e3a5f;
+        }
+
+        html.dark-mode body {
+            background: linear-gradient(135deg, var(--light-bg) 0%, #1a1a1a 100%);
+            color: var(--text-primary);
+        }
+
+        html.dark-mode header {
+            background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+            border-bottom-color: var(--border-color-focus);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        html.dark-mode .logo {
+            color: var(--accent-primary);
+        }
+
+        html.dark-mode .logo span {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .user-info {
+            border-left: 1px solid var(--border-color);
+            padding-left: 1rem;
+        }
+
+        html.dark-mode .user-details h4 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .user-details p {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .user-avatar {
+            background: linear-gradient(135deg, #10b981, #059669);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+        }
+
+        html.dark-mode .logout-btn {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #ff6b6b;
+            transition: all 0.3s;
+        }
+
+        html.dark-mode .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.25);
+            border-color: rgba(239, 68, 68, 0.5);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Dashboard Header Dark Mode */
+        html.dark-mode .dashboard-header {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border-left-color: var(--accent-primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        html.dark-mode .dashboard-header h1 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .dashboard-header p {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .role-badge {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(5, 150, 105, 0.15));
+            color: var(--accent-primary);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+        }
+
+        /* Live Time Dark Mode */
+        html.dark-mode .live-time {
+            background: var(--card-bg);
+            color: var(--accent-primary);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.1);
+        }
+
+        /* Form Section Dark Mode */
+        html.dark-mode .form-section {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        html.dark-mode .section-title {
+            color: var(--text-primary);
+            border-bottom-color: var(--border-color);
+        }
+
+        html.dark-mode .section-title i {
+            color: var(--accent-primary);
+        }
+
+        html.dark-mode .form-group label {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .form-group input,
+        html.dark-mode .form-group select {
+            background: var(--input-bg);
+            color: var(--text-primary);
+            border-color: var(--input-border);
+            transition: all 0.3s;
+        }
+
+        html.dark-mode .form-group input::placeholder,
+        html.dark-mode .form-group select::placeholder {
+            color: var(--text-muted);
+        }
+
+        html.dark-mode .form-group input:hover,
+        html.dark-mode .form-group select:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: #1a1a1a;
+        }
+
+        html.dark-mode .form-group input:focus,
+        html.dark-mode .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            background: #1a1a1a;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        html.dark-mode .form-control {
+            background: var(--input-bg);
+            color: var(--text-primary);
+            border-color: var(--input-border);
+        }
+
+        html.dark-mode .form-control::placeholder {
+            color: var(--text-muted);
+        }
+
+        html.dark-mode .form-control:hover {
+            border-color: rgba(255, 255, 255, 0.15);
+            background: #1a1a1a;
+        }
+
+        html.dark-mode .form-control:focus {
+            background: #1a1a1a;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+        }
+
+        html.dark-mode input:-webkit-autofill,
+        html.dark-mode textarea:-webkit-autofill,
+        html.dark-mode select:-webkit-autofill {
+            -webkit-text-fill-color: var(--text-primary) !important;
+            -webkit-box-shadow: 0 0 0 1000px var(--input-bg) inset !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+        }
+
+        html.dark-mode input:-webkit-autofill:focus,
+        html.dark-mode textarea:-webkit-autofill:focus,
+        html.dark-mode select:-webkit-autofill:focus {
+            -webkit-text-fill-color: var(--text-primary) !important;
+            -webkit-box-shadow: 0 0 0 1000px #1a1a1a inset !important;
+        }
+
+        /* Submit Button Dark Mode */
+        html.dark-mode .submit-btn {
+            background: linear-gradient(135deg, var(--accent-primary), #059669);
+            color: white;
+            border: none;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.25);
+        }
+
+        html.dark-mode .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.35);
+        }
+
+        /* Entries Section Dark Mode */
+        html.dark-mode .entries-section {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+        }
+
+        html.dark-mode .stats-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent-primary);
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        /* Vehicle Cards Dark Mode */
+        html.dark-mode .vehicle-card {
+            background: linear-gradient(135deg, var(--card-bg-hover) 0%, var(--card-bg) 100%);
+            color: var(--text-primary);
+            border-left-color: var(--accent-primary);
+            border-color: var(--border-color);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--accent-primary);
+            transition: all 0.3s;
+        }
+
+        html.dark-mode .vehicle-card:hover {
+            background: linear-gradient(135deg, #2a2a2a 0%, var(--card-bg-hover) 100%);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.15);
+            border-color: rgba(16, 185, 129, 0.2);
+        }
+
+        html.dark-mode .vehicle-number {
+            background: var(--input-bg);
+            color: var(--accent-primary);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            font-weight: 700;
+        }
+
+        html.dark-mode .vehicle-time {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .detail-item {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .detail-item i {
+            color: var(--accent-primary);
+        }
+
+        /* Status Badges Dark Mode */
+        html.dark-mode .status-badge {
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        html.dark-mode .status-badge.entry {
+            background: rgba(16, 185, 129, 0.15);
+            color: #4ade80;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        html.dark-mode .status-badge.exit {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        /* Service Status Badges Dark Mode */
+        html.dark-mode .service-status-badge {
+            font-weight: 600;
+            border: 1px solid;
+        }
+
+        html.dark-mode .service-status-badge.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.3);
+        }
+
+        html.dark-mode .service-status-badge.in-progress {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+
+        html.dark-mode .service-status-badge.completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #4ade80;
+            border-color: rgba(16, 185, 129, 0.3);
+        }
+
+        html.dark-mode .service-status-badge.delivered {
+            background: rgba(129, 140, 248, 0.15);
+            color: #a5b4fc;
+            border-color: rgba(129, 140, 248, 0.3);
+        }
+
+        /* No Data Message Dark Mode */
+        html.dark-mode .no-data {
+            color: var(--text-secondary);
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            border: 1px dashed var(--border-color);
+        }
+
+        html.dark-mode .no-data i {
+            color: var(--text-muted);
+        }
+
+        html.dark-mode .no-data h3 {
+            color: var(--text-primary);
+        }
+
+        /* Refresh Button Dark Mode */
+        html.dark-mode .refresh-btn {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            transition: all 0.3s;
+        }
+
+        html.dark-mode .refresh-btn:hover {
+            background: var(--card-bg-hover);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.2);
+        }
+
+        /* Message Box Dark Mode */
+        html.dark-mode .message-box {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        html.dark-mode .message-box.success {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.3));
+            border-left: 4px solid var(--accent-primary);
+            color: #4ade80;
+        }
+
+        html.dark-mode .message-box.error {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(220, 38, 38, 0.3));
+            border-left: 4px solid #ff6b6b;
+            color: #fca5a5;
+        }
+
+        html.dark-mode .message-box.info {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(29, 78, 216, 0.3));
+            border-left: 4px solid #60a5fa;
+            color: #93c5fd;
+        }
+
+        /* Footer Dark Mode */
+        html.dark-mode .footer {
+            color: var(--text-secondary);
+            border-top-color: var(--border-color);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        /* Theme Toggle Button Dark Mode */
+        html.dark-mode .theme-toggle {
+            border-color: var(--accent-primary);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--text-primary);
+            transition: all 0.3s;
+        }
+
+        html.dark-mode .theme-toggle:hover {
+            background: rgba(16, 185, 129, 0.2);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        html.dark-mode .theme-toggle i {
+            color: #fbbf24;
+        }
+
+        /* Scrollbar Styling for Dark Mode */
+        html.dark-mode .vehicles-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        html.dark-mode .vehicles-list::-webkit-scrollbar-track {
+            background: var(--input-bg);
+            border-radius: 10px;
+        }
+
+        html.dark-mode .vehicles-list::-webkit-scrollbar-thumb {
+            background: var(--accent-primary);
+            border-radius: 10px;
+            opacity: 0.6;
+        }
+
+        html.dark-mode .vehicles-list::-webkit-scrollbar-thumb:hover {
+            background: #059669;
+            opacity: 1;
+        }
+
+        /* Select dropdown options in dark mode */
+        html.dark-mode select option {
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        /* Improvement for form validation messages */
+        input:invalid {
+            box-shadow: none;
+        }
+
+        /* Better focus visibility */
+        *:focus-visible {
+            outline: 2px solid #10b981;
+            outline-offset: 2px;
+        }
+
+        html.dark-mode *:focus-visible {
+            outline-color: var(--accent-primary);
+        }
+
+        /* Enhanced transitions */
+        body, header, button, input, select, textarea {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Assigned Advisor Badge Styling */
+        .advisor-badge {
+            font-size: 0.75rem;
+            color: #475569;
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        html.dark-mode .advisor-badge {
+            color: var(--text-secondary);
+            background: var(--input-bg);
+            border-color: var(--border-color);
+        }
+
+        /* Access Denied Styling */
+        #access-denied {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin: 5rem auto;
+            max-width: 600px;
+            padding: 4rem;
+            text-align: center;
+        }
+
+        #access-denied h2 {
+            color: #ef4444;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #access-denied p {
+            color: #64748b;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        html.dark-mode #access-denied {
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        html.dark-mode #access-denied h2 {
+            color: #fca5a5;
+        }
+
+        html.dark-mode #access-denied p {
+            color: var(--text-secondary);
+        }
+    </style>
+
+    <!-- Unified theme overrides: ensure all dashboards share the same color palette and UI tokens -->
+    <style>
+        :root{
+            --primary: #3b82f6;
+            --accent-primary: #8b5cf6;
+            --accent: var(--primary);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --card-bg: #ffffff;
+            --bg-gradient-from: #f8fafc;
+            --bg-gradient-to: #eef2f7;
+            --text-primary: #1f2937;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0,0,0,0.06);
+        }
+
+        body { background: linear-gradient(135deg,var(--bg-gradient-from),var(--bg-gradient-to)); color:var(--text-primary); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        header { background: linear-gradient(135deg,#0f172a 0%, #1f2937 100%); border-bottom: 3px solid var(--primary); }
+        .btn, button { background: var(--primary); color: #fff; border: none; border-radius: 8px; }
+        .btn-primary { background: var(--primary); }
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); }
+        .btn-danger { background: var(--error); }
+        .role-badge, .status-badge { border-color: var(--primary); }
+        .card, .stat-card, .vehicle-card, .modal-content { background: var(--card-bg); box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+        a { color: var(--primary); }
+    </style>
+
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-shield-alt"></i>
+                <span>CSMS Security</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <i class="fa-solid fa-sun" style="color: rgba(255, 255, 255, 1.00);"></i>
+                </button>
+                
+                <div class="user-info">
+                    <div class="user-details">
+                        <h4 id="user-name">Security Guard</h4>
+                        <p>Entry/Exit Management</p>
+                    </div>
+                    <div class="user-avatar" id="user-avatar">SG</div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Access Denied (Hidden by default) -->
+        <div id="access-denied" style="display: none;">
+            <h2><i class="fas fa-exclamation-triangle"></i> Access Denied</h2>
+            <p>You must be logged in as a Security Guard to access this page.</p>
+            <a href="logreg.html" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Go to Login Page
+            </a>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard-content" style="display: none;">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Security Checkpoint</h1>
+                <p>Register vehicle entries and exits. All vehicles must be logged through this checkpoint.</p>
+                <div class="live-time" id="live-time">
+                    <i class="fas fa-clock"></i>
+                    <span id="current-time">Loading...</span>
+                </div>
+                <div class="role-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    Security Guard Dashboard
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Vehicle Entry Form -->
+                <div class="form-section">
+                    <h2 class="section-title">
+                        <i class="fas fa-car"></i> Enter Vehicle
+                    </h2>
+                    
+                    <form id="entry-form">
+                        <div class="form-group">
+                            <label for="vehicleNumber">Plate Number *</label>
+                            <input type="text" id="vehicleNumber" required placeholder="e.g., DL01AB1234" pattern="[A-Za-z0-9]{10}" title="10 character alphanumeric">
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="carName">Car Name</label>
+                                <input type="text" id="carName" required placeholder="e.g., Maruti Suzuki">
+                            </div>
+                            <div class="form-group">
+                                <label for="vehicleModel"> Car Model</label>
+                                <input type="text" id="vehicleModel" required placeholder="e.g., Swift">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="year">Purchace Year</label>
+                                <input type="number" id="year" required min="1990" max="2025" placeholder="e.g., 2020">
+                            </div>
+                            <div class="form-group">
+                                <label for="color">Color</label>
+                                <input type="text" id="color" required placeholder="e.g., Red">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ownerEmail">Owner's Email *</label>
+                            <input type="email" id="ownerEmail" required placeholder="owner@example.com">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="mobileNumber">Owner's Mobile No. *</label>
+                            <input type="tel" id="mobileNumber" required placeholder="9876543210" pattern="[0-9]{10}" title="10 digit mobile number">
+                        </div>
+
+                        <button type="submit" class="submit-btn">
+                            <i class="fas fa-sign-in-alt"></i> Register Vehicle Entry
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Today's Entries Section -->
+                <div class="entries-section">
+                    <div class="entries-header">
+                        <h2 class="section-title">
+                            <i class="fas fa-calendar-day"></i> Today's Entries
+                        </h2>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="stats-badge" id="today-count">
+                                <i class="fas fa-car"></i> <span id="count-number">0</span> Vehicles
+                            </div>
+                            <button class="refresh-btn" onclick="loadVehicles()" title="Refresh">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="vehicles-list" id="vehicles-list">
+                        <!-- Vehicle cards will be dynamically added here -->
+                    </div>
+
+                    <div id="no-vehicles" class="no-data">
+                        <i class="fas fa-car"></i>
+                        <h3>No Vehicles Today</h3>
+                        <p>No vehicle entries have been registered today</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CONFIGURATION =====
+        const API_BASE_URL = '/api';
+        let currentUser = null;
+        let vehiclesDatabase = [];
+
+        // ===== AUTHENTICATION FUNCTIONS =====
+        async function checkAuthentication() {
+            try {
+                // First check if there's a token in localStorage
+                const token = localStorage.getItem('vsms_token');
+                const localUserRaw = localStorage.getItem('vsms_current_user');
+                
+                console.log('Authentication check:', { token: !!token, localUser: !!localUserRaw });
+                
+                // If we have a local user stored, parse it
+                if (localUserRaw) {
+                    try {
+                        const localUser = JSON.parse(localUserRaw);
+                        console.log('Local user found:', localUser);
+                        
+                        // Check if user has guard role
+                        if (localUser && localUser.role === 'guard') {
+                            currentUser = localUser;
+                            console.log('Local guard user authenticated:', currentUser);
+                            showDashboard();
+                            return currentUser;
+                        } else if (localUser) {
+                            showAccessDenied(`Access Denied: This page is for Security Guards only. You are logged in as ${getRoleName(localUser.role)}.`);
+                            return null;
+                        }
+                    } catch (err) {
+                        console.error('Error parsing local user:', err);
+                    }
+                }
+                
+                // If we have a token, try to verify it with the server
+                if (token) {
+                    try {
+                        console.log('Attempting server authentication with token');
+                        const response = await fetch(`${API_BASE_URL}/auth/me`, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            const serverUser = data.data || data.user || data;
+                            console.log('Server user response:', serverUser);
+                            
+                            if (serverUser && serverUser.role === 'guard') {
+                                currentUser = serverUser;
+                                // Save to localStorage for future use
+                                localStorage.setItem('vsms_current_user', JSON.stringify(serverUser));
+                                console.log('Server guard user authenticated:', currentUser);
+                                showDashboard();
+                                return currentUser;
+                            } else if (serverUser) {
+                                showAccessDenied(`Access Denied: This page is for Security Guards only. You are logged in as ${getRoleName(serverUser.role)}.`);
+                                return null;
+                            }
+                        } else {
+                            console.warn('Server authentication failed:', response.status);
+                            // If server auth fails but we have local user, still allow access
+                            if (localUserRaw) {
+                                const localUser = JSON.parse(localUserRaw);
+                                if (localUser && localUser.role === 'guard') {
+                                    currentUser = localUser;
+                                    showDashboard();
+                                    return currentUser;
+                                }
+                            }
+                        }
+                    } catch (error) {
+                        console.warn('Server authentication error:', error);
+                        // Fallback to local storage if server is not reachable
+                        if (localUserRaw) {
+                            const localUser = JSON.parse(localUserRaw);
+                            if (localUser && localUser.role === 'guard') {
+                                currentUser = localUser;
+                                showDashboard();
+                                return currentUser;
+                            }
+                        }
+                    }
+                }
+                
+                // If we get here, no valid authentication found
+                console.log('No valid authentication found');
+                showAccessDenied();
+                return null;
+                
+            } catch (error) {
+                console.error('Authentication error:', error);
+                showAccessDenied();
+                return null;
+            }
+        }
+
+        function getRoleName(roleCode) {
+            const roles = {
+                'admin': 'Administrator',
+                'guard': 'Security Guard',
+                'receptionist': 'Receptionist',
+                'advisor': 'Service Advisor',
+                'technician': 'Technician',
+                'qc': 'Quality Controller'
+            };
+            return roles[roleCode] || 'User';
+        }
+
+        // ===== UI CONTROL FUNCTIONS =====
+        function showAccessDenied(message = 'You must be logged in as a Security Guard to access this page.') {
+            console.log('Showing access denied:', message);
+            document.getElementById('access-denied').style.display = 'block';
+            document.getElementById('dashboard-content').style.display = 'none';
+            
+            // Update the message in the access denied div
+            const accessDeniedDiv = document.getElementById('access-denied');
+            if (accessDeniedDiv) {
+                accessDeniedDiv.innerHTML = `
+                    <h2><i class="fas fa-exclamation-triangle"></i> Access Denied</h2>
+                    <p>${message}</p>
+                    <a href="logreg.html" class="btn btn-primary">
+                        <i class="fas fa-sign-in-alt"></i> Go to Login Page
+                    </a>
+                `;
+            }
+        }
+
+        function showDashboard() {
+            console.log('Showing dashboard for user:', currentUser);
+            document.getElementById('access-denied').style.display = 'none';
+            document.getElementById('dashboard-content').style.display = 'block';
+            
+            // Update user info in UI
+            if (currentUser) {
+                document.getElementById('user-name').textContent = currentUser.name || 'Security Guard';
+                const initials = currentUser.name 
+                    ? currentUser.name.split(' ').map(n => n[0]).join('').toUpperCase()
+                    : 'SG';
+                document.getElementById('user-avatar').textContent = initials;
+            }
+        }
+
+        // ===== VEHICLE MANAGEMENT =====
+        async function loadVehicles() {
+            try {
+                const token = localStorage.getItem('vsms_token');
+                
+                // For demo purposes, we'll load from localStorage if no server
+                const savedVehicles = localStorage.getItem('vsms_vehicles');
+                if (savedVehicles) {
+                    vehiclesDatabase = JSON.parse(savedVehicles);
+                    console.log('Loaded vehicles from localStorage:', vehiclesDatabase.length);
+                } else {
+                    vehiclesDatabase = [];
+                }
+                
+                // Try server fetch if token exists
+                if (token) {
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/vehicles/today`, {
+                            headers: {
+                                'Authorization': `Bearer ${token}`
+                            }
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            vehiclesDatabase = data.vehicles || data || [];
+                            // Save to localStorage for offline use
+                            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                        }
+                    } catch (error) {
+                        console.log('Using local vehicles data:', error.message);
+                    }
+                }
+                
+                displayVehicles();
+                
+            } catch (error) {
+                console.error('Error loading vehicles:', error);
+                showMessage('Failed to load vehicles. Please try again.', 'error');
+            }
+        }
+
+        function displayVehicles() {
+            const vehiclesList = document.getElementById('vehicles-list');
+            const noVehiclesMsg = document.getElementById('no-vehicles');
+            const countElement = document.getElementById('count-number');
+            
+            if (!vehiclesList || !noVehiclesMsg || !countElement) return;
+            
+            // Filter today's vehicles
+            const today = new Date().toDateString();
+            const todaysVehicles = vehiclesDatabase.filter(vehicle => {
+                if (!vehicle.entryTime) return false;
+                const vehicleDate = new Date(vehicle.entryTime);
+                return vehicleDate.toDateString() === today;
+            }).map(vehicle => {
+                // Ensure vehicle has all required properties
+                return {
+                    id: vehicle.id || Date.now(),
+                    vehicleNumber: vehicle.vehicleNumber || 'N/A',
+                    carName: vehicle.carName || vehicle.make || 'N/A',
+                    vehicleModel: vehicle.vehicleModel || vehicle.model || 'N/A',
+                    year: vehicle.year || 'N/A',
+                    color: vehicle.color || 'N/A',
+                    ownerEmail: vehicle.ownerEmail || vehicle.email || 'N/A',
+                    mobileNumber: vehicle.mobileNumber || vehicle.phone || 'N/A',
+                    entryTime: vehicle.entryTime || new Date().toISOString(),
+                    status: 'entry', // Ensure consistent status
+                    serviceStatus: vehicle.serviceStatus || 'pending',
+                    assignedAdvisor: vehicle.assignedAdvisor || vehicle.advisor || null
+                };
+            });
+            
+            // Sort by entry time (newest first)
+            todaysVehicles.sort((a, b) => new Date(b.entryTime) - new Date(a.entryTime));
+            
+            // Update count
+            countElement.textContent = todaysVehicles.length;
+            
+            // Show message if no vehicles today
+            if (todaysVehicles.length === 0) {
+                vehiclesList.innerHTML = '';
+                noVehiclesMsg.style.display = 'flex';
+                return;
+            }
+
+            // Hide no vehicles message
+            noVehiclesMsg.style.display = 'none';
+            
+            // Display today's vehicles
+            vehiclesList.innerHTML = todaysVehicles.map(vehicle => {
+                const entryTime = new Date(vehicle.entryTime);
+                const timeString = entryTime.toLocaleTimeString([], { 
+                    hour: '2-digit', 
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                
+                let serviceStatusText = vehicle.serviceStatus || 'pending';
+                let serviceStatusClass = serviceStatusText.replace(/\s+/g, '-').toLowerCase();
+                serviceStatusText = serviceStatusText.replace('-', ' ').toUpperCase();
+                
+                if (vehicle.serviceStatus === "delivered") {
+                    serviceStatusClass = "delivered";
+                    serviceStatusText = "DELIVERED";
+                }
+                
+                let serviceBadge = '';
+                if (vehicle.serviceStatus && vehicle.serviceStatus !== 'pending') {
+                    serviceBadge = `
+                        <span class="service-status-badge ${serviceStatusClass}">
+                            ${serviceStatusText}
+                        </span>
+                    `;
+                }
+                
+                return `
+                    <div class="vehicle-card">
+                        <div class="vehicle-header">
+                            <span class="vehicle-number">${vehicle.vehicleNumber}</span>
+                            <span class="vehicle-time">
+                                <i class="far fa-clock"></i>
+                                ${timeString}
+                            </span>
+                        </div>
+                        <div class="vehicle-details">
+                            <div class="detail-item">
+                                <i class="fas fa-car"></i>
+                                <span>${vehicle.carName} ${vehicle.vehicleModel}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-palette"></i>
+                                <span>${vehicle.color} • ${vehicle.year}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-user"></i>
+                                <span>${vehicle.ownerEmail}</span>
+                            </div>
+                            <div class="detail-item">
+                                <i class="fas fa-phone"></i>
+                                <span>${vehicle.mobileNumber}</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <span class="status-badge entry">
+                                ENTRY
+                            </span>
+                            ${serviceBadge}
+                            ${vehicle.assignedAdvisor ? 
+                                `<span class="advisor-badge">
+                                    <i class="fas fa-user-cog"></i> ${vehicle.assignedAdvisor}
+                                </span>` : ''
+                            }
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ===== VEHICLE ENTRY FORM HANDLER =====
+        async function handleVehicleEntry(event) {
+            event.preventDefault();
+            
+            const vehicleNumber = document.getElementById('vehicleNumber').value.toUpperCase().trim();
+            const carName = document.getElementById('carName').value.trim();
+            const vehicleModel = document.getElementById('vehicleModel').value.trim();
+            const year = parseInt(document.getElementById('year').value);
+            const color = document.getElementById('color').value.trim();
+            const ownerEmail = document.getElementById('ownerEmail').value.trim();
+            const mobileNumber = document.getElementById('mobileNumber').value.trim();
+            
+            // Validation
+            if (!vehicleNumber || !carName || !vehicleModel || !year || !color || !ownerEmail || !mobileNumber) {
+                showMessage("Please fill in all required fields!", "error");
+                return;
+            }
+            
+            const vehicleNumberRegex = /^[A-Za-z0-9]{10}$/;
+            if (!vehicleNumberRegex.test(vehicleNumber)) {
+                showMessage("Vehicle number must be exactly 10 alphanumeric characters!", "error");
+                return;
+            }
+            
+            const mobileRegex = /^[0-9]{10}$/;
+            if (!mobileRegex.test(mobileNumber)) {
+                showMessage("Mobile number must be exactly 10 digits!", "error");
+                return;
+            }
+
+            try {
+                const token = localStorage.getItem('vsms_token');
+                
+                // Generate unique ID
+                const newId = vehiclesDatabase.length > 0 
+                    ? Math.max(...vehiclesDatabase.map(v => v.id || 0)) + 1 
+                    : 1;
+                
+                // Create vehicle object with consistent structure
+                const newVehicle = {
+                    id: newId,
+                    vehicleNumber,
+                    carName,
+                    vehicleModel,
+                    year,
+                    color,
+                    ownerEmail,
+                    mobileNumber,
+                    entryTime: new Date().toISOString(),
+                    status: 'entry', // Consistent status field
+                    serviceStatus: 'pending',
+                    assignedAdvisor: null,
+                    exitTime: null
+                };
+                
+                // Try to save to server if token exists
+                if (token) {
+                    try {
+                        const response = await fetch(`${API_BASE_URL}/vehicles`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'Authorization': `Bearer ${token}`
+                            },
+                            body: JSON.stringify(newVehicle)
+                        });
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            newVehicle.id = data.vehicle?.id || data.id || newId;
+                            newVehicle.entryTime = data.vehicle?.entryTime || newVehicle.entryTime;
+                        }
+                    } catch (error) {
+                        console.log('Saving locally, server not available:', error.message);
+                    }
+                }
+                
+                // Add to local array for immediate UI update
+                vehiclesDatabase.push(newVehicle);
+                // Save to localStorage
+                localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                
+                showMessage(`Vehicle ${vehicleNumber} registered successfully!`, 'success');
+                document.getElementById('entry-form').reset();
+                displayVehicles();
+                
+                // Trigger storage event for other tabs/windows
+                window.dispatchEvent(new Event('storage'));
+                
+            } catch (error) {
+                console.error('Error registering vehicle:', error);
+                showMessage(error.message || 'Failed to register vehicle. Please try again.', 'error');
+            }
+        }
+
+        // ===== UTILITY FUNCTIONS =====
+        function updateLiveTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const dateString = now.toLocaleDateString('en-GB', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            const timeElement = document.getElementById('current-time');
+            if (timeElement) {
+                timeElement.textContent = `${dateString} | ${timeString}`;
+            }
+        }
+
+        function showMessage(message, type) {
+            // Remove any existing message
+            const existing = document.querySelector('.message-box');
+            if (existing) existing.remove();
+            
+            // Create message element
+            const msgBox = document.createElement('div');
+            msgBox.className = `message-box ${type}`;
+            msgBox.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(msgBox);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (msgBox.parentNode) {
+                    msgBox.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => msgBox.remove(), 300);
+                }
+            }, 3000);
+        }
+
+        async function logout() {
+            try {
+                const token = localStorage.getItem('vsms_token');
+                if (token) {
+                    await fetch(`${API_BASE_URL}/auth/logout`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+            
+            localStorage.removeItem('vsms_token');
+            localStorage.removeItem('vsms_current_user');
+            // Don't remove vehicles on logout
+            window.location.href = 'logreg.html';
+        }
+
+        // ===== THEME TOGGLE =====
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            const savedTheme = localStorage.getItem('theme-preference');
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-regular fa-moon"></i>';
+            }
+            
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-regular fa-moon"></i>' : '<i class="fa-solid fa-sun" style="color: rgba(255, 255, 255, 1.00);"></i>';
+                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+
+        // ===== LISTEN FOR EXTERNAL CHANGES =====
+        function initStorageListener() {
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'vsms_vehicles') {
+                    console.log('Vehicles updated from another tab/window');
+                    loadVehicles();
+                }
+            });
+        }
+
+        // ===== INITIALIZATION =====
+        async function initialize() {
+            console.log('Initializing dashboard...');
+            
+            // Initialize theme toggle
+            initThemeToggle();
+            
+            // Check authentication
+            await checkAuthentication();
+            
+            // Set up event listeners
+            const entryForm = document.getElementById('entry-form');
+            if (entryForm) {
+                entryForm.addEventListener('submit', handleVehicleEntry);
+            }
+            
+            // Load initial data
+            loadVehicles();
+            updateLiveTime();
+            
+            // Set up intervals
+            setInterval(updateLiveTime, 1000);
+            setInterval(loadVehicles, 3000); // Auto-refresh every 3 seconds for better sync
+            
+            // Listen for storage events
+            initStorageListener();
+        }
+
+        // ===== START APPLICATION =====
+        document.addEventListener('DOMContentLoaded', initialize);
+    </script>
+</body>
+</html> 

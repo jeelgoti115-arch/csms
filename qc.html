@@ -1,0 +1,3124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VSMS - Quality Controller Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="images/car-service.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        /* CSS Variables for Light Mode (Default) */
+        :root {
+            --bg-gradient-from: #f8fafc;
+            --bg-gradient-to: #eef2f7;
+            --header-bg: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            --card-bg: #ffffff;
+            --card-bg-lighter: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --border-color: #e2e8f0;
+            --border-color-light: #f1f5f9;
+            --hover-bg: #f1f5f9;
+            --input-bg: #ffffff;
+            --accent-color: #10b981;
+            --accent-gradient: linear-gradient(135deg, #10b981, #059669);
+            --purple-accent: #8b5cf6;
+            --orange-accent: #f59e0b;
+            --red-accent: #ef4444;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --logo-color: #10b981;
+            --icon-color: #10b981;
+            --modal-bg: #ffffff;
+            --tab-active: linear-gradient(135deg, #10b981, #059669);
+            --tab-inactive: #64748b;
+        }
+
+        /* Dark Mode Variables */
+        html.dark-mode {
+            --bg-gradient-from: #0f172a;
+            --bg-gradient-to: #1e293b;
+            --header-bg: linear-gradient(135deg, #0a0f1a, #1a1f2a);
+            --card-bg: #1e293b;
+            --card-bg-lighter: #2d3b4f;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --border-color-light: #475569;
+            --hover-bg: #2d3b4f;
+            --input-bg: #2d3b4f;
+            --accent-color: #10b981;
+            --accent-gradient: linear-gradient(135deg, #10b981, #059669);
+            --purple-accent: #8b5cf6;
+            --orange-accent: #f59e0b;
+            --red-accent: #ef4444;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --logo-color: #10b981;
+            --icon-color: #10b981;
+            --modal-bg: #1e293b;
+            --tab-active: linear-gradient(135deg, #10b981, #059669);
+            --tab-inactive: #cbd5e1;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-from), var(--bg-gradient-to));
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            background: var(--header-bg);
+            color: white;
+            padding: 1.2rem 2rem;
+            box-shadow: 0 4px 20px var(--shadow-color);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid var(--accent-color);
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--logo-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: white;
+        }
+
+        .user-details h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: white;
+        }
+
+        .user-details p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            color: white;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .theme-toggle i {
+            color: white;
+        }
+
+        html.dark-mode .theme-toggle i {
+            color: #ffd700;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            margin-bottom: 2rem;
+            text-align: center;
+            border-left: 5px solid var(--accent-color);
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-header h1 {
+            color: var(--text-primary);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .dashboard-header p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: var(--accent-gradient);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        /* Statistics Cards */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.8rem;
+            border-radius: 16px;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            box-shadow: 0 6px 20px var(--shadow-color);
+            transition: all 0.3s ease;
+            border-left: 5px solid;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px var(--shadow-color);
+        }
+
+        .stat-card h3 {
+            font-size: 2.2rem;
+            color: var(--text-primary);
+            margin-bottom: 0.3rem;
+            font-weight: 700;
+        }
+
+        .stat-card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        /* Vehicles Section */
+        .vehicles-section {
+            background: var(--card-bg);
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        .section-title {
+            color: var(--text-primary);
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title i {
+            color: var(--accent-color);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border-color-light);
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            background: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab.active {
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .tab:hover:not(.active) {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        /* Vehicles Grid */
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .vehicles-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .vehicle-card {
+            background: var(--card-bg-lighter);
+            padding: 1.8rem;
+            border-radius: 16px;
+            border-left: 4px solid var(--accent-color);
+            transition: all 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px var(--shadow-color);
+        }
+
+        .vehicle-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .vehicle-number {
+            font-family: monospace;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            background: var(--border-color);
+            padding: 6px 12px;
+            border-radius: 8px;
+        }
+
+        .vehicle-details {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .detail-row i {
+            color: var(--accent-color);
+            width: 16px;
+        }
+
+        /* Job Cards */
+        .job-cards {
+            margin: 1rem 0;
+        }
+
+        .job-card {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 0.8rem;
+            border-left: 3px solid var(--accent-color);
+            box-shadow: 0 2px 5px var(--shadow-color);
+        }
+
+        .job-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .job-description {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .job-estimate {
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Time Summary */
+        .time-summary {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            border-left: 3px solid var(--accent-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .time-summary h4 {
+            color: var(--text-primary);
+        }
+
+        .time-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.3rem;
+            font-size: 0.85rem;
+        }
+
+        .time-item .label {
+            color: var(--text-secondary);
+        }
+
+        .time-item .value {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .time-highlight {
+            background: rgba(16, 185, 129, 0.1);
+            padding: 0.5rem;
+            border-radius: 6px;
+            margin-top: 0.5rem;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            color: var(--text-primary);
+        }
+
+        /* QC Status Badge */
+        .qc-status {
+            margin-top: 1rem;
+            padding: 0.8rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+
+        .qc-status.awaiting {
+            background: rgba(139, 92, 246, 0.2);
+            color: var(--purple-accent);
+            border-left: 3px solid var(--purple-accent);
+        }
+
+        .qc-status.approved {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent-color);
+            border-left: 3px solid var(--accent-color);
+        }
+
+        .qc-status.rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--red-accent);
+            border-left: 3px solid var(--red-accent);
+        }
+
+        /* Service Description */
+        .service-description {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            border-left: 3px solid var(--accent-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .service-description h4 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .service-description p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Vehicle Actions */
+        .vehicle-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+        }
+
+        .action-btn.start-qc {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
+        .action-btn.approve {
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .action-btn.reject {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .action-btn.hold {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+        }
+
+        .action-btn:disabled {
+            background: var(--text-muted);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        /* Priority Badge */
+        .priority-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .priority-badge.normal {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .priority-badge.high {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .priority-badge.urgent {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        /* No Data */
+        .no-data {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .no-data h3 {
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .no-data p {
+            color: var(--text-secondary);
+        }
+
+        /* Live Time */
+        .live-time {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            background: var(--card-bg-lighter);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            display: inline-block;
+            font-family: monospace;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--modal-bg);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 700px;
+            width: 100%;
+            box-shadow: 0 20px 50px var(--shadow-color);
+            animation: modalIn 0.3s ease;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        @keyframes modalIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-header {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .modal-header h3 {
+            color: var(--text-primary);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal-subtitle {
+            color: var(--text-secondary);
+            margin: 0.5rem 0 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: all 0.3s;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+
+        /* QC Checklist */
+        .qc-checklist {
+            margin: 1.5rem 0;
+        }
+
+        .qc-item {
+            background: var(--card-bg-lighter);
+            padding: 1.25rem;
+            border-radius: 12px;
+            margin-bottom: 1.25rem;
+            border-left: 4px solid var(--accent-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .qc-item-title {
+            font-weight: 700;
+            color: var(--text-primary);
+            font-size: 1rem;
+        }
+
+        .status-btn {
+            padding: 0.5rem 1.25rem;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            color: var(--text-secondary);
+        }
+
+        .status-btn.pass:hover {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .status-btn.fail:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--red-accent);
+            color: var(--red-accent);
+        }
+
+        .status-btn.pass.selected {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .status-btn.fail.selected {
+            background: var(--red-accent);
+            border-color: var(--red-accent);
+            color: white;
+        }
+
+        .qc-item-details textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            min-height: 80px;
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+
+        /* QC Decision Buttons */
+        .qc-decision-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .decision-btn {
+            flex: 1;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            background: var(--card-bg);
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+        }
+
+        .decision-btn.approve:hover {
+            background: rgba(16, 185, 129, 0.2);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .decision-btn.reject:hover {
+            background: rgba(239, 68, 68, 0.2);
+            border-color: var(--red-accent);
+            color: var(--red-accent);
+        }
+
+        .decision-btn.hold:hover {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+
+        .decision-btn.approve.selected {
+            background: var(--accent-color);
+            border-color: var(--accent-color);
+            color: white;
+        }
+
+        .decision-btn.reject.selected {
+            background: var(--red-accent);
+            border-color: var(--red-accent);
+            color: white;
+        }
+
+        .decision-btn.hold.selected {
+            background: #f59e0b;
+            border-color: #f59e0b;
+            color: white;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.cancel {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        .modal-btn.cancel:hover {
+            background: var(--text-muted);
+        }
+
+        .modal-btn.start {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+        }
+
+        .modal-btn.start:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .modal-btn.approve {
+            background: var(--accent-gradient);
+            color: white;
+        }
+
+        .modal-btn.approve:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .modal-btn.reject {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+        }
+
+        .modal-btn.reject:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        /* Message Box */
+        .message-box {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: var(--card-bg);
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px var(--shadow-color);
+            z-index: 10001;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease;
+            max-width: 350px;
+            border-left: 4px solid;
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .message-box.success {
+            border-left-color: var(--accent-color);
+        }
+
+        .message-box.error {
+            border-left-color: var(--red-accent);
+        }
+
+        .message-box.info {
+            border-left-color: var(--purple-accent);
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0%); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0%); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Vehicle Details Mini Modal */
+        .mini-modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--modal-bg);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px var(--shadow-color);
+            z-index: 10002;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: modalIn 0.3s ease;
+            border: 1px solid var(--border-color);
+        }
+
+        .mini-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .mini-modal-header h3 {
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-btn:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 10001;
+        }
+
+        /* Vehicle Status Colors - Dark Mode Compatible */
+        .vehicle-status.awaiting-qc {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .vehicle-status.in-qc {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+        }
+
+        .vehicle-status.ready-for-delivery,
+        .vehicle-status.qc-approved {
+            background: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+        }
+
+        .vehicle-status.rework-required,
+        .vehicle-status.qc-rejected {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        /* Stat Icons */
+        .stat-card.awaiting-qc { border-left-color: #f59e0b; }
+        .stat-card.in-qc { border-left-color: #8b5cf6; }
+        .stat-card.approved { border-left-color: #10b981; }
+        .stat-card.rejected { border-left-color: #ef4444; }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 8px var(--shadow-color);
+        }
+
+        .stat-icon.awaiting-qc { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .stat-icon.in-qc { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .stat-icon.approved { background: linear-gradient(135deg, #10b981, #059669); }
+        .stat-icon.rejected { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .dashboard-header {
+                padding: 2rem 1.5rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+            
+            .vehicles-section {
+                padding: 2rem 1.5rem;
+            }
+            
+            .vehicle-actions {
+                flex-direction: column;
+            }
+            
+            .user-details {
+                display: none;
+            }
+            
+            .modal-content {
+                padding: 2rem 1.5rem;
+            }
+            
+            .section-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+            
+            .mini-modal {
+                padding: 1.5rem;
+                width: 95%;
+            }
+            
+            .qc-item-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .qc-decision-buttons {
+                flex-direction: column;
+            }
+            .qc-decision-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* Large Tablet Responsive (1024px and below) */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 1rem;
+                max-width: 95%;
+            }
+
+            .dashboard-header {
+                padding: 1.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .vehicles-section {
+                padding: 1.5rem;
+            }
+
+            .vehicle-card {
+                padding: 1.2rem;
+            }
+
+            .modal-content {
+                width: 90vw;
+                max-height: 85vh;
+            }
+
+            .qc-grid {
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+                gap: 0.8rem;
+            }
+
+            .vehicle-actions {
+                flex-direction: column;
+            }
+
+            .vehicle-actions button {
+                width: 100%;
+            }
+        }
+
+        /* Mobile Responsive (768px and below) */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 12px;
+            }
+            
+            header {
+                padding: 0.8rem 1rem;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .dashboard-header {
+                padding: 1rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.9rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .stat-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .vehicles-section {
+                padding: 1rem;
+            }
+
+            .vehicle-card {
+                padding: 1rem;
+            }
+
+            .vehicle-details {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+            
+            .vehicle-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .vehicle-actions button {
+                width: 100%;
+                padding: 0.8rem;
+            }
+            
+            .user-details {
+                display: none;
+            }
+            
+            .modal-content {
+                padding: 1.2rem;
+                width: 95vw;
+            }
+
+            .modal-header {
+                padding: 1rem;
+            }
+            
+            .section-title {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
+                font-size: 1.2rem;
+            }
+            
+            .tabs {
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+                gap: 0.3rem;
+            }
+
+            .tab-btn {
+                padding: 0.6rem 1rem;
+                font-size: 0.85rem;
+            }
+            
+            .mini-modal {
+                padding: 1.2rem;
+                width: 95%;
+            }
+            
+            .qc-item-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .qc-item-title {
+                font-size: 1rem;
+            }
+            
+            .qc-decision-buttons {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .decision-btn {
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+
+            .qc-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .qc-card {
+                padding: 1rem;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .modal-btn {
+                width: 100%;
+            }
+
+            .message-box {
+                right: 10px;
+                left: 10px;
+                width: auto;
+                max-width: none;
+                font-size: 0.9rem;
+            }
+
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+
+            .live-time {
+                font-size: 0.85rem;
+            }
+
+            .role-badge {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Small Mobile Responsive (480px and below) */
+        @media (max-width: 480px) {
+            body {
+                font-size: 13px;
+            }
+
+            header {
+                padding: 0.6rem 0.8rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            nav {
+                gap: 0.5rem;
+            }
+
+            .container {
+                padding: 0 8px;
+            }
+
+            .dashboard-header {
+                padding: 0.8rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.3rem;
+                margin-bottom: 0.5rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+
+            .stat-card {
+                padding: 0.8rem;
+            }
+
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1rem;
+            }
+
+            .stat-info h3 {
+                font-size: 0.75rem;
+            }
+
+            .stat-info .value {
+                font-size: 1.2rem;
+            }
+
+            .vehicles-section {
+                padding: 0.8rem;
+            }
+
+            .vehicle-card {
+                padding: 0.8rem;
+            }
+
+            .vehicle-number {
+                font-size: 0.95rem;
+                padding: 4px 8px;
+            }
+
+            .vehicle-details {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+                font-size: 0.85rem;
+            }
+
+            .detail-item {
+                gap: 0.5rem;
+            }
+
+            .vehicle-actions {
+                flex-direction: column;
+                gap: 0.4rem;
+            }
+
+            .vehicle-actions button {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.8rem;
+            }
+
+            .modal-content {
+                padding: 1rem 0.8rem;
+                width: 100%;
+                margin: 1rem auto;
+            }
+
+            .modal-header {
+                padding: 0.8rem;
+            }
+
+            .modal-header h2 {
+                font-size: 1.2rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+                gap: 0.5rem;
+            }
+
+            .mini-modal {
+                padding: 1rem;
+                width: 100%;
+                margin: 1rem auto;
+            }
+
+            .form-group {
+                margin-bottom: 0.8rem;
+            }
+
+            .form-group label {
+                font-size: 0.85rem;
+                margin-bottom: 4px;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 8px 10px;
+                font-size: 0.85rem;
+            }
+
+            .qc-grid {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+
+            .qc-card {
+                padding: 0.8rem;
+                gap: 0.6rem;
+            }
+
+            .qc-avatar {
+                width: 40px;
+                height: 40px;
+                font-size: 0.9rem;
+            }
+
+            .qc-info h4 {
+                font-size: 0.9rem;
+            }
+
+            .qc-info p {
+                font-size: 0.8rem;
+            }
+
+            .qc-search {
+                padding: 0.7rem 0.8rem;
+            }
+
+            .qc-decision-buttons {
+                flex-direction: column;
+                gap: 0.4rem;
+            }
+
+            .decision-btn {
+                padding: 0.7rem 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                gap: 0.4rem;
+            }
+
+            .modal-btn {
+                padding: 0.8rem;
+                font-size: 0.85rem;
+                width: 100%;
+            }
+
+            .tabs {
+                gap: 0.2rem;
+            }
+
+            .tab-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.75rem;
+            }
+
+            .message-box {
+                right: 5px;
+                left: 5px;
+                padding: 0.8rem;
+                font-size: 0.8rem;
+                min-width: auto;
+                width: auto;
+                max-width: none;
+            }
+
+            .user-avatar {
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+
+            .live-time {
+                font-size: 0.75rem;
+                gap: 0.3rem;
+            }
+
+            .role-badge {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+
+            .qc-item-title {
+                font-size: 0.95rem;
+            }
+
+            .detail-item i {
+                font-size: 0.9rem;
+                min-width: 16px;
+            }
+
+            .status-badge {
+                padding: 0.3rem 0.6rem;
+                font-size: 0.7rem;
+            }
+        }
+
+        /* Extra Small Mobile Responsive (360px and below) */
+        @media (max-width: 360px) {
+            body {
+                font-size: 12px;
+            }
+
+            header {
+                padding: 0.5rem 0.6rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            nav {
+                gap: 0.3rem;
+            }
+
+            .container {
+                padding: 0 6px;
+            }
+
+            .dashboard-header {
+                padding: 0.6rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.2rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.75rem;
+            }
+
+            .stats-grid {
+                gap: 0.5rem;
+            }
+
+            .stat-card {
+                padding: 0.6rem;
+            }
+
+            .stat-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+
+            .stat-info h3 {
+                font-size: 0.7rem;
+            }
+
+            .stat-info .value {
+                font-size: 1.1rem;
+            }
+
+            .vehicles-section {
+                padding: 0.6rem;
+            }
+
+            .vehicle-card {
+                padding: 0.6rem;
+                margin-bottom: 0.6rem;
+            }
+
+            .vehicle-number {
+                font-size: 0.9rem;
+                padding: 3px 6px;
+            }
+
+            .vehicle-details {
+                font-size: 0.8rem;
+                gap: 0.4rem;
+            }
+
+            .detail-item {
+                gap: 0.4rem;
+            }
+
+            .vehicle-actions button {
+                padding: 0.5rem 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .modal-content {
+                padding: 0.8rem;
+            }
+
+            .modal-header h2 {
+                font-size: 1.1rem;
+            }
+
+            .section-title {
+                font-size: 1rem;
+            }
+
+            .mini-modal {
+                padding: 0.8rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.6rem;
+            }
+
+            .form-group label {
+                font-size: 0.8rem;
+                margin-bottom: 2px;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                padding: 6px 8px;
+                font-size: 0.8rem;
+            }
+
+            .qc-grid {
+                gap: 0.5rem;
+            }
+
+            .qc-card {
+                padding: 0.6rem;
+            }
+
+            .qc-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 0.8rem;
+            }
+
+            .qc-info h4 {
+                font-size: 0.85rem;
+            }
+
+            .qc-info p {
+                font-size: 0.75rem;
+            }
+
+            .decision-btn {
+                padding: 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .modal-btn {
+                padding: 0.6rem;
+                font-size: 0.8rem;
+            }
+
+            .message-box {
+                padding: 0.6rem;
+                font-size: 0.75rem;
+            }
+
+            .user-avatar {
+                width: 28px;
+                height: 28px;
+                font-size: 0.75rem;
+            }
+
+            .live-time {
+                font-size: 0.7rem;
+            }
+
+            .role-badge {
+                font-size: 0.7rem;
+                padding: 0.3rem 0.6rem;
+            }
+
+            .status-badge {
+                padding: 0.2rem 0.4rem;
+                font-size: 0.65rem;
+            }
+        }
+
+        /* Dark Mode Specific Overrides */
+        html.dark-mode .vehicle-card {
+            background: var(--card-bg-lighter);
+        }
+
+        html.dark-mode .vehicle-number {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .live-time {
+            background: var(--card-bg-lighter);
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .modal-content {
+            background: var(--modal-bg);
+        }
+
+        html.dark-mode .stat-card {
+            background: var(--card-bg);
+        }
+
+        html.dark-mode .dashboard-header {
+            background: var(--card-bg);
+        }
+
+        html.dark-mode .vehicles-section {
+            background: var(--card-bg);
+        }
+
+        html.dark-mode .footer {
+            color: var(--text-secondary);
+            border-top-color: var(--border-color);
+        }
+
+        html.dark-mode .job-card {
+            background: var(--card-bg-lighter);
+        }
+
+        html.dark-mode .time-summary {
+            background: var(--card-bg-lighter);
+        }
+
+        html.dark-mode .service-description {
+            background: var(--card-bg-lighter);
+        }
+
+        html.dark-mode .qc-item {
+            background: var(--card-bg-lighter);
+        }
+
+        html.dark-mode .status-btn {
+            background: var(--card-bg);
+        }
+
+        html.dark-mode .decision-btn {
+            background: var(--card-bg);
+        }
+
+        html.dark-mode .form-group input,
+        html.dark-mode .form-group select,
+        html.dark-mode .form-group textarea {
+            background: var(--input-bg);
+            color: var(--text-primary);
+        }
+    </style>
+
+    <!-- Unified theme overrides: ensure all dashboards share the same color palette and UI tokens -->
+    <style>
+        :root{
+            --primary: #3b82f6;
+            --accent-primary: #8b5cf6;
+            --accent: var(--primary);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --card-bg: #ffffff;
+            --bg-gradient-from: #f8fafc;
+            --bg-gradient-to: #eef2f7;
+            --text-primary: #1f2937;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0,0,0,0.06);
+        }
+
+        body { background: linear-gradient(135deg,var(--bg-gradient-from),var(--bg-gradient-to)); color:var(--text-primary); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        header { background: linear-gradient(135deg,#0f172a 0%, #1f2937 100%); border-bottom: 3px solid var(--primary); }
+        .btn, button { background: var(--primary); color: #fff; border: none; border-radius: 8px; }
+        .btn-primary { background: var(--primary); }
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); }
+        .btn-danger { background: var(--error); }
+        .role-badge, .status-badge { border-color: var(--primary); }
+        .card, .stat-card, .vehicle-card, .modal-content { background: var(--card-bg); box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+        a { color: var(--primary); }
+    </style>
+
+</head>
+<body>
+    <!-- Overlay for mini modal -->
+    <div class="overlay" id="overlay" onclick="closeMiniModal()"></div>
+
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-clipboard-check"></i>
+                <span>VSMS Quality Controller</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                
+                <div class="user-info">
+                    <div class="user-details">
+                        <h4 id="user-name">Quality Controller</h4>
+                        <p id="user-specialization">Quality Assurance</p>
+                    </div>
+                    <div class="user-avatar" id="user-avatar">QC</div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Access Denied -->
+        <div id="access-denied" style="display: none; text-align: center; padding: 5rem;">
+            <h2 style="color: var(--text-primary);">Access Denied</h2>
+            <p style="color: var(--text-secondary);">Quality controller access only</p>
+            <a href="logreg.html" style="color: var(--accent-color);">Return to Login</a>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard-content">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Quality Controller Dashboard</h1>
+                <p>Inspect completed services, approve quality standards, and ensure customer satisfaction</p>
+                <div class="live-time" id="live-time">
+                    <i class="fas fa-clock"></i>
+                    <span id="current-time">Loading...</span>
+                </div>
+                <div class="role-badge">
+                    <i class="fas fa-clipboard-check"></i>
+                    Quality Assurance Center
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="dashboard-stats">
+                <div class="stat-card awaiting-qc">
+                    <div class="stat-icon awaiting-qc">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div>
+                        <h3 id="awaiting-qc-count">0</h3>
+                        <p>Awaiting QC</p>
+                    </div>
+                </div>
+                <div class="stat-card in-qc">
+                    <div class="stat-icon in-qc">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div>
+                        <h3 id="in-qc-count">0</h3>
+                        <p>In QC</p>
+                    </div>
+                </div>
+                <div class="stat-card approved">
+                    <div class="stat-icon approved">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div>
+                        <h3 id="approved-count">0</h3>
+                        <p>Approved Today</p>
+                    </div>
+                </div>
+                <div class="stat-card rejected">
+                    <div class="stat-icon rejected">
+                        <i class="fas fa-times-circle"></i>
+                    </div>
+                    <div>
+                        <h3 id="rejected-count">0</h3>
+                        <p>Rejected Today</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Vehicles Awaiting QC -->
+                <div class="vehicles-section">
+                    <div class="section-title">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <i class="fas fa-car"></i>
+                            <span>Vehicles for Quality Control</span>
+                        </div>
+                        <div class="live-time" id="update-time"></div>
+                    </div>
+                    
+                    <!-- Tabs -->
+                    <div class="tabs">
+                        <button class="tab active" data-filter="awaiting-qc">
+                            <i class="fas fa-clock"></i> Awaiting QC
+                        </button>
+                        <button class="tab" data-filter="in-qc">
+                            <i class="fas fa-search"></i> In QC
+                        </button>
+                        <button class="tab" data-filter="qc-approved">
+                            <i class="fas fa-check-circle"></i> Approved
+                        </button>
+                        <button class="tab" data-filter="qc-rejected">
+                            <i class="fas fa-times-circle"></i> Rejected
+                        </button>
+                        <button class="tab" data-filter="all">
+                            All QC Vehicles
+                        </button>
+                    </div>
+                    
+                    <div class="vehicles-grid" id="vehicles-grid">
+                        <!-- Dynamic content -->
+                    </div>
+                    
+                    <div id="no-vehicles" class="no-data" style="display: none;">
+                        <i class="fas fa-car"></i>
+                        <h3>No Vehicles for QC</h3>
+                        <p>No vehicles are currently awaiting quality control</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Start QC Modal -->
+    <div id="start-qc-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-search"></i>
+                    Start Quality Control Inspection
+                </h3>
+                <p class="modal-subtitle" id="start-qc-vehicle-info"></p>
+                <div id="qc-priority-display"></div>
+            </div>
+            
+            <div class="modal-body">
+                <!-- Service Information -->
+                <div class="service-description">
+                    <h4><i class="fas fa-clipboard-list"></i> Service Information</h4>
+                    <div id="qc-service-info"></div>
+                </div>
+                
+                <!-- Inspection Report -->
+                <div class="service-description" style="margin-top: 1rem;">
+                    <h4><i class="fas fa-search"></i> Initial Inspection Report</h4>
+                    <div id="qc-initial-inspection"></div>
+                </div>
+                
+                <!-- Job Summary with Service Times -->
+                <div class="service-description" style="margin-top: 1rem;">
+                    <h4><i class="fas fa-tasks"></i> Completed Jobs Summary</h4>
+                    <div id="qc-jobs-summary"></div>
+                </div>
+                
+                <!-- QC Checklist -->
+                <div class="qc-checklist">
+                    <h4 style="color: var(--text-primary); margin-bottom: 1rem; font-size: 1.1rem;">
+                        <i class="fas fa-clipboard-check"></i> QC Inspection Checklist
+                    </h4>
+                    
+                    <div class="qc-item">
+                        <div class="qc-item-header">
+                            <span class="qc-item-title">Workmanship Quality</span>
+                            <div class="qc-item-status">
+                                <button class="status-btn pass" onclick="selectQcStatus('workmanship', 'pass')" type="button">Pass</button>
+                                <button class="status-btn fail" onclick="selectQcStatus('workmanship', 'fail')" type="button">Fail</button>
+                            </div>
+                        </div>
+                        <div class="qc-item-details">
+                            <textarea id="workmanship-details" placeholder="Details about workmanship quality..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="qc-item">
+                        <div class="qc-item-header">
+                            <span class="qc-item-title">Parts Quality & Installation</span>
+                            <div class="qc-item-status">
+                                <button class="status-btn pass" onclick="selectQcStatus('parts', 'pass')" type="button">Pass</button>
+                                <button class="status-btn fail" onclick="selectQcStatus('parts', 'fail')" type="button">Fail</button>
+                            </div>
+                        </div>
+                        <div class="qc-item-details">
+                            <textarea id="parts-details" placeholder="Details about parts quality and installation..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="qc-item">
+                        <div class="qc-item-header">
+                            <span class="qc-item-title">Cleanliness & Finish</span>
+                            <div class="qc-item-status">
+                                <button class="status-btn pass" onclick="selectQcStatus('cleanliness', 'pass')" type="button">Pass</button>
+                                <button class="status-btn fail" onclick="selectQcStatus('cleanliness', 'fail')" type="button">Fail</button>
+                            </div>
+                        </div>
+                        <div class="qc-item-details">
+                            <textarea id="cleanliness-details" placeholder="Details about cleanliness and finish..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="qc-item">
+                        <div class="qc-item-header">
+                            <span class="qc-item-title">Functionality Test</span>
+                            <div class="qc-item-status">
+                                <button class="status-btn pass" onclick="selectQcStatus('functionality', 'pass')" type="button">Pass</button>
+                                <button class="status-btn fail" onclick="selectQcStatus('functionality', 'fail')" type="button">Fail</button>
+                            </div>
+                        </div>
+                        <div class="qc-item-details">
+                            <textarea id="functionality-details" placeholder="Details about functionality test results..."></textarea>
+                        </div>
+                    </div>
+                    
+                    <div class="qc-item">
+                        <div class="qc-item-header">
+                            <span class="qc-item-title">Safety Compliance</span>
+                            <div class="qc-item-status">
+                                <button class="status-btn pass" onclick="selectQcStatus('safety', 'pass')" type="button">Pass</button>
+                                <button class="status-btn fail" onclick="selectQcStatus('safety', 'fail')" type="button">Fail</button>
+                            </div>
+                        </div>
+                        <div class="qc-item-details">
+                            <textarea id="safety-details" placeholder="Details about safety compliance..."></textarea>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- QC Notes -->
+                <div class="form-group">
+                    <label for="qc-inspection-notes">Overall QC Notes & Observations *</label>
+                    <textarea id="qc-inspection-notes" placeholder="Overall observations, concerns, or recommendations..." required></textarea>
+                </div>
+                
+                <!-- QC Result -->
+                <div class="form-group">
+                    <label>QC Decision *</label>
+                    <div class="qc-decision-buttons">
+                        <button class="decision-btn approve" onclick="selectQcDecision('approve')" type="button">
+                            <i class="fas fa-check-circle"></i> Approve
+                        </button>
+                        <button class="decision-btn reject" onclick="selectQcDecision('reject')" type="button">
+                            <i class="fas fa-times-circle"></i> Reject
+                        </button>
+                        <button class="decision-btn hold" onclick="selectQcDecision('hold')" type="button">
+                            <i class="fas fa-pause-circle"></i> Hold
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal('start-qc-modal')" type="button">Cancel</button>
+                <button class="modal-btn start" onclick="startQCInspection()" type="button">
+                    <i class="fas fa-play-circle"></i> Start QC
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- QC Details Modal -->
+    <div id="qc-details-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>
+                    <i class="fas fa-file-alt"></i>
+                    QC Inspection Details
+                </h3>
+                <p class="modal-subtitle" id="qc-details-vehicle-info"></p>
+            </div>
+            
+            <div class="modal-body">
+                <div id="qc-details-content"></div>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeModal('qc-details-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Details Mini Modal -->
+    <div class="mini-modal" id="vehicle-details-modal">
+        <div class="mini-modal-header">
+            <h3><i class="fas fa-car"></i> Vehicle Details</h3>
+            <button class="close-btn" onclick="closeMiniModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body" id="vehicle-details-content">
+            <!-- Details will be loaded here -->
+        </div>
+    </div>
+
+    <script>
+        // ===== AUTHENTICATION =====
+        const user = JSON.parse(localStorage.getItem('vsms_current_user'));
+        
+        if(!user || user.role !== 'qc'){
+            document.getElementById('dashboard-content').style.display = 'none';
+            document.getElementById('access-denied').style.display = 'block';
+            throw new Error("Access denied");
+        }
+
+        // Update user info
+        document.getElementById('user-name').textContent = user.name || 'Quality Controller';
+        document.getElementById('user-specialization').textContent = user.specialization || "Quality Assurance";
+        document.getElementById('user-avatar').textContent = (user.name || 'QC').split(' ').map(n => n[0]).join('').toUpperCase();
+
+        // ===== DATABASE =====
+        let vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+        let currentVehicleId = null;
+        let activeTab = 'awaiting-qc';
+        let qcChecklistStatus = {
+            workmanship: null,
+            parts: null,
+            cleanliness: null,
+            functionality: null,
+            safety: null
+        };
+        let qcDecision = null;
+
+        // ===== FIXED THEME TOGGLE =====
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            // Check for saved theme preference
+            const savedTheme = localStorage.getItem('theme-preference');
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                html.classList.remove('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+            
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+
+        // ===== TAB EVENT LISTENERS =====
+        function initTabListeners() {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const filter = this.getAttribute('data-filter');
+                    filterVehicles(filter);
+                });
+            });
+        }
+
+        // ===== UPDATE STATISTICS =====
+        function updateStatistics() {
+            const today = new Date().toDateString();
+            
+            const awaitingQcVehicles = vehiclesDatabase.filter(v => 
+                v.serviceStatus === "awaiting-qc"
+            ).length;
+            
+            const inQcVehicles = vehiclesDatabase.filter(v => 
+                v.serviceStatus === "in-qc"
+            ).length;
+            
+            const approvedVehicles = vehiclesDatabase.filter(v => 
+                v.qcStatus === "approved" && 
+                v.qcCompletionDate && 
+                new Date(v.qcCompletionDate).toDateString() === today
+            ).length;
+            
+            const rejectedVehicles = vehiclesDatabase.filter(v => 
+                v.qcStatus === "rejected" && 
+                v.qcCompletionDate && 
+                new Date(v.qcCompletionDate).toDateString() === today
+            ).length;
+            
+            document.getElementById('awaiting-qc-count').textContent = awaitingQcVehicles;
+            document.getElementById('in-qc-count').textContent = inQcVehicles;
+            document.getElementById('approved-count').textContent = approvedVehicles;
+            document.getElementById('rejected-count').textContent = rejectedVehicles;
+        }
+
+        // ===== UPDATE TIME =====
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const currentTimeEl = document.getElementById('current-time');
+            const updateTimeEl = document.getElementById('update-time');
+            
+            if (currentTimeEl) currentTimeEl.textContent = timeString;
+            if (updateTimeEl) updateTimeEl.textContent = `Last updated: ${timeString}`;
+        }
+
+        // ===== LOAD QC VEHICLES =====
+        function loadQcVehicles() {
+            const vehiclesGrid = document.getElementById('vehicles-grid');
+            const noVehicles = document.getElementById('no-vehicles');
+            
+            if (!vehiclesGrid) return;
+            
+            vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            
+            let qcVehicles = vehiclesDatabase.filter(v => 
+                v.serviceStatus === "awaiting-qc" || 
+                v.serviceStatus === "in-qc" ||
+                v.serviceStatus === "ready-for-delivery" ||
+                v.serviceStatus === "rework-required" ||
+                v.qcStatus === "approved" ||
+                v.qcStatus === "rejected"
+            );
+            
+            if (activeTab === 'awaiting-qc') {
+                qcVehicles = qcVehicles.filter(v => v.serviceStatus === "awaiting-qc");
+            } else if (activeTab === 'in-qc') {
+                qcVehicles = qcVehicles.filter(v => v.serviceStatus === "in-qc");
+            } else if (activeTab === 'qc-approved') {
+                qcVehicles = qcVehicles.filter(v => 
+                    v.serviceStatus === "ready-for-delivery" || v.qcStatus === "approved"
+                );
+            } else if (activeTab === 'qc-rejected') {
+                qcVehicles = qcVehicles.filter(v => 
+                    v.serviceStatus === "rework-required" || v.qcStatus === "rejected"
+                );
+            }
+            
+            const priorityOrder = { 'urgent': 1, 'high': 2, 'normal': 3 };
+            qcVehicles.sort((a, b) => {
+                const priorityDiff = (priorityOrder[a.qcPriority] || 3) - (priorityOrder[b.qcPriority] || 3);
+                if (priorityDiff !== 0) return priorityDiff;
+                return new Date(a.sentToQcTime || a.entryTime) - new Date(b.sentToQcTime || b.entryTime);
+            });
+            
+            if (qcVehicles.length === 0) {
+                vehiclesGrid.innerHTML = '';
+                if (noVehicles) noVehicles.style.display = 'block';
+                return;
+            }
+            
+            if (noVehicles) noVehicles.style.display = 'none';
+            
+            try {
+                vehiclesGrid.innerHTML = qcVehicles.map(vehicle => {
+                    return generateVehicleCard(vehicle);
+                }).join('');
+            } catch (error) {
+                console.error('Error rendering vehicles:', error);
+                vehiclesGrid.innerHTML = `<div style="color: var(--red-accent); padding: 20px;">Error rendering vehicles</div>`;
+            }
+        }
+
+        // ===== GENERATE VEHICLE CARD WITH SERVICE TIME DISPLAY =====
+        function generateVehicleCard(vehicle) {
+            const sentToQcTime = vehicle.sentToQcTime || vehicle.entryTime;
+            const timeString = new Date(sentToQcTime).toLocaleString([], { 
+                month: 'short', 
+                day: 'numeric',
+                hour: '2-digit', 
+                minute: '2-digit'
+            });
+            
+            let priorityBadge = '';
+            if (vehicle.qcPriority) {
+                const priorityClass = vehicle.qcPriority;
+                const priorityText = vehicle.qcPriority.charAt(0).toUpperCase() + vehicle.qcPriority.slice(1);
+                priorityBadge = `
+                    <div style="margin-top: 0.5rem;">
+                        <span class="priority-badge ${priorityClass}">
+                            <i class="fas fa-${priorityClass === 'urgent' ? 'exclamation-triangle' : priorityClass === 'high' ? 'exclamation-circle' : 'flag'}"></i>
+                            ${priorityText} Priority
+                        </span>
+                    </div>
+                `;
+            }
+            
+            let actionButtons = '';
+            if (vehicle.serviceStatus === "awaiting-qc") {
+                actionButtons = `
+                    <button class="action-btn start-qc" data-vehicle-id="${vehicle.id}" onclick="openStartQCModal(${vehicle.id})">
+                        <i class="fas fa-play-circle"></i> Start QC
+                    </button>
+                    <button class="action-btn" onclick="openVehicleDetailsModal(${vehicle.id})">
+                        <i class="fas fa-eye"></i> View Details
+                    </button>
+                `;
+            } else if (vehicle.serviceStatus === "in-qc") {
+                actionButtons = `
+                    <button class="action-btn approve" data-vehicle-id="${vehicle.id}" onclick="verifyAndApproveQC(${vehicle.id})">
+                        <i class="fas fa-check-circle"></i> Verify & Approve
+                    </button>
+                    <button class="action-btn reject" data-vehicle-id="${vehicle.id}" onclick="rejectQC(${vehicle.id})">
+                        <i class="fas fa-times-circle"></i> Reject
+                    </button>
+                    <button class="action-btn" onclick="openVehicleDetailsModal(${vehicle.id})">
+                        <i class="fas fa-eye"></i> Details
+                    </button>
+                `;
+            } else if (vehicle.serviceStatus === "ready-for-delivery" || vehicle.qcStatus === "approved") {
+                actionButtons = `
+                    <button class="action-btn" disabled>
+                        <i class="fas fa-check-circle"></i> QC Approved
+                    </button>
+                    <button class="action-btn" onclick="viewQCDetails(${vehicle.id})">
+                        <i class="fas fa-file-alt"></i> QC Report
+                    </button>
+                `;
+            } else if (vehicle.serviceStatus === "rework-required" || vehicle.qcStatus === "rejected") {
+                actionButtons = `
+                    <button class="action-btn" disabled style="background: rgba(239, 68, 68, 0.2); color: #ef4444;">
+                        <i class="fas fa-times-circle"></i> QC Rejected
+                    </button>
+                    <button class="action-btn" onclick="viewQCDetails(${vehicle.id})">
+                        <i class="fas fa-file-alt"></i> View QC Report
+                    </button>
+                `;
+            }
+            
+            // ===== IMPROVED SERVICE TIME DISPLAY =====
+            let timeSummaryHTML = '';
+            if (vehicle.totalServiceTime) {
+                const totalHours = vehicle.totalServiceTime;
+                const hours = Math.floor(totalHours);
+                const minutes = Math.floor((totalHours - hours) * 60);
+                
+                timeSummaryHTML = `
+                    <div class="time-summary">
+                        <h4 style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                            <i class="fas fa-clock" style="color: var(--accent-color);"></i>
+                            Service Time Summary
+                        </h4>
+                        <div class="time-item">
+                            <span class="label">Total Service Time:</span>
+                            <span class="value">${totalHours.toFixed(1)} hours</span>
+                        </div>
+                        <div class="time-item">
+                            <span class="label">Formatted Time:</span>
+                            <span class="value">${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}</span>
+                        </div>
+                        ${vehicle.jobs ? `
+                            <div class="time-highlight">
+                                <div style="font-weight: 600; margin-bottom: 0.3rem; color: var(--text-primary);">Individual Job Times:</div>
+                                ${vehicle.jobs.map(job => {
+                                    if (job.totalServiceTime) {
+                                        return `<div style="display: flex; justify-content: space-between; font-size: 0.8rem; padding: 0.2rem 0; color: var(--text-secondary);">
+                                            <span>${job.serviceName || job.type}:</span>
+                                            <span>${job.totalServiceTime.toFixed(1)} hrs</span>
+                                        </div>`;
+                                    }
+                                    return '';
+                                }).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+            
+            let qcStatusHTML = '';
+            if (vehicle.qcStatus) {
+                let qcClass = '';
+                let qcIcon = '';
+                let qcText = '';
+                
+                if (vehicle.qcStatus === "pending" || vehicle.qcStatus === "in-progress") {
+                    qcClass = 'awaiting';
+                    qcIcon = 'fas fa-clock';
+                    qcText = 'Awaiting QC Inspection';
+                } else if (vehicle.qcStatus === "approved") {
+                    qcClass = 'approved';
+                    qcIcon = 'fas fa-check-circle';
+                    qcText = 'QC Approved';
+                } else if (vehicle.qcStatus === "rejected") {
+                    qcClass = 'rejected';
+                    qcIcon = 'fas fa-times-circle';
+                    qcText = 'QC Rejected';
+                }
+                
+                if (vehicle.qcCompletionDate) {
+                    qcText += ` on ${new Date(vehicle.qcCompletionDate).toLocaleDateString()}`;
+                }
+                
+                qcStatusHTML = `
+                    <div class="qc-status ${qcClass}">
+                        <i class="${qcIcon}"></i>
+                        <span>${qcText}</span>
+                        ${vehicle.qcInspectedBy ? `<p style="margin-top: 5px; font-size: 0.85rem; opacity: 0.9;">Inspected by: ${vehicle.qcInspectedBy}</p>` : ''}
+                    </div>
+                `;
+            }
+            
+            return `
+                <div class="vehicle-card">
+                    <div class="vehicle-header">
+                        <span class="vehicle-number">${vehicle.vehicleNumber || 'N/A'}</span>
+                        <span class="vehicle-status ${vehicle.serviceStatus || ''}">
+                            ${(vehicle.serviceStatus || '').replace(/-/g, ' ').toUpperCase()}
+                        </span>
+                    </div>
+                    
+                    <div class="vehicle-details">
+                        <div class="detail-row">
+                            <i class="fas fa-car"></i>
+                            <span>${vehicle.carName || 'N/A'} ${vehicle.vehicleModel || ''}</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-palette"></i>
+                            <span>${vehicle.color || 'N/A'} • ${vehicle.year || 'N/A'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="fas fa-user"></i>
+                            <span>${vehicle.ownerEmail || 'N/A'}</span>
+                        </div>
+                        <div class="detail-row">
+                            <i class="far fa-clock"></i>
+                            <span>Sent to QC: ${timeString}</span>
+                        </div>
+                        ${priorityBadge}
+                    </div>
+                    
+                    ${vehicle.jobs && vehicle.jobs.length > 0 ? `
+                        <div class="service-description">
+                            <h4><i class="fas fa-tasks"></i> Jobs Completed</h4>
+                            <p style="font-size: 0.85rem;">
+                                ${vehicle.jobs.filter(job => job.status === 'completed').length} of ${vehicle.jobs.length} jobs completed
+                            </p>
+                        </div>
+                    ` : ''}
+                    
+                    ${timeSummaryHTML}
+                    
+                    ${qcStatusHTML}
+                    
+                    <div class="vehicle-actions">
+                        ${actionButtons}
+                    </div>
+                </div>
+            `;
+        }
+
+        // ===== FILTER VEHICLES =====
+        function filterVehicles(status) {
+            activeTab = status;
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+                if (tab.getAttribute('data-filter') === status) {
+                    tab.classList.add('active');
+                }
+            });
+            
+            loadQcVehicles();
+        }
+
+        // ===== MODAL FUNCTIONS =====
+        function openStartQCModal(vehicleId) {
+            currentVehicleId = vehicleId;
+            const vehicle = vehiclesDatabase.find(v => v.id == vehicleId);
+            
+            if (!vehicle) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            resetQCChecklist();
+            
+            document.getElementById('start-qc-vehicle-info').textContent = 
+                `${vehicle.vehicleNumber} - ${vehicle.carName} ${vehicle.vehicleModel}`;
+            
+            if (vehicle.qcPriority) {
+                const priorityClass = vehicle.qcPriority;
+                const priorityText = vehicle.qcPriority.charAt(0).toUpperCase() + vehicle.qcPriority.slice(1);
+                document.getElementById('qc-priority-display').innerHTML = `
+                    <div class="priority-badge ${priorityClass}" style="display: inline-block; margin-top: 0.5rem;">
+                        <i class="fas fa-${priorityClass === 'urgent' ? 'exclamation-triangle' : priorityClass === 'high' ? 'exclamation-circle' : 'flag'}"></i>
+                        ${priorityText} Priority
+                    </div>
+                `;
+            } else {
+                document.getElementById('qc-priority-display').innerHTML = '';
+            }
+            
+            let serviceInfoHTML = '';
+            if (vehicle.serviceDescription) {
+                serviceInfoHTML += `<p><strong>Service Description:</strong> ${vehicle.serviceDescription}</p>`;
+            }
+            if (vehicle.inspectionReport && vehicle.inspectionReport.issues) {
+                serviceInfoHTML += `<p style="margin-top: 0.5rem;"><strong>Initial Issues:</strong> ${vehicle.inspectionReport.issues}</p>`;
+            }
+            document.getElementById('qc-service-info').innerHTML = serviceInfoHTML || '<p>No service information available.</p>';
+            
+            let inspectionHTML = '';
+            if (vehicle.inspectionReport) {
+                inspectionHTML = `
+                    ${vehicle.inspectionReport.exterior ? `<p><strong>Exterior:</strong> ${vehicle.inspectionReport.exterior}</p>` : ''}
+                    ${vehicle.inspectionReport.interior ? `<p><strong>Interior:</strong> ${vehicle.inspectionReport.interior}</p>` : ''}
+                    ${vehicle.inspectionReport.engine ? `<p><strong>Engine:</strong> ${vehicle.inspectionReport.engine}</p>` : ''}
+                    ${vehicle.inspectionReport.fluids ? `<p><strong>Fluids:</strong> ${vehicle.inspectionReport.fluids}</p>` : ''}
+                    ${vehicle.inspectionReport.mileage ? `<p><strong>Mileage:</strong> ${vehicle.inspectionReport.mileage} km</p>` : ''}
+                `;
+            }
+            document.getElementById('qc-initial-inspection').innerHTML = inspectionHTML || '<p>No initial inspection report available.</p>';
+            
+            // ===== JOBS SUMMARY WITH SERVICE TIMES =====
+            let jobsHTML = '';
+            if (vehicle.jobs && vehicle.jobs.length > 0) {
+                const completedJobs = vehicle.jobs.filter(job => job.status === 'completed');
+                
+                jobsHTML = `
+                    <div style="margin-bottom: 0.5rem;">
+                        <p><strong>Total Jobs:</strong> ${vehicle.jobs.length}</p>
+                        <p><strong>Completed Jobs:</strong> ${completedJobs.length}</p>
+                        <p><strong>Total Estimated Time:</strong> ${vehicle.jobs.reduce((sum, job) => sum + (job.estimatedHours || 0), 0).toFixed(1)} hours</p>
+                        <p><strong>Actual Service Time:</strong> ${vehicle.totalServiceTime ? vehicle.totalServiceTime.toFixed(1) : '0'} hours</p>
+                    </div>
+                    
+                    <div style="margin-top: 0.75rem;">
+                        <h5 style="margin-bottom: 0.5rem; font-size: 0.9rem; color: var(--text-secondary);">Job Details with Service Times:</h5>
+                        <div style="max-height: 200px; overflow-y: auto; border: 1px solid var(--border-color); border-radius: 8px; padding: 0.5rem;">
+                            ${vehicle.jobs.map(job => {
+                                const estimated = job.estimatedHours || 0;
+                                const actual = job.totalServiceTime || 0;
+                                const variance = actual - estimated;
+                                const varianceClass = variance > 0.5 ? 'color: #ef4444;' : (variance < -0.5 ? 'color: #10b981;' : 'color: var(--text-secondary);');
+                                
+                                return `
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.5rem; border-bottom: 1px solid var(--border-color);">
+                                        <div>
+                                            <span style="font-weight: 600; color: var(--text-primary);">${job.serviceName || job.type}</span>
+                                            <span style="font-size: 0.8rem; color: var(--text-secondary); margin-left: 0.5rem;">(${job.status})</span>
+                                        </div>
+                                        <div style="text-align: right;">
+                                            <div><span style="font-size: 0.85rem; color: var(--text-secondary);">Est: ${estimated.toFixed(1)}h</span></div>
+                                            <div><span style="font-size: 0.85rem; font-weight: 600; color: var(--text-primary);">Actual: ${actual.toFixed(1)}h</span></div>
+                                            <div style="font-size: 0.75rem; ${varianceClass}">
+                                                ${variance > 0 ? '+' : ''}${variance.toFixed(1)}h diff
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+            document.getElementById('qc-jobs-summary').innerHTML = jobsHTML || '<p>No job information available.</p>';
+            
+            const modalEl = document.getElementById('start-qc-modal');
+            modalEl.classList.add('show');
+            modalEl.style.display = 'flex';
+        }
+
+        function openQCDetailsModal(vehicleId) {
+            currentVehicleId = vehicleId;
+            const vehicle = vehiclesDatabase.find(v => v.id == vehicleId);
+            
+            if (!vehicle) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            document.getElementById('qc-details-vehicle-info').textContent = 
+                `${vehicle.vehicleNumber} - ${vehicle.carName} ${vehicle.vehicleModel}`;
+            
+            let detailsHTML = '';
+            
+            if (vehicle.qcChecklist) {
+                detailsHTML += `
+                    <div class="service-description">
+                        <h4><i class="fas fa-clipboard-check"></i> QC Checklist Results</h4>
+                        ${Object.entries(vehicle.qcChecklist).map(([key, item]) => `
+                            <div style="margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--border-color);">
+                                <strong style="color: var(--text-primary);">${formatQCItem(key)}:</strong>
+                                <span style="color: ${item.status === 'pass' ? '#10b981' : '#ef4444'}; font-weight: 600; margin-left: 0.5rem;">
+                                    ${item.status ? item.status.toUpperCase() : 'NOT CHECKED'}
+                                </span>
+                                ${item.details ? `<p style="margin-top: 0.5rem; margin-left: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">${item.details}</p>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            if (vehicle.qcInspectionNotes) {
+                detailsHTML += `
+                    <div class="service-description" style="margin-top: 1rem;">
+                        <h4><i class="fas fa-sticky-note"></i> Inspection Notes</h4>
+                        <p style="color: var(--text-secondary);">${vehicle.qcInspectionNotes}</p>
+                    </div>
+                `;
+            }
+            
+            // ===== ADD SERVICE TIME TO QC DETAILS =====
+            if (vehicle.totalServiceTime) {
+                detailsHTML += `
+                    <div class="service-description" style="margin-top: 1rem;">
+                        <h4><i class="fas fa-clock"></i> Service Time Information</h4>
+                        <p style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">Total Service Time:</strong> ${vehicle.totalServiceTime.toFixed(1)} hours</p>
+                        ${vehicle.jobs ? `
+                            <div style="margin-top: 0.5rem;">
+                                <strong style="color: var(--text-primary);">Individual Job Times:</strong>
+                                <div style="margin-top: 0.3rem; padding-left: 0.5rem;">
+                                    ${vehicle.jobs.map(job => `
+                                        <div style="display: flex; justify-content: space-between; padding: 0.2rem 0; color: var(--text-secondary);">
+                                            <span>${job.serviceName || job.type}:</span>
+                                            <span>${job.totalServiceTime ? job.totalServiceTime.toFixed(1) : '0'} hours</span>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }
+            
+            if (vehicle.qcCompletionDate) {
+                detailsHTML += `
+                    <div class="service-description" style="margin-top: 1rem;">
+                        <h4><i class="fas fa-info-circle"></i> QC Information</h4>
+                        <p style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">Status:</strong> ${vehicle.qcStatus || 'Not started'}</p>
+                        <p style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">Completed by:</strong> ${vehicle.qcInspectedBy || 'Not assigned'}</p>
+                        <p style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">Completion Date:</strong> ${new Date(vehicle.qcCompletionDate).toLocaleString()}</p>
+                        ${vehicle.qcRejectionReason ? `<p style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">Rejection Reason:</strong> ${vehicle.qcRejectionReason}</p>` : ''}
+                        ${vehicle.qcAdvisorNotes ? `<p style="color: var(--text-secondary);"><strong style="color: var(--text-primary);">Notes for Advisor:</strong> ${vehicle.qcAdvisorNotes}</p>` : ''}
+                    </div>
+                `;
+            }
+            
+            document.getElementById('qc-details-content').innerHTML = detailsHTML || '<p style="color: var(--text-secondary);">No QC details available.</p>';
+            
+            const modalEl = document.getElementById('qc-details-modal');
+            modalEl.classList.add('show');
+            modalEl.style.display = 'flex';
+        }
+
+        function openVehicleDetailsModal(vehicleId) {
+            currentVehicleId = vehicleId;
+            const vehicle = vehiclesDatabase.find(v => v.id == vehicleId);
+            
+            if (!vehicle) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+            
+            const modal = document.getElementById('vehicle-details-modal');
+            const content = document.getElementById('vehicle-details-content');
+            
+            let detailsHTML = `
+                <div class="vehicle-details">
+                    <div class="detail-row">
+                        <i class="fas fa-car"></i>
+                        <span><strong>Vehicle:</strong> ${vehicle.vehicleNumber} - ${vehicle.carName} ${vehicle.vehicleModel}</span>
+                    </div>
+                    <div class="detail-row">
+                        <i class="fas fa-palette"></i>
+                        <span><strong>Color/Year:</strong> ${vehicle.color} • ${vehicle.year}</span>
+                    </div>
+                    <div class="detail-row">
+                        <i class="fas fa-user"></i>
+                        <span><strong>Owner:</strong> ${vehicle.ownerEmail}</span>
+                    </div>
+                    <div class="detail-row">
+                        <i class="fas fa-phone"></i>
+                        <span><strong>Phone:</strong> ${vehicle.mobileNumber || 'N/A'}</span>
+                    </div>
+                    <div class="detail-row">
+                        <i class="far fa-clock"></i>
+                        <span><strong>Entry Time:</strong> ${new Date(vehicle.entryTime).toLocaleString()}</span>
+                    </div>
+                    ${vehicle.totalServiceTime ? `
+                    <div class="detail-row">
+                        <i class="fas fa-hourglass-half"></i>
+                        <span><strong>Total Service Time:</strong> ${vehicle.totalServiceTime.toFixed(1)} hours</span>
+                    </div>
+                    ` : ''}
+                </div>
+            `;
+            
+            if (vehicle.inspectionReport) {
+                detailsHTML += `
+                    <div class="service-description" style="margin-top: 1rem;">
+                        <h4><i class="fas fa-search"></i> Initial Inspection</h4>
+                        ${vehicle.inspectionReport.issues ? `<p><strong>Issues Found:</strong> ${vehicle.inspectionReport.issues}</p>` : ''}
+                        ${vehicle.inspectionReport.mileage ? `<p><strong>Mileage:</strong> ${vehicle.inspectionReport.mileage} km</p>` : ''}
+                        ${vehicle.inspectionReport.inspectionDate ? `<p><strong>Inspection Date:</strong> ${new Date(vehicle.inspectionReport.inspectionDate).toLocaleDateString()}</p>` : ''}
+                    </div>
+                `;
+            }
+            
+            if (vehicle.jobs && vehicle.jobs.length > 0) {
+                detailsHTML += `
+                    <div class="service-description" style="margin-top: 1rem;">
+                        <h4><i class="fas fa-tasks"></i> Service Jobs</h4>
+                        <p><strong>Total Jobs:</strong> ${vehicle.jobs.length}</p>
+                        <p><strong>Completed:</strong> ${vehicle.jobs.filter(job => job.status === 'completed').length}</p>
+                        <p><strong>In Progress:</strong> ${vehicle.jobs.filter(job => job.status === 'in-progress').length}</p>
+                        <p><strong>Pending:</strong> ${vehicle.jobs.filter(job => job.status === 'pending').length}</p>
+                        ${vehicle.totalServiceTime ? `<p><strong>Total Service Time:</strong> ${vehicle.totalServiceTime.toFixed(1)} hours</p>` : ''}
+                    </div>
+                `;
+            }
+            
+            content.innerHTML = detailsHTML;
+            
+            document.getElementById('overlay').style.display = 'block';
+            modal.style.display = 'block';
+        }
+
+        function closeMiniModal() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('vehicle-details-modal').style.display = 'none';
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('show');
+                modal.style.display = 'none';
+            }
+        }
+
+        // ===== QC CHECKLIST FUNCTIONS =====
+        function selectQcStatus(item, status) {
+            qcChecklistStatus[item] = status;
+            
+            document.querySelectorAll(`[onclick="selectQcStatus('${item}', 'pass')"]`).forEach(btn => {
+                btn.classList.toggle('selected', status === 'pass');
+            });
+            document.querySelectorAll(`[onclick="selectQcStatus('${item}', 'fail')"]`).forEach(btn => {
+                btn.classList.toggle('selected', status === 'fail');
+            });
+        }
+
+        function selectQcDecision(decision) {
+            qcDecision = decision;
+            
+            document.querySelectorAll('.decision-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            if (decision === 'approve') {
+                document.querySelector('.decision-btn.approve').classList.add('selected');
+            } else if (decision === 'reject') {
+                document.querySelector('.decision-btn.reject').classList.add('selected');
+            } else if (decision === 'hold') {
+                document.querySelector('.decision-btn.hold').classList.add('selected');
+            }
+        }
+
+        function resetQCChecklist() {
+            qcChecklistStatus = {
+                workmanship: null,
+                parts: null,
+                cleanliness: null,
+                functionality: null,
+                safety: null
+            };
+            qcDecision = null;
+            
+            document.querySelectorAll('.status-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            document.querySelectorAll('.decision-btn').forEach(btn => {
+                btn.classList.remove('selected');
+            });
+            
+            document.getElementById('workmanship-details').value = '';
+            document.getElementById('parts-details').value = '';
+            document.getElementById('cleanliness-details').value = '';
+            document.getElementById('functionality-details').value = '';
+            document.getElementById('safety-details').value = '';
+            document.getElementById('qc-inspection-notes').value = '';
+        }
+
+        function startQCInspection() {
+            try {
+                const allItemsCompleted = Object.values(qcChecklistStatus).every(status => status !== null);
+                const qcNotes = document.getElementById('qc-inspection-notes').value.trim();
+                
+                if (!allItemsCompleted) {
+                    showMessage("⚠️ Please complete ALL QC checklist items (Pass or Fail for each) before submitting!", "error");
+                    return;
+                }
+                
+                if (!qcNotes) {
+                    showMessage("⚠️ Please enter QC observations and notes!", "error");
+                    return;
+                }
+                
+                if (!qcDecision) {
+                    showMessage("⚠️ Please select a QC decision (Approve/Reject/Hold)!", "error");
+                    return;
+                }
+                
+                const vehicleIndex = vehiclesDatabase.findIndex(v => v.id == currentVehicleId);
+                if (vehicleIndex === -1) {
+                    showMessage("❌ Vehicle not found in database!", "error");
+                    return;
+                }
+                
+                vehiclesDatabase[vehicleIndex].serviceStatus = "in-qc";
+                vehiclesDatabase[vehicleIndex].qcStatus = "in-progress";
+                vehiclesDatabase[vehicleIndex].qcInspectedBy = user.name;
+                vehiclesDatabase[vehicleIndex].qcStartTime = new Date().toISOString();
+                
+                vehiclesDatabase[vehicleIndex].qcChecklist = {};
+                for (const [key, status] of Object.entries(qcChecklistStatus)) {
+                    vehiclesDatabase[vehicleIndex].qcChecklist[key] = {
+                        status: status,
+                        details: document.getElementById(`${key}-details`).value.trim()
+                    };
+                }
+                
+                vehiclesDatabase[vehicleIndex].qcInspectionNotes = qcNotes;
+                vehiclesDatabase[vehicleIndex].qcDecision = qcDecision;
+                
+                localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                
+                showMessage("✓ QC inspection started successfully! Vehicle moved to IN-QC.", "success");
+                closeModal('start-qc-modal');
+                
+                setTimeout(() => {
+                    updateStatistics();
+                    loadQcVehicles();
+                }, 300);
+                
+            } catch(e) {
+                console.error('ERROR in startQCInspection:', e);
+                showMessage("❌ Error: " + e.message, "error");
+            }
+        }
+
+        // ===== FIXED QC REJECTION FUNCTION - RESETS JOBS FOR TECHNICIAN =====
+        function rejectQC(vehicleId) {
+            const vehicle = vehiclesDatabase.find(v => v.id == vehicleId);
+            if (!vehicle) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+
+            const rejectionReason = prompt(`Enter rejection reason for ${vehicle.vehicleNumber}:`, 
+                "Quality issues found. Requires re-work.");
+            
+            if (rejectionReason) {
+                const vehicleIndex = vehiclesDatabase.findIndex(v => v.id == vehicleId);
+                
+                if (vehicleIndex !== -1) {
+                    vehiclesDatabase[vehicleIndex].qcStatus = "rejected";
+                    vehiclesDatabase[vehicleIndex].serviceStatus = "rework-required";
+                    vehiclesDatabase[vehicleIndex].qcCompletionDate = new Date().toISOString();
+                    vehiclesDatabase[vehicleIndex].qcInspectedBy = user.name;
+                    vehiclesDatabase[vehicleIndex].qcRejectionReason = rejectionReason;
+                    vehiclesDatabase[vehicleIndex].qcAdvisorNotes = "Please review and re-work as per QC findings.";
+                    
+                    // ===== FIX: Reset all jobs to 'pending' status =====
+                    if (vehiclesDatabase[vehicleIndex].jobs && Array.isArray(vehiclesDatabase[vehicleIndex].jobs)) {
+                        vehiclesDatabase[vehicleIndex].jobs.forEach(job => {
+                            job.status = 'pending';
+                            // Clear timestamps so technician can restart
+                            delete job.startTime;
+                            delete job.completionTime;
+                            delete job.startTimestamp;
+                        });
+                    }
+                    
+                    if (!vehiclesDatabase[vehicleIndex].qcChecklist) {
+                        vehiclesDatabase[vehicleIndex].qcChecklist = {
+                            workmanship: { status: 'fail', details: rejectionReason },
+                            parts: { status: 'fail', details: 'Requires re-inspection' },
+                            cleanliness: { status: 'pass', details: 'Cleaning acceptable' },
+                            functionality: { status: 'fail', details: 'Functionality issues found' },
+                            safety: { status: 'fail', details: 'Safety compliance issues' }
+                        };
+                    }
+                    
+                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                    showMessage(`Vehicle ${vehicle.vehicleNumber} QC rejected. Sent back for re-work.`, "error");
+                    updateStatistics();
+                    loadQcVehicles();
+                }
+            }
+        }
+
+        function verifyAndApproveQC(vehicleId) {
+            const vehicle = vehiclesDatabase.find(v => v.id == vehicleId);
+            if (!vehicle) {
+                showMessage("Vehicle not found!", "error");
+                return;
+            }
+
+            if (confirm(`Approve QC for ${vehicle.vehicleNumber}?\n\nThis will mark the vehicle as ready for delivery.`)) {
+                const vehicleIndex = vehiclesDatabase.findIndex(v => v.id == vehicleId);
+                
+                if (vehicleIndex !== -1) {
+                    vehiclesDatabase[vehicleIndex].qcStatus = "approved";
+                    vehiclesDatabase[vehicleIndex].serviceStatus = "ready-for-delivery";
+                    vehiclesDatabase[vehicleIndex].qcCompletionDate = new Date().toISOString();
+                    vehiclesDatabase[vehicleIndex].qcInspectedBy = user.name;
+                    
+                    if (!vehiclesDatabase[vehicleIndex].qcInspectionNotes) {
+                        vehiclesDatabase[vehicleIndex].qcInspectionNotes = "QC verified and approved. Vehicle ready for delivery.";
+                    }
+                    
+                    if (!vehiclesDatabase[vehicleIndex].qcChecklist) {
+                        vehiclesDatabase[vehicleIndex].qcChecklist = {
+                            workmanship: { status: 'pass', details: 'Workmanship meets quality standards' },
+                            parts: { status: 'pass', details: 'Parts quality and installation verified' },
+                            cleanliness: { status: 'pass', details: 'Vehicle cleaned and finished properly' },
+                            functionality: { status: 'pass', details: 'All functions tested and working' },
+                            safety: { status: 'pass', details: 'Safety compliance verified' }
+                        };
+                    }
+                    
+                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                    showMessage(`Vehicle ${vehicle.vehicleNumber} QC approved! Ready for delivery.`, "success");
+                    updateStatistics();
+                    loadQcVehicles();
+                }
+            }
+        }
+
+        function viewQCDetails(vehicleId) {
+            openQCDetailsModal(vehicleId);
+        }
+
+        // ===== HELPER FUNCTIONS =====
+        function formatQCItem(item) {
+            return item.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+
+        function showMessage(message, type) {
+            const existing = document.querySelector('.message-box');
+            if (existing) existing.remove();
+            
+            const msgBox = document.createElement('div');
+            msgBox.className = `message-box ${type}`;
+            msgBox.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'error' ? 'exclamation-circle' : 'info-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(msgBox);
+            
+            setTimeout(() => {
+                msgBox.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => msgBox.remove(), 300);
+            }, 3000);
+        }
+
+        function logout() {
+            localStorage.removeItem('vsms_current_user');
+            window.location.href = 'logreg.html';
+        }
+
+        // ===== EVENT DELEGATION FOR BUTTONS =====
+        function setupEventDelegation() {
+            document.addEventListener('click', function(e) {
+                const startQcBtn = e.target.closest('.start-qc');
+                const approveBtn = e.target.closest('.action-btn.approve');
+                const rejectBtn = e.target.closest('.action-btn.reject');
+                
+                if (startQcBtn) {
+                    e.preventDefault();
+                    const vehicleId = startQcBtn.getAttribute('data-vehicle-id');
+                    if (vehicleId) openStartQCModal(vehicleId);
+                } else if (approveBtn) {
+                    e.preventDefault();
+                    const vehicleId = approveBtn.getAttribute('data-vehicle-id');
+                    if (vehicleId) verifyAndApproveQC(vehicleId);
+                } else if (rejectBtn) {
+                    e.preventDefault();
+                    const vehicleId = rejectBtn.getAttribute('data-vehicle-id');
+                    if (vehicleId) rejectQC(vehicleId);
+                }
+            });
+        }
+
+        // ===== INITIALIZE =====
+        function initialize() {
+            initThemeToggle();
+            initTabListeners();
+            setupEventDelegation();
+            
+            vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            
+            updateTime();
+            updateStatistics();
+            loadQcVehicles();
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            initialize();
+        }
+        
+        setInterval(updateTime, 1000);
+        
+        setInterval(() => {
+            vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            updateStatistics();
+            loadQcVehicles();
+        }, 10000);
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.modal.show').forEach(modal => {
+                    modal.classList.remove('show');
+                    modal.style.display = 'none';
+                });
+                closeMiniModal();
+            }
+        });
+        
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('show');
+                    modal.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,3717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="icon" type="image/png" href="images/car-service.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #eef2f9 100%);
+            color: #1e293b;
+            min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: white;
+            padding: 1.2rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 3px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #3b82f6;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: white;
+            transition: color 0.3s ease;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+
+        .user-details h4 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 2px;
+            transition: color 0.3s ease;
+        }
+
+        .user-details p {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+            margin-left: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links a.active {
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            margin-left: 1rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            text-align: center;
+            border-left: 5px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+
+        .dashboard-header h1 {
+            color: #1e293b;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .dashboard-header p {
+            color: #64748b;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            transition: color 0.3s ease;
+        }
+
+        .role-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Live Time */
+        .live-time {
+            background: #1e293b;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 50px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Dashboard Stats */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.8rem;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s;
+            border-top: 4px solid;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-card.blue { border-color: #3b82f6; }
+        .stat-card.purple { border-color: #8b5cf6; }
+        .stat-card.green { border-color: #10b981; }
+        .stat-card.orange { border-color: #f59e0b; }
+        .stat-card.red { border-color: #ef4444; }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 1rem;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-card.blue .stat-icon {
+            background: linear-gradient(135deg, #dbeafe, #93c5fd);
+            color: #1e40af;
+        }
+        .stat-card.purple .stat-icon {
+            background: linear-gradient(135deg, #ede9fe, #c4b5fd);
+            color: #5b21b6;
+        }
+        .stat-card.green .stat-icon {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            color: #065f46;
+        }
+        .stat-card.orange .stat-icon {
+            background: linear-gradient(135deg, #fef3c7, #fcd34d);
+            color: #92400e;
+        }
+        .stat-card.red .stat-icon {
+            background: linear-gradient(135deg, #fee2e2, #fca5a5);
+            color: #991b1b;
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            color: #64748b;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        /* Sections */
+        .dashboard-section {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+            transition: border-color 0.3s ease;
+        }
+
+        .section-title {
+            color: #1e293b;
+            font-size: 1.5rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .section-title i {
+            color: #3b82f6;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            margin-right: 8px;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(245, 158, 11, 0.3);
+        }
+
+        /* View Button Styles */
+        .btn-view {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            margin-right: 8px;
+        }
+
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Password Field Styles */
+        .password-field-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+
+        .password-toggle-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 8px;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .password-toggle-btn:hover {
+            color: #3b82f6;
+        }
+
+        html.dark-mode .password-toggle-btn {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .password-toggle-btn:hover {
+            color: var(--accent-color);
+        }
+
+        .password-hint {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        html.dark-mode .password-hint {
+            color: var(--text-muted);
+        }
+
+        /* User Detail Modal Styles */
+        .user-detail-group {
+            margin-bottom: 1.5rem;
+            padding: 1rem 1.2rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 5px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+
+        .user-detail-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-bottom: 0.3rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .user-detail-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            word-break: break-word;
+        }
+
+        .user-detail-value i {
+            color: #3b82f6;
+            margin-right: 8px;
+            width: 20px;
+            text-align: center;
+        }
+
+        html.dark-mode .user-detail-group {
+            background: var(--card-bg-lighter);
+            border-left-color: var(--accent-color);
+        }
+
+        html.dark-mode .user-detail-label {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .user-detail-value {
+            color: var(--text-primary);
+        }
+
+        .role-badge-detail {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-badge-detail {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .status-badge-detail.active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge-detail.inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        html.dark-mode .role-badge-detail {
+            background: rgba(59, 130, 246, 0.2);
+            color: #bfdbfe;
+        }
+
+        html.dark-mode .status-badge-detail.active {
+            background: rgba(16, 185, 129, 0.2);
+            color: #d1fae5;
+        }
+
+        html.dark-mode .status-badge-detail.inactive {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fee2e2;
+        }
+
+        .user-avatar-large {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 600;
+            color: white;
+            margin: 0 auto 1rem;
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        html.dark-mode .user-avatar-large {
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+        }
+
+        .detail-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin: 1.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-section-title i {
+            color: #3b82f6;
+        }
+
+        html.dark-mode .detail-section-title {
+            color: var(--text-primary);
+            border-bottom-color: var(--border-color);
+        }
+
+        html.dark-mode .detail-section-title i {
+            color: var(--accent-color);
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Search Bar Styles */
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .search-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 12px 20px;
+            padding-right: 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            width: 300px;
+            transition: all 0.3s;
+            background: white;
+            color: #1e293b;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            width: 350px;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 8px;
+            transition: all 0.3s;
+        }
+
+        .search-btn:hover {
+            color: #3b82f6;
+        }
+
+        .search-clear {
+            background: #e2e8f0;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #475569;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: all 0.3s;
+        }
+
+        .search-clear:hover {
+            background: #cbd5e1;
+            color: #1e293b;
+        }
+
+        .search-results-info {
+            background: #f8fafc;
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .search-results-info p {
+            margin: 0;
+            color: #475569;
+            font-weight: 500;
+        }
+
+        .search-results-info i {
+            color: #3b82f6;
+            margin-right: 8px;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 3rem !important;
+        }
+
+        .no-results i {
+            font-size: 3rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+        .no-results h3 {
+            color: #64748b;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-results p {
+            color: #94a3b8;
+        }
+
+        .highlight {
+            background-color: #fef3c7;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        html.dark-mode .search-input {
+            background: var(--input-bg);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .search-input:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+
+        html.dark-mode .search-btn {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .search-btn:hover {
+            color: var(--accent-color);
+        }
+
+        html.dark-mode .search-clear {
+            background: var(--card-bg-lighter);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        html.dark-mode .search-clear:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .search-results-info {
+            background: var(--card-bg-lighter);
+            border-left-color: var(--accent-color);
+        }
+
+        html.dark-mode .search-results-info p {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .highlight {
+            background-color: #92400e;
+            color: #fef3c7;
+        }
+
+        /* Tables */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            transition: all 0.3s ease;
+        }
+
+        th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 2px solid #e2e8f0;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            color: #475569;
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-badge.active {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-badge.inactive {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-badge.pending {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-badge.maintenance {
+            background: #f3e8ff;
+            color: #6b21a8;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .action-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .action-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(59, 130, 246, 0.1);
+        }
+
+        .action-card i {
+            font-size: 2rem;
+            color: #3b82f6;
+            margin-bottom: 1rem;
+        }
+
+        .action-card h4 {
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-card p {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .modal-header h2 {
+            color: #1e293b;
+            margin: 0;
+            font-size: 1.8rem;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            cursor: pointer;
+            color: #64748b;
+            transition: color 0.3s;
+        }
+
+        .close-btn:hover {
+            color: #1e293b;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #475569;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            background: white;
+            color: #1e293b;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-group input[readonly] {
+            background: #f1f5f9;
+            cursor: not-allowed;
+        }
+
+        html.dark-mode .form-group input[readonly] {
+            background: var(--card-bg-lighter);
+            color: var(--text-secondary);
+        }
+
+        .modal-footer {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: #64748b;
+            font-size: 0.9rem;
+            border-top: 1px solid #e2e8f0;
+            margin-top: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Message Box */
+        .message-box {
+            position: fixed;
+            top: 100px;
+            right: 30px;
+            padding: 1.2rem 1.8rem;
+            border-radius: 12px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            min-width: 300px;
+            max-width: 400px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .message-box.success {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+
+        .message-box.error {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+
+        /* Theme Toggle Button - FIXED */
+        .theme-toggle {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+
+        .theme-toggle i {
+            color: white;
+        }
+
+        /* ===== COMPLETE FIXED DARK MODE IMPLEMENTATION ===== */
+        html.dark-mode {
+            --bg-gradient-from: #0f172a;
+            --bg-gradient-to: #1e293b;
+            --card-bg: #1e293b;
+            --card-bg-lighter: #2d3b4f;
+            --text-primary: #f1f5f9;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --border-color-light: #475569;
+            --hover-bg: #2d3b4f;
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --header-bg: linear-gradient(135deg, #0a0f1a, #1a1f2a);
+            --table-header-bg: #2d3b4f;
+            --input-bg: #2d3b4f;
+            --accent-color: #f59e0b;
+            --accent-gradient: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        /* Base Dark Mode */
+        html.dark-mode body {
+            background: linear-gradient(135deg, var(--bg-gradient-from), var(--bg-gradient-to));
+            color: var(--text-primary);
+        }
+
+        /* Header Dark Mode */
+        html.dark-mode header {
+            background: var(--header-bg) !important;
+            border-bottom: 3px solid var(--accent-color) !important;
+        }
+
+        html.dark-mode .logo span {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .nav-links a {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .nav-links a:hover {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--accent-color);
+        }
+
+        html.dark-mode .nav-links a.active {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: rgba(245, 158, 11, 0.4);
+        }
+
+        /* Dashboard Header Dark Mode */
+        html.dark-mode .dashboard-header {
+            background: var(--card-bg);
+            border-left-color: var(--accent-color);
+        }
+
+        html.dark-mode .dashboard-header h1 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .dashboard-header p {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .live-time {
+            background: var(--card-bg-lighter);
+            color: var(--text-primary);
+        }
+
+        /* Statistics Cards Dark Mode */
+        html.dark-mode .stat-card {
+            background: var(--card-bg);
+        }
+
+        html.dark-mode .stat-title {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .stat-value {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .stat-card.blue .stat-icon {
+            background: linear-gradient(135deg, #1e3a8a, #1e40af);
+            color: #bfdbfe;
+        }
+
+        html.dark-mode .stat-card.purple .stat-icon {
+            background: linear-gradient(135deg, #5b21b6, #6d28d9);
+            color: #ede9fe;
+        }
+
+        html.dark-mode .stat-card.green .stat-icon {
+            background: linear-gradient(135deg, #065f46, #047857);
+            color: #d1fae5;
+        }
+
+        html.dark-mode .stat-card.orange .stat-icon {
+            background: linear-gradient(135deg, #92400e, #b45309);
+            color: #fef3c7;
+        }
+
+        html.dark-mode .stat-card.red .stat-icon {
+            background: linear-gradient(135deg, #991b1b, #b91c1c);
+            color: #fee2e2;
+        }
+
+        /* Dashboard Sections Dark Mode */
+        html.dark-mode .dashboard-section {
+            background: var(--card-bg);
+        }
+
+        html.dark-mode .section-header {
+            border-bottom-color: var(--border-color);
+        }
+
+        html.dark-mode .section-title {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .section-title i {
+            color: var(--accent-color);
+        }
+
+        /* Tables Dark Mode */
+        html.dark-mode .table-container {
+            border-color: var(--border-color);
+            background: var(--card-bg);
+        }
+
+        html.dark-mode table {
+            background: var(--card-bg);
+        }
+
+        html.dark-mode thead {
+            background: var(--table-header-bg);
+        }
+
+        html.dark-mode th {
+            color: var(--text-primary);
+            border-bottom-color: var(--border-color);
+        }
+
+        html.dark-mode td {
+            color: var(--text-secondary);
+            border-bottom-color: var(--border-color);
+        }
+
+        html.dark-mode tbody tr:hover {
+            background: var(--hover-bg);
+        }
+
+        /* Status Badges Dark Mode */
+        html.dark-mode .status-badge.active {
+            background: linear-gradient(135deg, #065f46, #047857);
+            color: #d1fae5;
+        }
+
+        html.dark-mode .status-badge.inactive {
+            background: linear-gradient(135deg, #991b1b, #b91c1c);
+            color: #fee2e2;
+        }
+
+        html.dark-mode .status-badge.pending {
+            background: linear-gradient(135deg, #1e40af, #1e3a8a);
+            color: #dbeafe;
+        }
+
+        html.dark-mode .status-badge.maintenance {
+            background: linear-gradient(135deg, #6b21a8, #7e22ce);
+            color: #f3e8ff;
+        }
+
+        /* Quick Actions Dark Mode */
+        html.dark-mode .action-card {
+            background: var(--card-bg-lighter);
+            border-color: var(--border-color);
+        }
+
+        html.dark-mode .action-card:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.2);
+        }
+
+        html.dark-mode .action-card i {
+            color: var(--accent-color);
+        }
+
+        html.dark-mode .action-card h4 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .action-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Modal Dark Mode */
+        html.dark-mode .modal {
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        html.dark-mode .modal-content {
+            background: var(--card-bg);
+        }
+
+        html.dark-mode .modal-header {
+            border-bottom-color: var(--border-color);
+        }
+
+        html.dark-mode .modal-header h2 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .close-btn {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .close-btn:hover {
+            color: var(--text-primary);
+        }
+
+        /* Form Elements Dark Mode */
+        html.dark-mode .form-group label {
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .form-group input,
+        html.dark-mode .form-group select,
+        html.dark-mode .form-group textarea {
+            background: var(--input-bg);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .form-group input:focus,
+        html.dark-mode .form-group select:focus,
+        html.dark-mode .form-group textarea:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
+        }
+
+        html.dark-mode .form-group input::placeholder,
+        html.dark-mode .form-group textarea::placeholder {
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+
+        html.dark-mode select option {
+            background: var(--card-bg-lighter);
+            color: var(--text-primary);
+        }
+
+        /* Modal Footer Dark Mode */
+        html.dark-mode .modal-footer {
+            border-top-color: var(--border-color);
+        }
+
+        html.dark-mode .btn-secondary {
+            background: var(--card-bg-lighter);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        html.dark-mode .btn-secondary:hover {
+            background: var(--hover-bg);
+            color: var(--text-primary);
+        }
+
+        /* Buttons Dark Mode */
+        html.dark-mode .btn-primary {
+            background: var(--accent-gradient);
+        }
+
+        html.dark-mode .btn-success {
+            background: linear-gradient(135deg, #059669, #047857);
+        }
+
+        html.dark-mode .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+        }
+
+        html.dark-mode .btn-warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+        }
+
+        html.dark-mode .btn-view {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+
+        /* Footer Dark Mode */
+        html.dark-mode .footer {
+            color: var(--text-secondary);
+            border-top-color: var(--border-color);
+        }
+
+        /* Theme Toggle Dark Mode */
+        html.dark-mode .theme-toggle {
+            background: rgba(245, 158, 11, 0.2);
+            border-color: var(--accent-color);
+        }
+
+        html.dark-mode .theme-toggle:hover {
+            background: rgba(245, 158, 11, 0.3);
+        }
+
+        html.dark-mode .theme-toggle i {
+            color: #ffd700;
+        }
+
+        /* User Info Dark Mode */
+        html.dark-mode .user-details h4 {
+            color: var(--text-primary);
+        }
+
+        html.dark-mode .user-details p {
+            color: var(--text-secondary);
+        }
+
+        /* Logout Button Dark Mode */
+        html.dark-mode .logout-btn {
+            background: rgba(239, 68, 68, 0.2) !important;
+            border-color: rgba(239, 68, 68, 0.4) !important;
+            color: white !important;
+        }
+
+        html.dark-mode .logout-btn:hover {
+            background: rgba(239, 68, 68, 0.3) !important;
+        }
+
+        /* Access Denied Dark Mode */
+        html.dark-mode #access-denied {
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        html.dark-mode #access-denied h2 {
+            color: #fca5a5;
+        }
+
+        html.dark-mode #access-denied p {
+            color: var(--text-secondary);
+        }
+
+        /* Responsive Dark Mode */
+        @media (max-width: 768px) {
+            html.dark-mode .user-details {
+                display: none;
+            }
+            
+            html.dark-mode .nav-links {
+                display: none;
+            }
+        }
+
+        /* Access Denied (Light Mode) */
+        #access-denied {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            margin: 5rem auto;
+            max-width: 600px;
+            padding: 4rem;
+            text-align: center;
+        }
+
+        #access-denied h2 {
+            color: #ef4444;
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        #access-denied p {
+            color: #64748b;
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Action Buttons Container */
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* Comprehensive Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 1rem;
+                max-width: 95%;
+            }
+
+            header {
+                padding: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                gap: 1rem;
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
+            }
+
+            .dashboard-section {
+                padding: 1.5rem;
+            }
+
+            .table-container {
+                overflow-x: auto;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            .nav-links {
+                gap: 1rem;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .search-input:focus {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 0.8rem;
+            }
+
+            header nav {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .logo {
+                font-size: 1.4rem;
+            }
+
+            .nav-links {
+                flex-direction: column;
+                width: 100%;
+                gap: 0.5rem;
+            }
+
+            .nav-links a {
+                padding: 0.8rem 0.5rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .stat-card {
+                padding: 1rem;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .action-card {
+                padding: 1.2rem;
+                text-align: center;
+            }
+
+            .dashboard-section {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-container {
+                flex-direction: column;
+                margin-left: 0;
+                gap: 0.5rem;
+            }
+
+            .search-input {
+                width: 100%;
+                max-width: 100%;
+                padding: 10px 15px;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            table thead {
+                display: none;
+            }
+
+            table tr {
+                display: block;
+                border: 1px solid #e2e8f0;
+                margin-bottom: 1rem;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            table td {
+                display: block;
+                text-align: right;
+                padding: 0.75rem;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            table td::before {
+                content: attr(data-label);
+                float: left;
+                font-weight: 600;
+                color: #1e293b;
+            }
+
+            .modal-content {
+                width: 95% !important;
+                max-height: 90vh;
+                overflow-y: auto;
+            }
+
+            .modal-header {
+                padding: 1rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 0.8rem;
+            }
+
+            .user-details {
+                display: none;
+            }
+
+            .dashboard-header {
+                padding: 1rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.9rem;
+            }
+
+            .live-time {
+                display: flex;
+                gap: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .search-results-info {
+                flex-direction: column;
+                gap: 0.5rem;
+                align-items: flex-start;
+            }
+
+            .btn-primary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 14px;
+            }
+
+            header {
+                padding: 0.6rem;
+            }
+
+            header nav {
+                gap: 0.5rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+
+            .stat-card {
+                padding: 0.8rem;
+            }
+
+            .stat-card .stat-header {
+                gap: 0.8rem;
+            }
+
+            .stat-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+
+            .dashboard-section {
+                padding: 0.8rem;
+                margin-bottom: 0.8rem;
+            }
+
+            .quick-actions {
+                grid-template-columns: 1fr;
+                gap: 0.6rem;
+            }
+
+            .action-card {
+                padding: 1rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .search-input {
+                padding: 8px 12px;
+                font-size: 0.9rem;
+            }
+
+            .search-clear {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
+            table td {
+                padding: 0.5rem;
+                font-size: 0.85rem;
+            }
+
+            .btn {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+            }
+
+            .btn-primary {
+                padding: 10px 12px;
+            }
+
+            .modal-content {
+                width: 100% !important;
+            }
+
+            .modal-header {
+                padding: 0.8rem;
+            }
+
+            .form-group {
+                margin-bottom: 1rem;
+            }
+
+            .form-group label {
+                font-size: 0.9rem;
+            }
+
+            .form-group input,
+            .form-group select {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .dashboard-header {
+                padding: 0.8rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .dashboard-header p {
+                font-size: 0.85rem;
+            }
+
+            .user-avatar {
+                width: 35px;
+                height: 35px;
+                font-size: 0.9rem;
+            }
+
+            .live-time {
+                font-size: 0.75rem;
+                gap: 0.3rem;
+            }
+
+            #access-denied {
+                margin: 2rem auto;
+                padding: 2rem;
+            }
+
+            #access-denied h2 {
+                font-size: 1.8rem;
+            }
+
+            #access-denied p {
+                font-size: 1rem;
+            }
+
+            .no-results i {
+                font-size: 2rem;
+            }
+
+            .header-info {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons button {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 360px) {
+            body {
+                font-size: 13px;
+            }
+
+            .logo span {
+                display: none;
+            }
+
+            .stat-card {
+                padding: 0.6rem;
+            }
+
+            .dashboard-header {
+                padding: 0.6rem;
+            }
+
+            .dashboard-header h1 {
+                font-size: 1.2rem;
+                margin-bottom: 0.3rem;
+            }
+
+            .section-title {
+                font-size: 1.1rem;
+            }
+
+            .quick-actions {
+                gap: 0.5rem;
+            }
+
+            .action-card {
+                padding: 0.8rem;
+            }
+
+            .action-card i {
+                font-size: 1.5rem;
+            }
+
+            .action-card h4 {
+                font-size: 0.9rem;
+            }
+
+            .action-card p {
+                font-size: 0.75rem;
+            }
+
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.85rem;
+            }
+
+            table {
+                font-size: 0.8rem;
+            }
+
+            table td {
+                padding: 0.3rem;
+            }
+        }
+    </style>
+
+    <!-- Unified theme overrides: ensure all dashboards share the same color palette and UI tokens -->
+    <style>
+        :root{
+            --primary: #3b82f6;
+            --accent-primary: #8b5cf6;
+            --accent: var(--primary);
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --card-bg: #ffffff;
+            --bg-gradient-from: #f8fafc;
+            --bg-gradient-to: #eef2f7;
+            --text-primary: #1f2937;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow: 0 10px 30px rgba(0,0,0,0.06);
+        }
+
+        /* Base page adjustments to unify look */
+        body { background: linear-gradient(135deg,var(--bg-gradient-from),var(--bg-gradient-to)); color:var(--text-primary); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+        header { background: linear-gradient(135deg,#0f172a 0%, #1f2937 100%); border-bottom: 3px solid var(--primary); }
+        .btn, button { background: var(--primary); color: #fff; border: none; border-radius: 8px; }
+        .btn-primary { background: var(--primary); }
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); }
+        .btn-danger { background: var(--error); }
+        .role-badge, .status-badge { border-color: var(--primary); }
+        .card, .stat-card, .vehicle-card, .modal-content { background: var(--card-bg); box-shadow: var(--shadow); border: 1px solid var(--border-color); }
+        a { color: var(--primary); }
+    </style>
+
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>CSMS Admin</span>
+            </div>
+            
+            <div style="display: flex; align-items: center; gap: 2rem;">
+                <ul class="nav-links">
+                    <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                    <li><a href="#" class="active"><i class="fas fa-users-cog"></i> Management</a></li>
+                </ul>
+                
+                <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                
+                <div class="user-info">
+                    <div class="user-details">
+                        <h4 id="admin-name">Administrator</h4>
+                        <p>System Administrator</p>
+                    </div>
+                    <div class="user-avatar" id="admin-avatar">A</div>
+                    <button class="logout-btn" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <!-- Access Denied (Hidden by default) -->
+        <div id="access-denied" style="display: none; text-align: center; padding: 5rem;">
+            <h2>Access Denied</h2>
+            <p>Administrator access only</p>
+            <a href="index.html" style="color: #3b82f6;">Return to Login</a>
+        </div>
+
+        <!-- Dashboard Content -->
+        <div id="dashboard-content">
+            <!-- Dashboard Header -->
+            <div class="dashboard-header">
+                <h1>Administrator Dashboard</h1>
+                <p>Complete system management and monitoring for Car Service Management System</p>
+                <div class="live-time" id="live-time">
+                    <i class="fas fa-clock"></i>
+                    <span id="current-time">Loading...</span>
+                </div>
+                <div class="role-badge">
+                    <i class="fas fa-user-shield"></i>
+                    System Administrator
+                </div>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="stats-grid">
+                <div class="stat-card blue">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">Total Users</div>
+                            <div class="stat-value" id="total-users">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card purple">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">Active Users</div>
+                            <div class="stat-value" id="active-users">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card red">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-user-slash"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">Inactive Users</div>
+                            <div class="stat-value" id="inactive-users">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card green">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">Completed Services</div>
+                            <div class="stat-value" id="completed-services">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card orange">
+                    <div class="stat-header">
+                        <div class="stat-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <div>
+                            <div class="stat-title">Pending Services</div>
+                            <div class="stat-value" id="pending-services">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="dashboard-section">
+                <h2 class="section-title">
+                    <i class="fas fa-bolt"></i> Quick Actions
+                </h2>
+                <div class="quick-actions">
+                    <div class="action-card" onclick="openUserModal()">
+                        <i class="fas fa-user-plus"></i>
+                        <h4>Add User</h4>
+                        <p>Create new system user account</p>
+                    </div>
+                    <div class="action-card" onclick="scrollToUsersSection()">
+                        <i class="fas fa-users"></i> 
+                        <h4>All Users</h4>
+                        <p>Details of all users</p>
+                    </div>
+                    <div class="action-card" onclick="openVehicleModal()">
+                        <i class="fas fa-car"></i>
+                        <h4>Add Car</h4>
+                        <p>Register new vehicle</p>
+                    </div>
+                    <div class="action-card" onclick="scrollToVehiclesSection()">
+                        <i class="fas fa-car-side"></i>
+                        <h4>All Cars</h4>
+                        <p>Details of all cars</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Global Search Section -->
+            <div class="dashboard-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-search"></i> Global Search
+                    </h2>
+                    <div class="search-container">
+                        <div class="search-box">
+                            <input type="text" id="global-search-input" class="search-input" placeholder="Search users, vehicles, messages..." onkeyup="handleGlobalSearch(event)">
+                            <button class="search-btn" onclick="performGlobalSearch()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <button class="search-clear" onclick="clearGlobalSearch()">
+                            <i class="fas fa-times"></i> Clear
+                        </button>
+                    </div>
+                </div>
+                <div id="global-search-results" style="display: none;"></div>
+            </div>
+
+            <!-- Contact Messages -->
+            <div class="dashboard-section" id="contact-messages-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-envelope"></i> Contact Messages
+                    </h2>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="search-box">
+                            <input type="text" id="contact-search-input" class="search-input" placeholder="Search messages..." onkeyup="searchContactMessages(event)">
+                            <button class="search-btn" onclick="searchContactMessages()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <button class="btn-primary" onclick="refreshContactMessages()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container" id="contact-messages-container">
+                    <!-- Populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Vehicle Management -->
+            <div class="dashboard-section" id="vehicle-management-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-car"></i> Car Management
+                    </h2>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="search-box">
+                            <input type="text" id="vehicle-search-input" class="search-input" placeholder="Search vehicles..." onkeyup="searchVehicles(event)">
+                            <button class="search-btn" onclick="searchVehicles()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <button class="btn-primary" onclick="openVehicleModal()">
+                            <i class="fas fa-plus"></i> Add Vehicle
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="vehicles-table">
+                        <thead>
+                            <tr>
+                                <th>Vehicle ID</th>
+                                <th>Make & Model</th>
+                                <th>License Plate</th>
+                                <th>Year</th>
+                                <th>Owner</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="vehicles-tbody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- User Management -->
+            <div class="dashboard-section" id="user-management-section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <i class="fas fa-users"></i> User Management
+                    </h2>
+                    <div style="display: flex; gap: 10px;">
+                        <div class="search-box">
+                            <input type="text" id="user-search-input" class="search-input" placeholder="Search users..." onkeyup="searchUsers(event)">
+                            <button class="search-btn" onclick="searchUsers()">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <button class="btn-primary" onclick="openUserModal()">
+                            <i class="fas fa-plus"></i> Add User
+                        </button>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table id="users-table">
+                        <thead>
+                            <tr>
+                                <th>User ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-tbody">
+                            <!-- Populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Vehicle Modal -->
+    <div class="modal" id="vehicle-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="vehicle-modal-title">Add Vehicle</h2>
+                <button class="close-btn" onclick="closeModal('vehicle-modal')">&times;</button>
+            </div>
+            <form id="vehicle-form">
+                <div class="form-group">
+                    <label for="vehicle-make">Make & Model *</label>
+                    <input type="text" id="vehicle-make" required placeholder="e.g., Toyota Corolla">
+                </div>
+                <div class="form-group">
+                    <label for="vehicle-plate">License Plate *</label>
+                    <input type="text" id="vehicle-plate" required placeholder="e.g., ABC-1234">
+                </div>
+                <div class="form-group">
+                    <label for="vehicle-year">Year *</label>
+                    <input type="number" id="vehicle-year" required placeholder="e.g., 2020" min="1990" max="2100">
+                </div>
+                <div class="form-group">
+                    <label for="vehicle-owner">Owner Name *</label>
+                    <input type="text" id="vehicle-owner" required placeholder="e.g., John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="vehicle-status">Status *</label>
+                    <select id="vehicle-status" required>
+                        <option value="active">Active</option>
+                        <option value="maintenance">Under Maintenance</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('vehicle-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Save Vehicle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Modal -->
+    <div class="modal" id="user-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="user-modal-title">Add User</h2>
+                <button class="close-btn" onclick="closeModal('user-modal')">&times;</button>
+            </div>
+            <form id="user-form">
+                <div class="form-group">
+                    <label for="user-name">Full Name *</label>
+                    <input type="text" id="user-name" required placeholder="Enter full name">
+                </div>
+                <div class="form-group">
+                    <label for="user-email">Email Address *</label>
+                    <input type="email" id="user-email" required placeholder="Enter email address">
+                </div>
+                <div class="form-group">
+                    <label for="user-password">Password *</label>
+                    <input type="password" id="user-password" required placeholder="Create password (min. 8 characters)">
+                </div>
+                <div class="form-group">
+                    <label for="user-role">Role *</label>
+                    <select id="user-role" required>
+                        <option value="">-- Select Role --</option>
+                        <option value="admin">Administrator</option>
+                        <option value="advisor">Service Advisor</option>
+                        <option value="technician">Technician</option>
+                        <option value="qc">Quality Controller</option>
+                        <option value="receptionist">Receptionist</option>
+                        <option value="guard">Security Guard</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="user-status">Account Status *</label>
+                    <select id="user-status" required>
+                        <option value="active">Active - Can Login</option>
+                        <option value="inactive">Inactive - Cannot Login</option>
+                    </select>
+                </div>
+                <div id="technician-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="user-phone">Phone (Technician)</label>
+                        <input type="tel" id="user-phone" placeholder="Enter phone number">
+                    </div>
+                    <div class="form-group">
+                        <label for="user-specialization">Specialization (Technician)</label>
+                        <input type="text" id="user-specialization" placeholder="e.g., Engine Repair">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeModal('user-modal')">Cancel</button>
+                    <button type="submit" class="btn-primary">Add User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- User Detail/Edit Modal -->
+    <div class="modal" id="user-detail-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="user-detail-modal-title">User Details</h2>
+                <button class="close-btn" onclick="closeModal('user-detail-modal')">&times;</button>
+            </div>
+            <div id="user-detail-content"></div>
+        </div>
+    </div>
+
+    <script>
+        // ===== SCROLL TO SECTION FUNCTIONS =====
+        function scrollToUsersSection() {
+            const usersSection = document.getElementById('user-management-section');
+            if (usersSection) {
+                usersSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Highlight the section temporarily
+                usersSection.style.transition = 'box-shadow 0.3s ease';
+                usersSection.style.boxShadow = '0 0 0 3px #3b82f6, 0 10px 30px rgba(0, 0, 0, 0.08)';
+                
+                setTimeout(() => {
+                    usersSection.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.08)';
+                }, 1500);
+                
+                showMessage('Navigated to Users section', 'success');
+            }
+        }
+
+        function scrollToVehiclesSection() {
+            const vehiclesSection = document.getElementById('vehicle-management-section');
+            if (vehiclesSection) {
+                vehiclesSection.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+                
+                // Highlight the section temporarily
+                vehiclesSection.style.transition = 'box-shadow 0.3s ease';
+                vehiclesSection.style.boxShadow = '0 0 0 3px #3b82f6, 0 10px 30px rgba(0, 0, 0, 0.08)';
+                
+                setTimeout(() => {
+                    vehiclesSection.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.08)';
+                }, 1500);
+                
+                showMessage('Navigated to Vehicles section', 'success');
+            }
+        }
+
+        // Add keyboard shortcut: Press 'U' for Users section, 'V' for Vehicles section
+        document.addEventListener('keydown', function(e) {
+            // Check if not typing in an input field
+            if (e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && e.target.tagName !== 'SELECT') {
+                if (e.key === 'u' || e.key === 'U') {
+                    e.preventDefault();
+                    scrollToUsersSection();
+                } else if (e.key === 'v' || e.key === 'V') {
+                    e.preventDefault();
+                    scrollToVehiclesSection();
+                }
+            }
+        });
+
+        // ===== AUTHENTICATION =====
+        const admin = JSON.parse(localStorage.getItem('vsms_current_user'));
+        if (!admin || admin.role !== 'admin') {
+            document.getElementById('dashboard-content').style.display = 'none';
+            document.getElementById('access-denied').style.display = 'block';
+            throw new Error("Access denied");
+        }
+
+        // Update admin info
+        document.getElementById('admin-name').textContent = admin.name || 'Administrator';
+        document.getElementById('admin-avatar').textContent = admin.name ? 
+            admin.name.split(' ').map(n => n[0]).join('').toUpperCase() : 'A';
+
+        // ===== DATABASE =====
+        const VEHICLES_KEY = 'vsms_vehicles';
+        const USERS_KEY = 'vsms_users';
+        let vehiclesDatabase = JSON.parse(localStorage.getItem(VEHICLES_KEY)) || [];
+        let usersDatabase = JSON.parse(localStorage.getItem(USERS_KEY)) || [];
+        let contactsDatabase = JSON.parse(localStorage.getItem('vsms_contacts')) || [];
+        let editingVehicleId = null;
+        let editingUserId = null;
+
+        // Search state
+        let currentUserSearchTerm = '';
+        let currentVehicleSearchTerm = '';
+        let currentContactSearchTerm = '';
+        let currentGlobalSearchTerm = '';
+
+        // ===== MIGRATE OLD USERS TO ADD STATUS FIELD =====
+        function migrateUsersDatabase() {
+            let migrated = false;
+            usersDatabase = usersDatabase.map(user => {
+                if (!user.hasOwnProperty('status')) {
+                    migrated = true;
+                    return { ...user, status: 'active' };
+                }
+                return user;
+            });
+            if (migrated) {
+                localStorage.setItem(USERS_KEY, JSON.stringify(usersDatabase));
+                console.log('Users database migrated: added status field');
+            }
+        }
+        migrateUsersDatabase();
+
+        // ===== UPDATE LIVE TIME =====
+        function updateLiveTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            const dateString = now.toLocaleDateString('en-GB', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('current-time').textContent = `${dateString} | ${timeString}`;
+        }
+
+        // ===== UPDATE STATISTICS =====
+        function updateStatistics() {
+            // Total Users
+            document.getElementById('total-users').textContent = usersDatabase.length;
+            
+            // Active Users
+            const activeUsers = usersDatabase.filter(u => u.status === 'active').length;
+            document.getElementById('active-users').textContent = activeUsers;
+            
+            // Inactive Users
+            const inactiveUsers = usersDatabase.filter(u => u.status === 'inactive').length;
+            document.getElementById('inactive-users').textContent = inactiveUsers;
+            
+            // Active Vehicles
+            const activeVehicles = vehiclesDatabase.filter(v => v.status === 'active').length;
+            document.getElementById('active-vehicles') ? 
+                document.getElementById('active-vehicles').textContent = activeVehicles : null;
+            
+            // Completed Services (vehicles with serviceStatus as completed)
+            const completedServices = vehiclesDatabase.filter(v => v.serviceStatus === 'completed').length;
+            document.getElementById('completed-services').textContent = completedServices;
+            
+            // Pending Services (vehicles with serviceStatus as pending or in-progress)
+            const pendingServices = vehiclesDatabase.filter(v => 
+                v.serviceStatus === 'pending' || v.serviceStatus === 'in-progress'
+            ).length;
+            document.getElementById('pending-services').textContent = pendingServices;
+        }
+
+        // ===== PASSWORD VISIBILITY TOGGLE =====
+        function togglePasswordVisibility(userId) {
+            const passwordInput = document.getElementById(`edit-password-${userId}`);
+            const toggleIcon = document.getElementById(`password-toggle-icon-${userId}`);
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleIcon.className = 'fas fa-eye-slash';
+            } else {
+                passwordInput.type = 'password';
+                toggleIcon.className = 'fas fa-eye';
+            }
+        }
+
+        // ===== VIEW USER DETAILS WITH PASSWORD =====
+        function viewUserDetails(userId) {
+            const user = usersDatabase.find(u => u.id === userId);
+            if (!user) {
+                showMessage('User not found', 'error');
+                return;
+            }
+
+            const modal = document.getElementById('user-detail-modal');
+            const content = document.getElementById('user-detail-content');
+            
+            // Get initials for avatar
+            const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+            
+            // Format date
+            const createdDate = user.createdAt ? new Date(user.createdAt).toLocaleDateString('en-GB', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }) : 'N/A';
+
+            // Build the detail view with edit form including password
+            content.innerHTML = `
+                <div class="user-avatar-large">${initials}</div>
+                
+                <form id="user-edit-form-${user.id}" onsubmit="event.preventDefault(); updateUserDetails(${user.id});">
+                    <div class="user-detail-group">
+                        <div class="user-detail-label">
+                            <i class="fas fa-id-card"></i> USER ID
+                        </div>
+                        <div class="user-detail-value">#${user.id}</div>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="user-detail-group">
+                            <div class="user-detail-label">
+                                <i class="fas fa-user"></i> FULL NAME
+                            </div>
+                            <input type="text" id="edit-name-${user.id}" class="form-control" value="${user.name}" required>
+                        </div>
+                        
+                        <div class="user-detail-group">
+                            <div class="user-detail-label">
+                                <i class="fas fa-envelope"></i> EMAIL ADDRESS
+                            </div>
+                            <input type="email" id="edit-email-${user.id}" class="form-control" value="${user.email}" readonly>
+                        </div>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="user-detail-group">
+                            <div class="user-detail-label">
+                                <i class="fas fa-lock"></i> PASSWORD
+                            </div>
+                            <div class="password-field-container">
+                                <input type="password" id="edit-password-${user.id}" class="form-control" value="${user.password || ''}" placeholder="Enter new password (min. 8 characters)">
+                                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility(${user.id})">
+                                    <i class="fas fa-eye" id="password-toggle-icon-${user.id}"></i>
+                                </button>
+                            </div>
+                            <div class="password-hint">
+                                <i class="fas fa-info-circle"></i> Leave empty to keep current password
+                            </div>
+                        </div>
+                        
+                        <div class="user-detail-group">
+                            <div class="user-detail-label">
+                                <i class="fas fa-user-tag"></i> ROLE
+                            </div>
+                            <select id="edit-role-${user.id}" class="form-control" ${user.id === admin.id ? 'disabled' : ''}>
+                                <option value="admin" ${user.role === 'admin' ? 'selected' : ''}>Administrator</option>
+                                <option value="advisor" ${user.role === 'advisor' ? 'selected' : ''}>Service Advisor</option>
+                                <option value="technician" ${user.role === 'technician' ? 'selected' : ''}>Technician</option>
+                                <option value="qc" ${user.role === 'qc' ? 'selected' : ''}>Quality Controller</option>
+                                <option value="receptionist" ${user.role === 'receptionist' ? 'selected' : ''}>Receptionist</option>
+                                <option value="guard" ${user.role === 'guard' ? 'selected' : ''}>Security Guard</option>
+                            </select>
+                            ${user.id === admin.id ? '<small style="color: #f59e0b; display: block; margin-top: 5px;">Cannot change your own role</small>' : ''}
+                        </div>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="user-detail-group">
+                            <div class="user-detail-label">
+                                <i class="fas fa-toggle-on"></i> ACCOUNT STATUS
+                            </div>
+                            <select id="edit-status-${user.id}" class="form-control" ${user.id === admin.id ? 'disabled' : ''}>
+                                <option value="active" ${user.status === 'active' ? 'selected' : ''}>Active - Can Login</option>
+                                <option value="inactive" ${user.status === 'inactive' ? 'selected' : ''}>Inactive - Cannot Login</option>
+                            </select>
+                            ${user.id === admin.id ? '<small style="color: #f59e0b; display: block; margin-top: 5px;">Cannot change your own status</small>' : ''}
+                        </div>
+                        
+                        <div class="user-detail-group">
+                            <div class="user-detail-label">
+                                <i class="fas fa-clock"></i> LAST UPDATED
+                            </div>
+                            <div class="user-detail-value">${user.updatedAt ? new Date(user.updatedAt).toLocaleString() : 'Never'}</div>
+                        </div>
+                    </div>
+                    
+                    ${user.role === 'technician' ? `
+                        <div class="info-grid">
+                            <div class="user-detail-group">
+                                <div class="user-detail-label">
+                                    <i class="fas fa-phone"></i> PHONE NUMBER
+                                </div>
+                                <input type="tel" id="edit-phone-${user.id}" class="form-control" value="${user.phone || ''}" placeholder="Enter phone number">
+                            </div>
+                            
+                            <div class="user-detail-group">
+                                <div class="user-detail-label">
+                                    <i class="fas fa-wrench"></i> SPECIALIZATION
+                                </div>
+                                <input type="text" id="edit-specialization-${user.id}" class="form-control" value="${user.specialization || ''}" placeholder="e.g., Engine Repair">
+                            </div>
+                        </div>
+                    ` : ''}
+                    
+                    <div class="detail-section-title">
+                        <i class="fas fa-info-circle"></i> Additional Information
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="user-detail-group">
+                            <div class="user-detail-label">
+                                <i class="fas fa-calendar-alt"></i> CREATED DATE
+                            </div>
+                            <div class="user-detail-value">${createdDate}</div>
+                        </div>
+                        
+                        <div class="user-detail-group">
+                            <div class="user-detail-label">
+                                <i class="fas fa-clock"></i> LAST UPDATED
+                            </div>
+                            <div class="user-detail-value">${user.updatedAt ? new Date(user.updatedAt).toLocaleString() : 'Never'}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="closeModal('user-detail-modal')">Cancel</button>
+                        <button type="submit" class="btn-primary" id="save-user-${user.id}">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            `;
+            
+            modal.classList.add('show');
+        }
+
+        // ===== UPDATE USER DETAILS =====
+        function updateUserDetails(userId) {
+            const user = usersDatabase.find(u => u.id === userId);
+            if (!user) {
+                showMessage('User not found', 'error');
+                return;
+            }
+
+            // Get updated values
+            const updatedName = document.getElementById(`edit-name-${user.id}`).value;
+            const updatedPassword = document.getElementById(`edit-password-${user.id}`).value;
+            const updatedRole = document.getElementById(`edit-role-${user.id}`).value;
+            const updatedStatus = document.getElementById(`edit-status-${user.id}`).value;
+            
+            // Validate name
+            if (!updatedName.trim()) {
+                showMessage('Name cannot be empty', 'error');
+                return;
+            }
+
+            // Validate password if provided
+            if (updatedPassword && updatedPassword.length < 8) {
+                showMessage('Password must be at least 8 characters long!', 'error');
+                return;
+            }
+
+            // Update user object
+            user.name = updatedName;
+            
+            // Update password only if a new one is provided
+            if (updatedPassword) {
+                user.password = updatedPassword;
+            }
+            
+            // Only update role and status if not editing own account
+            if (user.id !== admin.id) {
+                user.role = updatedRole;
+                user.status = updatedStatus;
+            }
+            
+            // Update technician fields if applicable
+            if (user.role === 'technician') {
+                const updatedPhone = document.getElementById(`edit-phone-${user.id}`)?.value || '';
+                const updatedSpecialization = document.getElementById(`edit-specialization-${user.id}`)?.value || '';
+                user.phone = updatedPhone;
+                user.specialization = updatedSpecialization;
+            }
+            
+            user.updatedAt = new Date().toISOString();
+
+            // Save to localStorage
+            localStorage.setItem(USERS_KEY, JSON.stringify(usersDatabase));
+            
+            // Refresh the users table
+            loadUsers();
+            updateStatistics();
+            
+            // Close modal and show success message
+            closeModal('user-detail-modal');
+            showMessage('User details updated successfully!', 'success');
+        }
+
+        // ===== SEARCH FUNCTIONS =====
+        
+        // Global Search
+        function handleGlobalSearch(event) {
+            if (event.key === 'Enter') {
+                performGlobalSearch();
+            }
+        }
+
+        function performGlobalSearch() {
+            const searchTerm = document.getElementById('global-search-input').value.toLowerCase().trim();
+            currentGlobalSearchTerm = searchTerm;
+            
+            if (!searchTerm) {
+                document.getElementById('global-search-results').style.display = 'none';
+                // Reset all sections to show all data
+                loadUsers();
+                loadVehicles();
+                refreshContactMessages();
+                return;
+            }
+
+            // Search in users
+            const userResults = usersDatabase.filter(user => 
+                user.name?.toLowerCase().includes(searchTerm) ||
+                user.email?.toLowerCase().includes(searchTerm) ||
+                getRoleName(user.role).toLowerCase().includes(searchTerm) ||
+                user.id?.toString().includes(searchTerm)
+            );
+
+            // Search in vehicles
+            const vehicleResults = vehiclesDatabase.filter(vehicle => 
+                vehicle.make?.toLowerCase().includes(searchTerm) ||
+                vehicle.carName?.toLowerCase().includes(searchTerm) ||
+                vehicle.plate?.toLowerCase().includes(searchTerm) ||
+                vehicle.vehicleNumber?.toLowerCase().includes(searchTerm) ||
+                vehicle.owner?.toLowerCase().includes(searchTerm) ||
+                vehicle.ownerEmail?.toLowerCase().includes(searchTerm) ||
+                vehicle.year?.toString().includes(searchTerm) ||
+                vehicle.id?.toString().includes(searchTerm)
+            );
+
+            // Search in contacts
+            const contactResults = contactsDatabase.filter(contact => 
+                contact.name?.toLowerCase().includes(searchTerm) ||
+                contact.email?.toLowerCase().includes(searchTerm) ||
+                contact.phone?.toLowerCase().includes(searchTerm) ||
+                contact.problemType?.toLowerCase().includes(searchTerm) ||
+                contact.description?.toLowerCase().includes(searchTerm)
+            );
+
+            // Display global search results
+            displayGlobalSearchResults(searchTerm, userResults, vehicleResults, contactResults);
+        }
+
+        function displayGlobalSearchResults(searchTerm, users, vehicles, contacts) {
+            const resultsDiv = document.getElementById('global-search-results');
+            const totalResults = users.length + vehicles.length + contacts.length;
+            
+            if (totalResults === 0) {
+                resultsDiv.innerHTML = `
+                    <div class="no-results" style="text-align: center; padding: 2rem;">
+                        <i class="fas fa-search" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                        <h3 style="color: #64748b;">No Results Found</h3>
+                        <p style="color: #94a3b8;">No items match "${searchTerm}"</p>
+                    </div>
+                `;
+                resultsDiv.style.display = 'block';
+                return;
+            }
+
+            let html = `
+                <div class="search-results-info">
+                    <p>
+                        <i class="fas fa-search"></i> 
+                        Found <strong>${totalResults}</strong> results for "${searchTerm}"
+                    </p>
+                    <button class="search-clear" onclick="clearGlobalSearch()">
+                        <i class="fas fa-times"></i> Clear Search
+                    </button>
+                </div>
+            `;
+
+            // Users section
+            if (users.length > 0) {
+                html += `
+                    <h3 style="margin: 1.5rem 0 1rem;">
+                        <i class="fas fa-users" style="color: #3b82f6;"></i> 
+                        Users (${users.length})
+                    </h3>
+                    <div class="table-container" style="margin-bottom: 2rem;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Role</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                users.forEach(user => {
+                    const statusClass = user.status === 'active' ? 'active' : 'inactive';
+                    const statusText = user.status === 'active' ? 'Active' : 'Inactive';
+                    
+                    html += `
+                        <tr>
+                            <td><strong>#${user.id}</strong></td>
+                            <td>${highlightText(user.name, searchTerm)}</td>
+                            <td>${highlightText(user.email, searchTerm)}</td>
+                            <td><span class="status-badge active" style="background: #dbeafe; color: #1e40af;">${getRoleName(user.role)}</span></td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="btn-view" onclick="viewUserDetails(${user.id})">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    ${user.status === 'active' ? 
+                                        `<button class="btn-warning" onclick="toggleUserStatus(${user.id}, 'inactive')">
+                                            <i class="fas fa-ban"></i> Deactivate
+                                        </button>` : 
+                                        `<button class="btn-success" onclick="toggleUserStatus(${user.id}, 'active')">
+                                            <i class="fas fa-check-circle"></i> Activate
+                                        </button>`
+                                    }
+                                    <button class="btn-danger" onclick="deleteUser(${user.id})">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += `</tbody></table></div>`;
+            }
+
+            // Vehicles section
+            if (vehicles.length > 0) {
+                html += `
+                    <h3 style="margin: 1.5rem 0 1rem;">
+                        <i class="fas fa-car" style="color: #3b82f6;"></i> 
+                        Vehicles (${vehicles.length})
+                    </h3>
+                    <div class="table-container" style="margin-bottom: 2rem;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Make & Model</th>
+                                    <th>License Plate</th>
+                                    <th>Year</th>
+                                    <th>Owner</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                vehicles.forEach(vehicle => {
+                    const statusClass = vehicle.status === 'active' ? 'active' : 
+                                      vehicle.status === 'maintenance' ? 'maintenance' : 'inactive';
+                    const statusText = vehicle.status === 'active' ? 'Active' :
+                                     vehicle.status === 'maintenance' ? 'Maintenance' : 'Inactive';
+                    
+                    html += `
+                        <tr>
+                            <td><strong>#${vehicle.id}</strong></td>
+                            <td>${highlightText(vehicle.make || vehicle.carName || 'N/A', searchTerm)}</td>
+                            <td><code>${highlightText(vehicle.plate || vehicle.vehicleNumber || 'N/A', searchTerm)}</code></td>
+                            <td>${highlightText(vehicle.year || 'N/A', searchTerm)}</td>
+                            <td>${highlightText(vehicle.owner || vehicle.ownerEmail || 'N/A', searchTerm)}</td>
+                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td>
+                                <button class="btn-danger" onclick="deleteVehicle(${vehicle.id})">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                
+                html += `</tbody></table></div>`;
+            }
+
+            // Contacts section
+            if (contacts.length > 0) {
+                html += `
+                    <h3 style="margin: 1.5rem 0 1rem;">
+                        <i class="fas fa-envelope" style="color: #3b82f6;"></i> 
+                        Contact Messages (${contacts.length})
+                    </h3>
+                    <div class="table-container" style="margin-bottom: 2rem;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Type</th>
+                                    <th>Message</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+                
+                contacts.forEach(msg => {
+                    const statusColor = msg.status === 'new' ? '#fbbf24' : msg.status === 'responded' ? '#10b981' : '#6b7280';
+                    
+                    html += `
+                        <tr>
+                            <td><strong>${highlightText(msg.name, searchTerm)}</strong></td>
+                            <td><a href="mailto:${msg.email}">${highlightText(msg.email, searchTerm)}</a></td>
+                            <td><a href="tel:${msg.phone}">${highlightText(msg.phone, searchTerm)}</a></td>
+                            <td><span style="background:#3b82f6;color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${highlightText(msg.problemType, searchTerm)}</span></td>
+                            <td style="max-width:250px;">${highlightText(msg.description.substring(0, 50) + (msg.description.length > 50 ? '...' : ''), searchTerm)}</td>
+                            <td><span style="background:${statusColor};color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${msg.status}</span></td>
+                            <td><button onclick="viewContactMessageDetail(${msg.id})" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.85rem;">View</button></td>
+                        </tr>
+                    `;
+                });
+                
+                html += `</tbody></table></div>`;
+            }
+
+            resultsDiv.innerHTML = html;
+            resultsDiv.style.display = 'block';
+            
+            // Hide individual sections when showing global search results
+            document.getElementById('contact-messages-section').style.display = 'none';
+            document.getElementById('vehicle-management-section').style.display = 'none';
+            document.getElementById('user-management-section').style.display = 'none';
+        }
+
+        function clearGlobalSearch() {
+            document.getElementById('global-search-input').value = '';
+            document.getElementById('global-search-results').style.display = 'none';
+            currentGlobalSearchTerm = '';
+            
+            // Show all sections again
+            document.getElementById('contact-messages-section').style.display = 'block';
+            document.getElementById('vehicle-management-section').style.display = 'block';
+            document.getElementById('user-management-section').style.display = 'block';
+            
+            // Reset all searches
+            clearUserSearch();
+            clearVehicleSearch();
+            clearContactSearch();
+        }
+
+        // User Search
+        function searchUsers(event) {
+            if (event && event.key === 'Enter') {
+                performUserSearch();
+            } else if (!event) {
+                performUserSearch();
+            }
+        }
+
+        function performUserSearch() {
+            const searchInput = document.getElementById('user-search-input');
+            if (!searchInput) return;
+            
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            currentUserSearchTerm = searchTerm;
+            
+            const tbody = document.getElementById('users-tbody');
+            
+            if (!searchTerm) {
+                loadUsers();
+                return;
+            }
+
+            const filteredUsers = usersDatabase.filter(user => 
+                user.name?.toLowerCase().includes(searchTerm) ||
+                user.email?.toLowerCase().includes(searchTerm) ||
+                getRoleName(user.role).toLowerCase().includes(searchTerm) ||
+                user.id?.toString().includes(searchTerm) ||
+                (user.status === 'active' && 'active'.includes(searchTerm)) ||
+                (user.status === 'inactive' && 'inactive'.includes(searchTerm))
+            );
+
+            if (filteredUsers.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" class="no-results">
+                            <i class="fas fa-users"></i>
+                            <h3>No Users Found</h3>
+                            <p>No users match "${searchTerm}"</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            filteredUsers.forEach(user => {
+                const statusClass = user.status === 'active' ? 'active' : 'inactive';
+                const statusText = user.status === 'active' ? 'Active' : 'Inactive';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>#${user.id}</strong></td>
+                    <td>${highlightText(user.name, searchTerm)}</td>
+                    <td>${highlightText(user.email, searchTerm)}</td>
+                    <td><span class="status-badge active" style="background: #dbeafe; color: #1e40af;">${getRoleName(user.role)}</span></td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-view" onclick="viewUserDetails(${user.id})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            ${user.status === 'active' ? 
+                                `<button class="btn-warning" onclick="toggleUserStatus(${user.id}, 'inactive')">
+                                    <i class="fas fa-ban"></i> Deactivate
+                                </button>` : 
+                                `<button class="btn-success" onclick="toggleUserStatus(${user.id}, 'active')">
+                                    <i class="fas fa-check-circle"></i> Activate
+                                </button>`
+                            }
+                            <button class="btn-danger" onclick="deleteUser(${user.id})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function clearUserSearch() {
+            const searchInput = document.getElementById('user-search-input');
+            if (searchInput) {
+                searchInput.value = '';
+                currentUserSearchTerm = '';
+                loadUsers();
+            }
+        }
+
+        // Vehicle Search
+        function searchVehicles(event) {
+            if (event && event.key === 'Enter') {
+                performVehicleSearch();
+            } else if (!event) {
+                performVehicleSearch();
+            }
+        }
+
+        function performVehicleSearch() {
+            const searchInput = document.getElementById('vehicle-search-input');
+            if (!searchInput) return;
+            
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            currentVehicleSearchTerm = searchTerm;
+            
+            const tbody = document.getElementById('vehicles-tbody');
+            
+            if (!searchTerm) {
+                loadVehicles();
+                return;
+            }
+
+            const filteredVehicles = vehiclesDatabase.filter(vehicle => 
+                vehicle.make?.toLowerCase().includes(searchTerm) ||
+                vehicle.carName?.toLowerCase().includes(searchTerm) ||
+                vehicle.plate?.toLowerCase().includes(searchTerm) ||
+                vehicle.vehicleNumber?.toLowerCase().includes(searchTerm) ||
+                vehicle.owner?.toLowerCase().includes(searchTerm) ||
+                vehicle.ownerEmail?.toLowerCase().includes(searchTerm) ||
+                vehicle.year?.toString().includes(searchTerm) ||
+                vehicle.id?.toString().includes(searchTerm) ||
+                (vehicle.status === 'active' && 'active'.includes(searchTerm)) ||
+                (vehicle.status === 'maintenance' && 'maintenance'.includes(searchTerm)) ||
+                (vehicle.status === 'inactive' && 'inactive'.includes(searchTerm))
+            );
+
+            if (filteredVehicles.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="no-results">
+                            <i class="fas fa-car"></i>
+                            <h3>No Vehicles Found</h3>
+                            <p>No vehicles match "${searchTerm}"</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = '';
+            filteredVehicles.forEach(vehicle => {
+                const statusClass = vehicle.status === 'active' ? 'active' : 
+                                  vehicle.status === 'maintenance' ? 'maintenance' : 'inactive';
+                const statusText = vehicle.status === 'active' ? 'Active' :
+                                 vehicle.status === 'maintenance' ? 'Maintenance' : 'Inactive';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>#${vehicle.id}</strong></td>
+                    <td>${highlightText(vehicle.make || vehicle.carName || 'N/A', searchTerm)}</td>
+                    <td><code>${highlightText(vehicle.plate || vehicle.vehicleNumber || 'N/A', searchTerm)}</code></td>
+                    <td>${highlightText(vehicle.year || 'N/A', searchTerm)}</td>
+                    <td>${highlightText(vehicle.owner || vehicle.ownerEmail || 'N/A', searchTerm)}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="btn-danger" onclick="deleteVehicle(${vehicle.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function clearVehicleSearch() {
+            const searchInput = document.getElementById('vehicle-search-input');
+            if (searchInput) {
+                searchInput.value = '';
+                currentVehicleSearchTerm = '';
+                loadVehicles();
+            }
+        }
+
+        // Contact Messages Search
+        function searchContactMessages(event) {
+            if (event && event.key === 'Enter') {
+                performContactSearch();
+            } else if (!event) {
+                performContactSearch();
+            }
+        }
+
+        function performContactSearch() {
+            const searchInput = document.getElementById('contact-search-input');
+            if (!searchInput) return;
+            
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            currentContactSearchTerm = searchTerm;
+            
+            if (!searchTerm) {
+                refreshContactMessages();
+                return;
+            }
+
+            const filteredContacts = contactsDatabase.filter(contact => 
+                contact.name?.toLowerCase().includes(searchTerm) ||
+                contact.email?.toLowerCase().includes(searchTerm) ||
+                contact.phone?.toLowerCase().includes(searchTerm) ||
+                contact.problemType?.toLowerCase().includes(searchTerm) ||
+                contact.description?.toLowerCase().includes(searchTerm) ||
+                contact.status?.toLowerCase().includes(searchTerm)
+            );
+
+            displayContactSearchResults(filteredContacts, searchTerm);
+        }
+
+        function displayContactSearchResults(contacts, searchTerm) {
+            const container = document.getElementById('contact-messages-container');
+            
+            if (contacts.length === 0) {
+                container.innerHTML = `
+                    <div class="no-results" style="text-align: center; padding: 3rem;">
+                        <i class="fas fa-envelope" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                        <h3 style="color: #64748b;">No Messages Found</h3>
+                        <p style="color: #94a3b8;">No contact messages match "${searchTerm}"</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '<table style="width:100%;border-collapse:collapse;">' +
+                '<thead><tr style="background:#f5f5f5;border-bottom:2px solid #ddd;">' +
+                '<th style="padding:12px;text-align:left;">Name</th>' +
+                '<th style="padding:12px;text-align:left;">Email</th>' +
+                '<th style="padding:12px;text-align:left;">Phone</th>' +
+                '<th style="padding:12px;text-align:left;">Type</th>' +
+                '<th style="padding:12px;text-align:left;">Message</th>' +
+                '<th style="padding:12px;text-align:left;">Status</th>' +
+                '<th style="padding:12px;text-align:center;">Action</th>' +
+                '</tr></thead><tbody>';
+            
+            contacts.forEach(msg => {
+                const statusColor = msg.status === 'new' ? '#fbbf24' : msg.status === 'responded' ? '#10b981' : '#6b7280';
+                html += `<tr style="border-bottom:1px solid #eee;" id="msg-${msg.id}">
+                    <td style="padding:12px;"><strong>${highlightText(msg.name, searchTerm)}</strong></td>
+                    <td style="padding:12px;"><a href="mailto:${msg.email}">${highlightText(msg.email, searchTerm)}</a></td>
+                    <td style="padding:12px;"><a href="tel:${msg.phone}">${highlightText(msg.phone, searchTerm)}</a></td>
+                    <td style="padding:12px;"><span style="background:#3b82f6;color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${highlightText(msg.problemType, searchTerm)}</span></td>
+                    <td style="padding:12px;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${msg.description}">${highlightText(msg.description.substring(0, 50) + (msg.description.length > 50 ? '...' : ''), searchTerm)}</td>
+                    <td style="padding:12px;"><span style="background:${statusColor};color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${msg.status}</span></td>
+                    <td style="padding:12px;text-align:center;"><button onclick="viewContactMessageDetail(${msg.id})" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.85rem;">View</button></td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function clearContactSearch() {
+            const searchInput = document.getElementById('contact-search-input');
+            if (searchInput) {
+                searchInput.value = '';
+                currentContactSearchTerm = '';
+                refreshContactMessages();
+            }
+        }
+
+        // Helper function to highlight text
+        function highlightText(text, searchTerm) {
+            if (!text || !searchTerm) return text || '';
+            const regex = new RegExp(`(${searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, 'gi');
+            return String(text).replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        // ===== LOAD VEHICLES =====
+        function loadVehicles() {
+            const tbody = document.getElementById('vehicles-tbody');
+            tbody.innerHTML = '';
+
+            if (vehiclesDatabase.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 3rem;">
+                            <i class="fas fa-car" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                            <h3 style="color: #64748b;">No Vehicles Found</h3>
+                            <p style="color: #94a3b8;">Click "Add Vehicle" to register a new vehicle</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            vehiclesDatabase.forEach(vehicle => {
+                const statusClass = vehicle.status === 'active' ? 'active' : 
+                                  vehicle.status === 'maintenance' ? 'maintenance' : 'inactive';
+                const statusText = vehicle.status === 'active' ? 'Active' :
+                                 vehicle.status === 'maintenance' ? 'Maintenance' : 'Inactive';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>#${vehicle.id}</strong></td>
+                    <td>${vehicle.make || vehicle.carName || 'N/A'}</td>
+                    <td><code>${vehicle.plate || vehicle.vehicleNumber || 'N/A'}</code></td>
+                    <td>${vehicle.year || 'N/A'}</td>
+                    <td>${vehicle.owner || vehicle.ownerEmail || 'N/A'}</td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <button class="btn-danger" onclick="deleteVehicle(${vehicle.id})">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // ===== LOAD USERS =====
+        function loadUsers() {
+            const tbody = document.getElementById('users-tbody');
+            tbody.innerHTML = '';
+
+            if (usersDatabase.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; padding: 3rem;">
+                            <i class="fas fa-users" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
+                            <h3 style="color: #64748b;">No Users Found</h3>
+                            <p style="color: #94a3b8;">Click "Add User" to create a new user account</p>
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            usersDatabase.forEach(user => {
+                const statusClass = user.status === 'active' ? 'active' : 'inactive';
+                const statusText = user.status === 'active' ? 'Active' : 'Inactive';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td><strong>#${user.id}</strong></td>
+                    <td>${user.name}</td>
+                    <td>${user.email}</td>
+                    <td><span class="status-badge active" style="background: #dbeafe; color: #1e40af;">${getRoleName(user.role)}</span></td>
+                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-view" onclick="viewUserDetails(${user.id})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            ${user.status === 'active' ? 
+                                `<button class="btn-warning" onclick="toggleUserStatus(${user.id}, 'inactive')">
+                                    <i class="fas fa-ban"></i> Deactivate
+                                </button>` : 
+                                `<button class="btn-success" onclick="toggleUserStatus(${user.id}, 'active')">
+                                    <i class="fas fa-check-circle"></i> Activate
+                                </button>`
+                            }
+                            <button class="btn-danger" onclick="deleteUser(${user.id})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // ===== VEHICLE MODAL FUNCTIONS =====
+        function openVehicleModal(vehicleId = null) {
+            editingVehicleId = vehicleId;
+            const modal = document.getElementById('vehicle-modal');
+            const form = document.getElementById('vehicle-form');
+            const title = document.getElementById('vehicle-modal-title');
+
+            form.reset();
+
+            if (vehicleId) {
+                title.textContent = 'Edit Vehicle';
+                const vehicle = vehiclesDatabase.find(v => v.id === vehicleId);
+                if (vehicle) {
+                    document.getElementById('vehicle-make').value = vehicle.make || vehicle.carName || '';
+                    document.getElementById('vehicle-plate').value = vehicle.plate || vehicle.vehicleNumber || '';
+                    document.getElementById('vehicle-year').value = vehicle.year || '';
+                    document.getElementById('vehicle-owner').value = vehicle.owner || vehicle.ownerEmail || '';
+                    document.getElementById('vehicle-status').value = vehicle.status || 'active';
+                }
+            } else {
+                title.textContent = 'Add Vehicle';
+            }
+
+            modal.classList.add('show');
+        }
+
+        function handleVehicleSubmit(e) {
+            e.preventDefault();
+
+            const make = document.getElementById('vehicle-make').value;
+            const plate = document.getElementById('vehicle-plate').value;
+            const year = document.getElementById('vehicle-year').value;
+            const owner = document.getElementById('vehicle-owner').value;
+            const status = document.getElementById('vehicle-status').value;
+
+            if (editingVehicleId) {
+                // Update existing vehicle
+                const vehicle = vehiclesDatabase.find(v => v.id === editingVehicleId);
+                if (vehicle) {
+                    vehicle.make = make;
+                    vehicle.carName = make;
+                    vehicle.plate = plate;
+                    vehicle.vehicleNumber = plate;
+                    vehicle.year = year;
+                    vehicle.owner = owner;
+                    vehicle.ownerEmail = owner;
+                    vehicle.status = status;
+                    vehicle.updatedAt = new Date().toISOString();
+                }
+            } else {
+                // Add new vehicle
+                const newVehicle = {
+                    id: Date.now(),
+                    make,
+                    carName: make,
+                    plate,
+                    vehicleNumber: plate,
+                    year,
+                    owner,
+                    ownerEmail: owner,
+                    status,
+                    serviceStatus: 'pending',
+                    createdAt: new Date().toISOString()
+                };
+                vehiclesDatabase.push(newVehicle);
+            }
+
+            localStorage.setItem(VEHICLES_KEY, JSON.stringify(vehiclesDatabase));
+            loadVehicles();
+            updateStatistics();
+            closeModal('vehicle-modal');
+            showMessage(editingVehicleId ? 'Vehicle updated successfully!' : 'Vehicle added successfully!', 'success');
+        }
+
+        function deleteVehicle(vehicleId) {
+            if (confirm('Are you sure you want to delete this vehicle?')) {
+                vehiclesDatabase = vehiclesDatabase.filter(v => v.id !== vehicleId);
+                localStorage.setItem(VEHICLES_KEY, JSON.stringify(vehiclesDatabase));
+                loadVehicles();
+                updateStatistics();
+                showMessage('Vehicle deleted successfully!', 'success');
+            }
+        }
+
+        // ===== USER MODAL FUNCTIONS =====
+        function openUserModal() {
+            const modal = document.getElementById('user-modal');
+            const form = document.getElementById('user-form');
+            const title = document.getElementById('user-modal-title');
+
+            form.reset();
+            title.textContent = 'Add User';
+            document.getElementById('user-password').required = true;
+            document.getElementById('technician-fields').style.display = 'none';
+            document.getElementById('user-status').value = 'active'; // Default to active
+
+            modal.classList.add('show');
+        }
+
+        function handleUserSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('user-name').value;
+            const email = document.getElementById('user-email').value;
+            const password = document.getElementById('user-password').value;
+            const role = document.getElementById('user-role').value;
+            const status = document.getElementById('user-status').value;
+            
+            // Validate password length
+            if (password.length < 8) {
+                showMessage('Password must be at least 8 characters long!', 'error');
+                return;
+            }
+            
+            // Check if email already exists
+            if (usersDatabase.some(u => u.email === email)) {
+                showMessage('Email already registered!', 'error');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                id: Date.now(),
+                name,
+                email,
+                password,
+                role,
+                status,
+                createdAt: new Date().toISOString()
+            };
+
+            // Add technician-specific fields
+            if (role === 'technician') {
+                newUser.phone = document.getElementById('user-phone').value;
+                newUser.specialization = document.getElementById('user-specialization').value;
+            }
+            
+            usersDatabase.push(newUser);
+            localStorage.setItem(USERS_KEY, JSON.stringify(usersDatabase));
+            loadUsers();
+            updateStatistics();
+            closeModal('user-modal');
+            showMessage(`User added successfully! Status: ${status === 'active' ? 'Active' : 'Inactive'}`, 'success');
+        }
+
+        // ===== TOGGLE USER STATUS =====
+        function toggleUserStatus(userId, newStatus) {
+            const user = usersDatabase.find(u => u.id === userId);
+            if (!user) {
+                showMessage('User not found', 'error');
+                return;
+            }
+
+            // Prevent admin from deactivating themselves
+            if (user.id === admin.id && newStatus === 'inactive') {
+                showMessage('You cannot deactivate your own account!', 'error');
+                return;
+            }
+
+            const statusText = newStatus === 'active' ? 'activate' : 'deactivate';
+            if (confirm(`Are you sure you want to ${statusText} user ${user.name}?`)) {
+                user.status = newStatus;
+                user.updatedAt = new Date().toISOString();
+                localStorage.setItem(USERS_KEY, JSON.stringify(usersDatabase));
+                loadUsers();
+                updateStatistics();
+                showMessage(`User ${statusText}d successfully!`, 'success');
+            }
+        }
+
+        function deleteUser(userId) {
+            const user = usersDatabase.find(u => u.id === userId);
+            
+            // Prevent admin from deleting themselves
+            if (user && user.id === admin.id) {
+                showMessage('You cannot delete your own account!', 'error');
+                return;
+            }
+
+            if (confirm(`Are you sure you want to delete user ${user?.name || ''}?`)) {
+                usersDatabase = usersDatabase.filter(u => u.id !== userId);
+                localStorage.setItem(USERS_KEY, JSON.stringify(usersDatabase));
+                loadUsers();
+                updateStatistics();
+                showMessage('User deleted successfully!', 'success');
+            }
+        }
+
+        // ===== HELPER FUNCTIONS =====
+        function getRoleName(roleCode) {
+            const roles = {
+                'admin': 'Administrator',
+                'advisor': 'Service Advisor',
+                'technician': 'Technician',
+                'qc': 'Quality Controller',
+                'receptionist': 'Receptionist',
+                'guard': 'Security Guard'
+            };
+            return roles[roleCode] || 'User';
+        }
+
+        function showMessage(message, type) {
+            const existing = document.querySelector('.message-box');
+            if (existing) existing.remove();
+            
+            const msgBox = document.createElement('div');
+            msgBox.className = `message-box ${type}`;
+            msgBox.innerHTML = `
+                <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(msgBox);
+            
+            setTimeout(() => {
+                msgBox.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => msgBox.remove(), 300);
+            }, 3000);
+        }
+        
+        function refreshContactMessages() {
+            contactsDatabase = JSON.parse(localStorage.getItem('vsms_contacts')) || [];
+            const container = document.getElementById('contact-messages-container');
+            
+            if (contactsDatabase.length === 0) {
+                container.innerHTML = '<p style="text-align:center;color:#999;padding:20px;">No contact messages yet</p>';
+                return;
+            }
+            
+            let html = '<table style="width:100%;border-collapse:collapse;">' +
+                '<thead><tr style="background:#f5f5f5;border-bottom:2px solid #ddd;">' +
+                '<th style="padding:12px;text-align:left;">Name</th>' +
+                '<th style="padding:12px;text-align:left;">Email</th>' +
+                '<th style="padding:12px;text-align:left;">Phone</th>' +
+                '<th style="padding:12px;text-align:left;">Type</th>' +
+                '<th style="padding:12px;text-align:left;">Message</th>' +
+                '<th style="padding:12px;text-align:left;">Status</th>' +
+                '<th style="padding:12px;text-align:center;">Action</th>' +
+                '</tr></thead><tbody>';
+            
+            contactsDatabase.forEach(msg => {
+                const statusColor = msg.status === 'new' ? '#fbbf24' : msg.status === 'responded' ? '#10b981' : '#6b7280';
+                html += `<tr style="border-bottom:1px solid #eee;" id="msg-${msg.id}">
+                    <td style="padding:12px;"><strong>${msg.name}</strong></td>
+                    <td style="padding:12px;"><a href="mailto:${msg.email}">${msg.email}</a></td>
+                    <td style="padding:12px;"><a href="tel:${msg.phone}">${msg.phone}</a></td>
+                    <td style="padding:12px;"><span style="background:#3b82f6;color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${msg.problemType}</span></td>
+                    <td style="padding:12px;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${msg.description}">${msg.description.substring(0, 50)}...</td>
+                    <td style="padding:12px;"><span style="background:${statusColor};color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${msg.status}</span></td>
+                    <td style="padding:12px;text-align:center;"><button onclick="viewContactMessageDetail(${msg.id})" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.85rem;">View</button></td>
+                </tr>`;
+            });
+            
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+        
+        function viewContactMessageDetail(msgId) {
+            const contacts = JSON.parse(localStorage.getItem('vsms_contacts')) || [];
+            const msg = contacts.find(c => c.id === msgId);
+            
+            if (!msg) {
+                showMessage('Message not found', 'error');
+                return;
+            }
+            
+            let details = `
+📧 Contact Message Details
+━━━━━━━━━━━━━━━━━━━━━━━━━
+Name: ${msg.name}
+Email: ${msg.email}
+Phone: ${msg.phone}
+Type: ${msg.problemType}
+Date: ${new Date(msg.createdAt).toLocaleString()}
+
+Message:
+${msg.description}
+━━━━━━━━━━━━━━━━━━━━━━━━━
+`;
+            
+            if (msg.adminResponse) {
+                details += `
+Admin Response (${new Date(msg.respondedAt).toLocaleString()}):
+${msg.adminResponse}
+`;
+            }
+            
+            const response = prompt(details + '\n\nEnter your response (or cancel to skip):', msg.adminResponse || '');
+            
+            if (response === null) return;
+            if (!response.trim()) {
+                showMessage('Response cannot be empty', 'error');
+                return;
+            }
+            
+            msg.adminResponse = response;
+            msg.respondedAt = new Date().toISOString();
+            msg.status = 'responded';
+            
+            localStorage.setItem('vsms_contacts', JSON.stringify(contacts));
+            showMessage('Response saved! Email notification sent to ' + msg.email, 'success');
+            refreshContactMessages();
+        }
+        
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            if (modal) {
+                modal.classList.remove('show');
+                editingVehicleId = null;
+                editingUserId = null;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('vsms_current_user');
+            window.location.href = 'logreg.html';
+        }
+
+        function generateReport() {
+            showMessage('Report generation started. Check downloads folder.', 'success');
+        }
+
+        function backupData() {
+            showMessage('System backup completed successfully.', 'success');
+        }
+
+        // ===== FIXED THEME TOGGLE IMPLEMENTATION =====
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            // Check localStorage for saved preference
+            const savedTheme = localStorage.getItem('theme-preference');
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+            }
+            
+            // Toggle button click handler
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+
+        // ===== FORM EVENT LISTENERS =====
+        document.getElementById('vehicle-form').addEventListener('submit', handleVehicleSubmit);
+        document.getElementById('user-form').addEventListener('submit', handleUserSubmit);
+        document.getElementById('user-role').addEventListener('change', (e) => {
+            const technicianFields = document.getElementById('technician-fields');
+            technicianFields.style.display = e.target.value === 'technician' ? 'block' : 'none';
+        });
+
+        // ===== INITIALIZE =====
+        function initialize() {
+            // Initialize theme toggle
+            initThemeToggle();
+            
+            // Load initial contact messages
+            refreshContactMessages();
+            
+            // Close modals when clicking outside
+            window.addEventListener('click', (e) => {
+                const vehicleModal = document.getElementById('vehicle-modal');
+                const userModal = document.getElementById('user-modal');
+                const userDetailModal = document.getElementById('user-detail-modal');
+                if (e.target === vehicleModal) closeModal('vehicle-modal');
+                if (e.target === userModal) closeModal('user-modal');
+                if (e.target === userDetailModal) closeModal('user-detail-modal');
+            });
+            
+            // Initialize data
+            updateStatistics();
+            loadVehicles();
+            loadUsers();
+            updateLiveTime();
+        }
+
+        // Run initialization
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            initialize();
+        }
+        // Update time every second
+        setInterval(updateLiveTime, 1000);
+    </script>
+</body>
+</html>

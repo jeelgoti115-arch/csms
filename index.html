@@ -1,0 +1,1581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="icon" type="image/png" href="images/car-service.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --primary-dark: #3a56d4;
+            --secondary: #7209b7;
+            --accent: #f72585;
+            --success: #4cc9f0;
+            --dark: #2b2d42;
+            --light: #f8f9fa;
+            --gray: #8d99ae;
+            --card-bg: #ffffff;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --gradient: linear-gradient(135deg, #4361ee, #7209b7);
+            --gradient-alt: linear-gradient(135deg, #4cc9f0, #4361ee);
+            --border-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Header - Modern Design */
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.2rem 2rem;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-links li {
+            position: relative;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 600;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.2rem;
+            font-size: 0.8rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .nav-links a.active {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .nav-links a.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        /* Hero Section - Modern Design */
+        .hero {
+            position: relative;
+            padding: 8rem 2rem 6rem;
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7ff 0%, #f0f2ff 100%);
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(67, 97, 238, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(114, 9, 183, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1.4;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            font-weight: 400;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(67, 97, 238, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 2px solid rgba(67, 97, 238, 0.2);
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .btn:hover::after {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--dark);
+            border: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-outline:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            background: var(--gradient);
+            border-radius: 50%;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .floating-1 {
+            width: 300px;
+            height: 300px;
+            top: -150px;
+            right: -150px;
+        }
+
+        .floating-2 {
+            width: 200px;
+            height: 200px;
+            bottom: -100px;
+            left: -100px;
+            background: var(--gradient-alt);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Features Section */
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title h2 {
+            color: var(--dark);
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: var(--gray);
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 6rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2.5rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--gradient);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient);
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: white;
+            font-size: 1.8rem;
+            transition: var(--transition);
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: rotate(10deg) scale(1.1);
+        }
+
+        .feature-card h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .feature-card p {
+            color: var(--gray);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .feature-link:hover {
+            gap: 1rem;
+        }
+
+        /* Roles Section */
+        .roles {
+            margin-bottom: 6rem;
+        }
+
+        .roles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .role-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+            padding: 2.5rem 2rem;
+            transition: var(--transition);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .role-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .role-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: white;
+            font-size: 2rem;
+            transition: var(--transition);
+        }
+
+        .role-card:hover .role-icon {
+            transform: rotateY(180deg);
+        }
+
+        .role-icon.admin { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
+        .role-icon.advisor { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+        .role-icon.receptionist { background: linear-gradient(135deg, #ffd166, #ff9e6d); }
+        .role-icon.guard { background: linear-gradient(135deg, #118ab2, #073b4c); }
+
+        .role-card h3 {
+            color: var(--dark);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .role-card p {
+            color: var(--gray);
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .role-btn {
+            padding: 0.8rem 2rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: 0.5s;
+        }
+
+        .role-btn:hover::before {
+            left: 100%;
+        }
+
+        .role-btn.admin { background: #ff6b6b; color: white; }
+        .role-btn.advisor { background: #4ecdc4; color: white; }
+        .role-btn.receptionist { background: #ffd166; color: var(--dark); }
+        .role-btn.guard { background: #118ab2; color: white; }
+
+        .role-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Stats Section */
+        .stats {
+            background: var(--gradient);
+            padding: 6rem 2rem;
+            margin-bottom: 6rem;
+            border-radius: var(--border-radius);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+        }
+
+        .stats-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 3rem;
+            text-align: center;
+        }
+
+        .stat-item {
+            position: relative;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+        }
+
+        .stat-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .stat-item h3 {
+            font-size: 3.5rem;
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-item p {
+            font-size: 1.2rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 500;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            margin-bottom: 6rem;
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 5rem;
+            color: var(--primary);
+            opacity: 0.1;
+            font-family: serif;
+        }
+
+        .testimonial-content {
+            font-style: italic;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .author-info h4 {
+            color: var(--dark);
+            margin-bottom: 0.25rem;
+        }
+
+        .author-info p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 5rem 2rem 3rem;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        .footer-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+            text-align: justify;
+        }
+
+        .footer-links h3 {
+            color: white;
+            margin-bottom: 1.5rem;
+            font-size: 1.2rem;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 3.5rem;
+            }
+            
+            .features, .roles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 6rem 1rem 4rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.8rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .features, .roles-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                background: none;
+                border: none;
+                color: var(--dark);
+                font-size: 1.2rem;
+                cursor: pointer;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2.2rem;
+            }
+            
+            .feature-card, .role-card {
+                padding: 1.5rem;
+            }
+            
+            .stats {
+                padding: 4rem 1rem;
+            }
+            
+            .stat-item h3 {
+                font-size: 2.5rem;
+            }
+        }
+
+        /* Animation Classes */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.6s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-50px);
+            animation: slideInLeft 0.6s ease forwards;
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--dark);
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+        }
+
+        .mobile-menu-btn:hover {
+            background: rgba(0, 0, 0, 0.05);
+        }
+        
+        .login-btn {
+            background: var(--gradient) !important;
+            color: white !important;
+            padding: 0.6rem 1.5rem !important;
+            border-radius: 12px !important;
+            font-weight: 600 !important;
+            border: none !important;
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3) !important;
+            transition: var(--transition) !important;
+            text-decoration: none !important;
+            display: flex !important;
+            align-items: center !important;
+            gap: 0.5rem !important;
+            cursor: pointer !important;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.4) !important;
+            background: linear-gradient(135deg, var(--primary-dark), #5a08a5) !important;
+        }
+
+        .login-btn i {
+            font-size: 1rem !important;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 1rem;
+                box-shadow: var(--shadow);
+                border-radius: 0 0 var(--border-radius) var(--border-radius);
+                display: none;
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .nav-links li {
+                width: 100%;
+            }
+            
+            .nav-links a {
+                padding: 1rem;
+                justify-content: center;
+            }
+        }
+
+        /* Floating animation */
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        /* Theme Toggle Button */
+        .theme-toggle-item {
+            list-style: none !important;
+        }
+
+        .theme-toggle {
+            background: none;
+            border: 2px solid var(--primary);
+            color: var(--dark);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background: rgba(67, 97, 238, 0.1);
+            transform: scale(1.05);
+        }
+
+        /* Dark Mode Styles */
+        html.dark-mode {
+            --light: #1a1a1a;
+            --dark: #e8e8e8;
+            --card-bg: #2d2d2d;
+            --gray: #b0b0b0;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        html.dark-mode body {
+            background-color: var(--light);
+            color: var(--dark);
+        }
+
+        html.dark-mode header {
+            background: rgba(30, 30, 30, 0.98) !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.15) !important;
+        }
+
+        html.dark-mode .mobile-menu-btn {
+            color: var(--dark);
+        }
+
+        html.dark-mode .nav-links {
+            background: #242424 !important;
+        }
+
+        html.dark-mode .nav-links a {
+            color: var(--dark);
+        }
+
+        html.dark-mode .nav-links a:hover {
+            background: rgba(67, 97, 238, 0.2);
+            color: #4361ee;
+        }
+
+        html.dark-mode .nav-links a.active {
+            background: var(--gradient);
+            color: white;
+        }
+
+        html.dark-mode .logo {
+            -webkit-text-fill-color: transparent;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+        }
+
+        html.dark-mode footer {
+            background: #0f0f0f !important;
+            border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+        }
+
+        html.dark-mode .footer-logo {
+            -webkit-text-fill-color: transparent;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+        }
+
+        html.dark-mode .footer-description {
+            color: rgba(232, 232, 232, 0.6) !important;
+        }
+
+        html.dark-mode .footer-links h3 {
+            color: var(--dark) !important;
+        }
+
+        html.dark-mode .footer-links a {
+            color: rgba(232, 232, 232, 0.6) !important;
+        }
+
+        html.dark-mode .footer-links a:hover {
+            color: #4361ee !important;
+        }
+
+        html.dark-mode .social-link {
+            background: rgba(255, 255, 255, 0.08) !important;
+            color: var(--dark) !important;
+        }
+
+        html.dark-mode .social-link:hover {
+            background: var(--primary) !important;
+            color: white !important;
+        }
+
+        html.dark-mode .footer-bottom {
+            border-top-color: rgba(255, 255, 255, 0.1) !important;
+            color: rgba(232, 232, 232, 0.4) !important;
+        }
+
+        html.dark-mode .hero {
+            background: linear-gradient(135deg, #2a2a2a 0%, #1f1f1f 100%);
+        }
+
+        html.dark-mode .feature-card,
+        html.dark-mode .role-card,
+        html.dark-mode .testimonial-card,
+        html.dark-mode .stat-item {
+            background: var(--card-bg);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        html.dark-mode .theme-toggle {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.2);
+            color: var(--dark);
+        }
+
+        html.dark-mode .theme-toggle:hover {
+            background: rgba(67, 97, 238, 0.3);
+        }
+
+        html.dark-mode .theme-toggle i {
+            color: #ffd700;
+        }
+
+        html.dark-mode .login-btn {
+            color: white !important;
+        }
+
+        html.dark-mode .btn {
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        html.dark-mode .btn:hover {
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        html.dark-mode .form-control {
+            background: #1f1f1f;
+            color: var(--dark);
+            border-color: rgba(255, 255, 255, 0.1);
+        }
+
+        html.dark-mode .form-control:focus {
+            background: #2d2d2d;
+            border-color: #4361ee;
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        html.dark-mode input:-webkit-autofill,
+        html.dark-mode textarea:-webkit-autofill,
+        html.dark-mode select:-webkit-autofill {
+            -webkit-text-fill-color: #e8e8e8 !important;
+            -webkit-box-shadow: 0 0 0 1000px #1a1a1a inset !important;
+            transition: background-color 5000s ease-in-out 0s !important;
+        }
+    </style>
+</head>
+<body>
+    <!-- ======================================= Header ======================================= -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-car"></i>
+                Car<span>Service</span>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="features.html"><i class="fas fa-star"></i> Features</a></li>
+                         </li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li class="theme-toggle-item">
+                    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+   
+    <!-- ======================================= Hero Section ======================================= -->
+    <section class="hero">
+        <div class="floating-element floating-1"></div>
+        <div class="floating-element floating-2"></div>
+        <div class="hero-content">
+            <div class="hero-badge floating">
+                <i class="fa-solid fa-house"></i>
+                Home
+            </div>
+            <h1 class="fade-in">Car Service Management</h1>
+            <p class="fade-in">Revolutionize your vehicle service operations with our AI-powered platform. Efficient, secure, and designed for excellence.</p>
+            <div class="cta-buttons">
+                <a href="logreg.html" class="btn btn-primary fade-in">
+                    <i class="fas fa-rocket"></i>
+                    Get Started
+                </a>
+                <a href="#features" class="btn btn-outline fade-in">
+                    <i class="fa-solid fa-bars"></i>
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================= Features Section ======================================= -->
+    <section class="container" id="features">
+        <div class="section-title slide-in-left">
+            <h2>Powerful Features</h2>
+            <p>Designed to streamline every aspect of vehicle service management</p>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3>Smart Role System</h3>
+                <p>Advanced role-based access with granular permissions, activity tracking, and automated workflow assignments.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <h3>AI Vehicle Tracking</h3>
+                <p>Intelligent vehicle recognition, predictive maintenance scheduling, and real-time status updates.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Live Analytics</h3>
+                <p>Interactive dashboards, predictive insights, and performance metrics for data-driven decisions.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Mobile First</h3>
+                <p>Progressive web app with offline capabilities, push notifications, and native-like experience.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h3>Secure Cloud</h3>
+                <p>Military-grade encryption, automated backups, and GDPR-compliant data management.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>AI Assistant</h3>
+                <p>24/7 intelligent assistant for queries, automated reports, and smart suggestions.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================= Roles Section ======================================= -->
+    <section class="container" id="roles">
+        <div class="section-title slide-in-left">
+            <h2>Designed for Every Role</h2>
+            <p>Specialized interfaces for each team member's unique responsibilities</p>
+        </div>
+        
+        <div class="roles-grid">
+            <div class="role-card fade-in">
+                <div class="role-icon admin">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3>Administrator</h3>
+                <p>Full system control, user management, analytics, and configuration capabilities.</p>
+                <a href="logreg.html" class="role-btn admin">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Admin Portal
+                </a>
+            </div>
+            
+            <div class="role-card fade-in">
+                <div class="role-icon guard">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3>Security Guard</h3>
+                <p>Vehicle verification, entry/exit logging, and security monitoring & managing.</p>
+                <a href="logreg.html" class="role-btn guard">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Security Portal
+                </a>
+            </div>
+
+            <div class="role-card fade-in">
+                <div class="role-icon receptionist">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3>Receptionist</h3>
+                <p>Appointment scheduling, customer check-ins, and basic information management.</p>
+                <a href="logreg.html" class="role-btn receptionist">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Reception Portal
+                </a>
+            </div>
+            <div class="role-card fade-in">
+                <div class="role-icon advisor">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <h3>Service Advisor</h3>
+                <p>Service management, customer communication, and workflow coordination.</p>
+                <a href="logreg.html" class="role-btn advisor">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Advisor Portal
+                </a>    
+            </div>
+            <br>
+        </div>
+    </section>
+    <!-- ======================================= Stats Section ======================================= -->
+    <section class="stats">
+        <div class="container stats-content">
+            <div class="stats-grid">
+                <div class="stat-item fade-in">
+                    <h3 id="total-vehicles-stats">500+</h3>
+                    <p>Vehicles Managed</p>
+                </div>
+                <div class="stat-item fade-in">
+                    <h3 id="daily-entries-stats">50+</h3>
+                    <p>Daily Entries</p>
+                </div>
+                <div class="stat-item fade-in">
+                    <h3 id="active-users-stats">100+</h3>
+                    <p>Active Users</p>
+                </div>
+                <div class="stat-item fade-in">
+                    <h3 id="satisfaction-rate">98%</h3>
+                    <p>Satisfaction Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================= Testimonials ======================================= -->
+    <section class="container testimonials">
+        <div class="section-title slide-in-left">
+            <h2>Trusted by Industry Leaders</h2>
+            <p>See what our customers say about VSMS</p>
+        </div>
+        
+        <div class="testimonial-grid">
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    "VSMS transformed our service center operations. Efficiency increased by 40% and customer satisfaction skyrocketed."
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">SJ</div>
+                    <div class="author-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>Operations Manager, AutoCare Center</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    "The role-based system is brilliant. Each team member gets exactly what they need. Implementation was seamless."
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MR</div>
+                    <div class="author-info">
+                        <h4>Michael Rodriguez</h4>
+                        <p>Service Director, Premium Motors</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    "Security features are top-notch. The guard interface makes entry/exit tracking effortless and accurate. Implementation was seamless."
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">DK</div>
+                    <div class="author-info">
+                        <h4>David Kim</h4>
+                        <p>Security Head, Metro Auto Services</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================= Footer ======================================= -->
+    <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <i class="fas fa-car"></i>
+                        Car<span>Service</span>
+                    </div>
+                    <p class="footer-description">
+                        Car Service Management System is more than just software—it's a commitment to excellence in vehicle service operations. We're dedicated to continuous improvement and innovation to serve our clients better every day.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://github.com/" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-youtube"></i>
+                        </a>
+                    </div>
+                </div>  
+                
+                <div class="footer-links">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="index.html#features"><i class="fas fa-chevron-right"></i> Features</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Pricing</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Case Studies</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Updates</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="about.html" class="active"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Careers</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Press</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> API Docs</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> System Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+            </div>
+        </footer>
+
+    <script>
+        // Mobile menu toggle=======================================
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Intersection Observer for animations=======================================
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements
+        document.querySelectorAll('.fade-in, .slide-in-left').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Animate stats on scroll
+        function animateStats() {
+            const statsSection = document.querySelector('.stats');
+            if (!statsSection) return;
+            
+            const statsPosition = statsSection.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+
+            if (statsPosition < screenPosition) {
+                // Get vehicle data from localStorage
+                const vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+                const totalVehicles = vehiclesDatabase.length;
+                
+                // Calculate daily entries (vehicles added today)
+                const today = new Date().toISOString().split('T')[0];
+                const dailyEntries = vehiclesDatabase.filter(vehicle => {
+                    const entryDate = vehicle.entryTime ? vehicle.entryTime.split('T')[0] : '';
+                    return entryDate === today;
+                }).length;
+                
+                // Update stats with animation
+                animateNumber('total-vehicles-stats', Math.max(totalVehicles, 100), 500);
+                animateNumber('daily-entries-stats', Math.max(dailyEntries, 10), 50);
+                animateNumber('active-users-stats', Math.max(totalVehicles * 0.2, 20), 100);
+                
+                // Remove scroll listener after animation
+                window.removeEventListener('scroll', animateStats);
+            }
+        }
+        // Animate number counting
+        function animateNumber(elementId, target, baseNumber) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const finalNumber = target > baseNumber ? target : baseNumber;
+            let current = 0;
+            const increment = Math.ceil(finalNumber / 50);
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= finalNumber) {
+                    element.textContent = finalNumber + '+';
+                    clearInterval(timer);
+                } else {
+                    element.textContent = current + '+';
+                }
+            }, 20);
+        }
+        // Initialize
+        window.addEventListener('scroll', animateStats); 
+        // Trigger once on load in case stats are already visible
+        setTimeout(animateStats, 100);
+        // Check if user is logged in and show welcome message
+        setTimeout(() => {
+            const currentUser = JSON.parse(localStorage.getItem('vsms_current_user'));
+            if (currentUser) {
+                // Update hero section to show welcome message
+                const hero = document.querySelector('.hero h1');
+                if (hero) {
+                    hero.innerHTML = `Welcome back, ${currentUser.name}!`;
+                }
+                const heroSubtitle = document.querySelector('.hero p');
+                if (heroSubtitle) {
+                    const roleName = getRoleName(currentUser.role);
+                    heroSubtitle.textContent = `You are logged in as ${roleName}. Access your dashboard to continue.`;
+                }
+                // Update CTA buttons
+                const ctaButtons = document.querySelector('.cta-buttons');
+                if (ctaButtons) {
+                    ctaButtons.innerHTML = `
+                        <a href="${currentUser.role}.html" class="btn btn-primary fade-in">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Go to ${getRoleName(currentUser.role)} Dashboard
+                        </a>
+                        <a href="#" id="logout-home" class="btn btn-secondary fade-in">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    `;  
+                    // Add logout event listener
+                    document.getElementById('logout-home').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        localStorage.removeItem('vsms_current_user');
+                        window.location.href = 'index.html';
+                    });
+                }
+            }
+        }, 500);      
+        function getRoleName(roleCode) {
+            switch(roleCode) {
+                case 'admin': return 'Administrator';
+                case 'advisor': return 'Service Advisor';
+                case 'receptionist': return 'Receptionist';
+                case 'guard': return 'Security Guard';
+                default: return 'User';
+            }
+        }
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });  
+                    // Close mobile menu if open
+                    const navLinks = document.getElementById('navLinks');
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.backdropFilter = 'blur(20px)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            }
+        });
+
+        /* Theme Toggle Handler */
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            // Check localStorage for saved preference
+            const savedTheme = localStorage.getItem('theme-preference');
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-regular fa-moon"></i>';
+            }
+            
+            // Toggle button click handler
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-regular fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+        
+        // Initialize theme toggle when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThemeToggle);
+        } else {
+            initThemeToggle();
+        }
+    </script>
+</body>
+</html>
