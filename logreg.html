@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VSMS - Login & Register</title>
+    <title>CSMS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="images/car-service.png">
     <style>
@@ -1432,10 +1432,10 @@
         <div class="page-header-content">
             <div class="page-header-badge floating">
                 <i class="fas fa-shield-alt"></i>
-                Secure Login & Register
+                Secure Login
             </div>
-            <h1 class="fade-in">Welcome to VSMS</h1>
-            <p class="fade-in">Login or register to access the comprehensive vehicle service management platform</p>
+            <h1 class="fade-in">Welcome to CSMS</h1>
+            <p class="fade-in">Login to access the comprehensive car service management platform</p>
         </div>
     </div>
 
@@ -1465,7 +1465,7 @@
                         <div class="auth-icon">
                             <i class="fas fa-sign-in-alt"></i>
                         </div>
-                        <h3>Login to VSMS</h3>
+                        <h3>Login to CSMS</h3>
                         <p>Access your account to manage vehicle services</p>
                     </div>
                     
@@ -1515,91 +1515,10 @@
                             </button>
                         </div>
                         
-                        <div class="auth-switch">
-                            Don't have an account? <a href="#" id="show-register">Register here</a>
-                        </div>
+                        <!-- Registration is disabled on this page; account creation is restricted to Admin page -->
                     </form>
                 </div>
                 
-                <!-- Registration Form -->
-                <div class="auth-box fade-in hidden" id="register-box">
-                    <div class="auth-header">
-                        <div class="auth-icon">
-                            <i class="fas fa-user-plus"></i>
-                        </div>
-                        <h3>Create VSMS Account</h3>
-                        <p>Register for a new account to access the system</p>
-                    </div>
-                    
-                    <form id="register-form">
-                        <div class="form-group">
-                            <label for="register-name"><i class="fas fa-user"></i> Full Name</label>
-                            <input type="text" id="register-name" class="form-control" placeholder="Enter your full name" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="register-email"><i class="fas fa-envelope"></i> Email Address</label>
-                            <input type="email" id="register-email" class="form-control" placeholder="Enter your email" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="register-password"><i class="fas fa-lock"></i> Password</label>
-                            <input type="password" id="register-password" class="form-control" placeholder="Create a password (min. 8 characters)" required>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="register-confirm-password"><i class="fas fa-lock"></i> Confirm Password</label>
-                            <input type="password" id="register-confirm-password" class="form-control" placeholder="Confirm your password" required>
-                        </div>
-                        
-                        <!-- Technician-Specific Fields -->
-                        <div id="technician-fields" style="display: none;">
-                            <div class="form-group">
-                                <label for="register-phone"><i class="fas fa-phone"></i> Phone Number</label>
-                                <input type="tel" id="register-phone" class="form-control" placeholder="Enter your phone number">
-                            </div>
-                            <div class="form-group">
-                                <label for="register-specialization"><i class="fas fa-wrench"></i> Specialization</label>
-                                <select id="register-specialization" class="role-select">
-                                    <option value="General Technician">General Technician</option>
-                                    <option value="Engine Specialist">Engine Specialist</option>
-                                    <option value="Transmission Expert">Transmission Expert</option>
-                                    <option value="Electrical Specialist">Electrical Specialist</option>
-                                    <option value="Brake System Expert">Brake System Expert</option>
-                                    <option value="Suspension Specialist">Suspension Specialist</option>
-                                    <option value="Paint & Body Specialist">Paint & Body Specialist</option>
-                                </select>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="register-role"><i class="fas fa-user-tag"></i> Select Your Role</label>
-                            <select id="register-role" class="role-select">
-                                <option value="admin" class="role-option">👨‍💼 Administrator</option>
-                                <option value="guard" class="role-option">👮 Security Guard</option>
-                                <option value="receptionist" class="role-option">👩‍💼 Receptionist</option>
-                                <option value="advisor" class="role-option">👨‍🔧 Service Advisor</option>
-                                <option value="technician" class="role-option">🔧 Technician</option>
-                                <option value="qc" class="role-option">🔬 Quality Controller</option>
-                            </select>
-                        </div>
-                        
-                        <div class="role-info" id="role-description">
-                            <h4><i class="fas fa-info-circle"></i> Administrator Role</h4>
-                            <p>Manages the entire system, creates users, assigns roles, and monitors overall operations and reports.</p>
-                        </div>
-                        
-                        <div class="form-group">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-user-plus"></i> Create Account
-                            </button>
-                        </div>
-                        
-                        <div class="auth-switch">
-                            Already have an account? <a href="#" id="show-login">Login here</a>
-                        </div>
-                    </form>
-                </div>
             </div>
         </section>
 
@@ -1665,7 +1584,7 @@
             </div>
             
             <div class="footer-bottom">
-                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+                <p>&copy; 2020-2026 Car Service Management System. All rights reserved.</p>
             </div>
         </footer>
     </div>
@@ -1731,9 +1650,8 @@
                     const roleName = getRoleName(currentUser.role);
                     details.textContent = `You are currently logged in as ${currentUser.name} with ${roleName} role.`;
                     messageBox.classList.add('show');
-                    // Hide login/register forms
+                    // Hide login form (registration not available on this page)
                     document.getElementById('login-box').style.display = 'none';
-                    document.getElementById('register-box').style.display = 'none';
                     // Update page header
                     const pageHeader = document.querySelector('.page-header h1');
                     const pageSubtitle = document.querySelector('.page-header p');
@@ -1773,13 +1691,7 @@
         
         // DOM Elements
         const loginBox = document.getElementById('login-box');
-        const registerBox = document.getElementById('register-box');
-        const showRegisterLink = document.getElementById('show-register');
-        const showLoginLink = document.getElementById('show-login');
         const loginForm = document.getElementById('login-form');
-        const registerForm = document.getElementById('register-form');
-        const registerRoleSelect = document.getElementById('register-role');
-        const roleDescription = document.getElementById('role-description');
         
         // User database
         let usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
@@ -1853,45 +1765,7 @@
         });
         
         function setupFormEvents() {
-            // Switch between login and registration forms
-            showRegisterLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                loginBox.classList.add('hidden');
-                registerBox.classList.remove('hidden');
-                updateRoleDescription(registerRoleSelect.value);
-            });
-            
-            showLoginLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                registerBox.classList.add('hidden');
-                loginBox.classList.remove('hidden');
-            });
-            
-            // Update role description
-            function updateRoleDescription(role) {
-                const roleInfo = roleDescriptions[role];
-                roleDescription.innerHTML = `
-                    <h4><i class="fas fa-info-circle"></i> ${roleInfo.title}</h4>
-                    <p>${roleInfo.description}</p>
-                `;
-                
-                // Show/hide technician-specific fields
-                const technicianFields = document.getElementById('technician-fields');
-                if (role === 'technician') {
-                    technicianFields.style.display = 'block';
-                } else {
-                    technicianFields.style.display = 'none';
-                }
-            }
-            
-            registerRoleSelect.addEventListener('change', function() {
-                updateRoleDescription(this.value);
-            });
-            
-            // Initialize with admin role description
-            updateRoleDescription('admin');
-            
-            // Handle login form submission
+            // Only allow login on this page. Account creation is restricted to Admin page.
             loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
@@ -1929,92 +1803,6 @@
 
                 localStorage.setItem('vsms_current_user', JSON.stringify(user));
                 loginSuccess(user);
-            });
-            
-            // Handle registration form submission
-            registerForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                const name = document.getElementById('register-name').value.trim();
-                const email = document.getElementById('register-email').value.toLowerCase().trim();
-                const password = document.getElementById('register-password').value;
-                const confirmPassword = document.getElementById('register-confirm-password').value;
-                const role = document.getElementById('register-role').value;
-                
-                // Get technician-specific fields if registering as technician
-                const phone = role === 'technician' ? document.getElementById('register-phone').value.trim() : '';
-                const specialization = role === 'technician' ? document.getElementById('register-specialization').value : '';
-                
-                // Basic validation
-                if (!name || !email || !password || !confirmPassword) {
-                    showMessage('Please fill in all fields', 'error');
-                    return;
-                }
-                
-                // Validate technician fields if registering as technician
-                if (role === 'technician' && !phone) {
-                    showMessage('Please enter your phone number', 'error');
-                    return;
-                }
-                
-                // Check if email already exists
-                if (usersDatabase.some(u => u.email === email)) {
-                    showMessage('This email is already registered. Please login instead.', 'error');
-                    setTimeout(() => {
-                        registerBox.classList.add('hidden');
-                        loginBox.classList.remove('hidden');
-                        document.getElementById('login-email').value = email;
-                    }, 1500);
-                    return;
-                }
-                
-                if (password !== confirmPassword) {
-                    showMessage('Passwords do not match', 'error');
-                    return;
-                }
-                
-                if (password.length < 8) {
-                    showMessage('Password must be at least 8 characters long', 'error');
-                    return;
-                }
-                
-                // Create new user object with ACTIVE status by default
-                const newUser = {
-                    id: Date.now(),
-                    name: name,
-                    email: email,
-                    password: password,
-                    role: role,
-                    status: 'active', // Default status is active
-                    createdAt: new Date().toISOString()
-                };
-                
-                // Add technician-specific fields
-                if (role === 'technician') {
-                    newUser.phone = phone;
-                    newUser.specialization = specialization;
-                }
-                
-                // Add user to database
-                usersDatabase.push(newUser);
-                localStorage.setItem('vsms_users', JSON.stringify(usersDatabase));
-                
-                // Show success message
-                const roleName = getRoleName(role);
-                showMessage(`Account for ${roleName} created successfully! Your account is now active.`, 'success');
-                
-                // Switch to login form after a delay
-                setTimeout(() => {
-                    registerBox.classList.add('hidden');
-                    loginBox.classList.remove('hidden');
-                    
-                    // Pre-fill the login email and set the role
-                    document.getElementById('login-email').value = email;
-                    document.getElementById('login-role').value = role;
-                    
-                    // Show reminder about role lock
-                    showMessage(`Remember: You must select ${roleName} role when logging in.`, 'info');
-                }, 2000);
             });
         }
         

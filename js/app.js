@@ -33,13 +33,8 @@
 
   // Auth
   async function register(name,email,password,role){
-    try{
-      const res = await fetch('/api/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,password,role})})
-      if(res.status===409) return {ok:false,msg:'Email already registered'}
-      if(!res.ok) return {ok:false,msg:'Registration failed'}
-      const j = await res.json();
-      return {ok:true,user:j.user}
-    }catch(e){ return {ok:false,msg:e.message} }
+    // Registration via public endpoints is disabled. User creation must be performed by an Admin.
+    return {ok:false,msg:'Registration disabled. Contact administrator or use Admin panel.'}
   }
 
   async function login(email,password){
@@ -80,7 +75,7 @@
     const cur=currentUser();
     const navAuth=el('#nav-auth');
     if(navAuth) {
-      navAuth.textContent = cur? `${cur.name} (${cur.role})`:'Login/Register'
+      navAuth.textContent = cur? `${cur.name} (${cur.role})`:'Login'
       navAuth.href = 'logreg.html'
     }
     // show role-specific links

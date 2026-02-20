@@ -67,7 +67,7 @@
             color: var(--text-primary);
             line-height: 1.6;
             min-height: 100vh;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background 0.3s ease, color 0.3s ease, background-color 0.3s ease;
         }
 
         /* Header Styles */
@@ -228,15 +228,15 @@
             color: white;
         }
         .stat-icon.completed { 
-            background: linear-gradient(135deg, var(--success), #27ae60); 
+            background: linear-gradient(135deg, var(--success), rgba(52, 211, 153, 0.8)); 
             color: white;
         }
         .stat-icon.progress { 
-            background: linear-gradient(135deg, var(--warning), #d68910); 
+            background: linear-gradient(135deg, var(--warning), rgba(251, 191, 36, 0.8)); 
             color: white;
         }
         .stat-icon.priority { 
-            background: linear-gradient(135deg, var(--error), #c0392b); 
+            background: linear-gradient(135deg, var(--error), rgba(248, 113, 113, 0.8)); 
             color: white;
         }
 
@@ -468,17 +468,17 @@
         }
 
         .btn-success {
-            background: linear-gradient(135deg, var(--success), #27ae60);
+            background: linear-gradient(135deg, var(--success), rgba(52, 211, 153, 0.9));
             color: white;
         }
 
         .btn-success:hover:not(:disabled) {
             transform: translateY(-2px);
-            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.3);
+            box-shadow: 0 6px 15px rgba(52, 211, 153, 0.3);
         }
 
         .btn-warning {
-            background: linear-gradient(135deg, var(--warning), #d68910);
+            background: linear-gradient(135deg, var(--warning), rgba(251, 191, 36, 0.9));
             color: white;
         }
 
@@ -1043,14 +1043,14 @@
         }
 
         .notification.success {
-            background: linear-gradient(135deg, var(--success), #27ae60);
+            background: linear-gradient(135deg, var(--success), rgba(52, 211, 153, 0.9));
             color: white;
-            border-left-color: #27ae60;
+            border-left-color: var(--success);
         }
         .notification.error {
-            background: linear-gradient(135deg, var(--error), #c0392b);
+            background: linear-gradient(135deg, var(--error), rgba(248, 113, 113, 0.9));
             color: white;
-            border-left-color: #c0392b;
+            border-left-color: var(--error);
         }
         .notification.info {
             background: linear-gradient(135deg, var(--info), var(--accent-secondary));
@@ -1938,37 +1938,6 @@
             }
         }
     </style>
-
-    <!-- Unified theme overrides: ensure all dashboards share the same color palette and UI tokens -->
-    <style>
-        :root{
-            --primary: #3b82f6;
-            --accent-primary: #8b5cf6;
-            --accent: var(--primary);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --card-bg: #ffffff;
-            --bg-gradient-from: #f8fafc;
-            --bg-gradient-to: #eef2f7;
-            --text-primary: #1f2937;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-            --shadow: 0 10px 30px rgba(0,0,0,0.06);
-        }
-
-        body { background: linear-gradient(135deg,var(--bg-gradient-from),var(--bg-gradient-to)); color:var(--text-primary); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        header { background: linear-gradient(135deg,#0f172a 0%, #1f2937 100%); border-bottom: 3px solid var(--primary); }
-        .btn, button { background: var(--primary); color: #fff; border: none; border-radius: 8px; }
-        .btn-primary { background: var(--primary); }
-        .btn-success { background: var(--success); }
-        .btn-warning { background: var(--warning); }
-        .btn-danger { background: var(--error); }
-        .role-badge, .status-badge { border-color: var(--primary); }
-        .card, .stat-card, .vehicle-card, .modal-content { background: var(--card-bg); box-shadow: var(--shadow); border: 1px solid var(--border-color); }
-        a { color: var(--primary); }
-    </style>
-
 </head>
 <body>
     <header>
@@ -2038,11 +2007,11 @@
             </div>
             <div class="stat-card">
                 <div class="stat-icon priority">
-                    <i class="fas fa-exclamation-circle"></i>
+                    <i class="fas fa-star"></i>
                 </div>
                 <div class="stat-info">
-                    <h3>HIGH PRIORITY</h3>
-                    <div class="stat-number" id="highpriority-tasks">0</div>
+                    <h3>TODAY'S COMPLETED TASKS</h3>
+                    <div class="stat-number" id="today-completed-tasks">0</div>
                 </div>
             </div>
         </div>
@@ -2210,6 +2179,12 @@
                     <div id="qc-service-time-summary" style="margin-top: 0.5rem; padding: 0.5rem; background: var(--accent-light); border-radius: 8px;"></div>
                 </div>
                 <div class="modal-section">
+                    <h3><i class="fas fa-sticky-note"></i> Notes (optional)</h3>
+                    <div style="background: var(--card-bg); border:1px solid var(--border-color); border-radius: 10px; padding: 1rem;">
+                        <textarea id="qc-send-notes" style="width:100%; min-height:100px; border:none; outline:none; resize:vertical; font-family:inherit; background: transparent; color: var(--text-primary);" placeholder="Any notes for the QC inspector..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-section">
                     <h3><i class="fas fa-user-check"></i> Select Quality Controller</h3>
                     <div class="qc-search">
                         <i class="fas fa-search"></i>
@@ -2222,12 +2197,7 @@
                         <div style="font-size:0.9rem; margin-top:0.25rem;">Register users with role <strong>QC</strong> from the login/registration page.</div>
                     </div>
                 </div>
-                <div class="modal-section">
-                    <h3><i class="fas fa-sticky-note"></i> Notes (optional)</h3>
-                    <div style="background: var(--card-bg); border:1px solid var(--border-color); border-radius: 10px; padding: 1rem;">
-                        <textarea id="qc-send-notes" style="width:100%; min-height:100px; border:none; outline:none; resize:vertical; font-family:inherit; background: transparent; color: var(--text-primary);" placeholder="Any notes for the QC inspector..."></textarea>
-                    </div>
-                </div>
+                
                 <div class="modal-actions">
                     <button class="btn btn-outline" onclick="closeQcAssignModal()">Cancel</button>
                     <button id="qc-assign-btn" class="btn btn-warning" onclick="confirmSendToQC()" disabled>
@@ -2238,7 +2208,7 @@
         </div>
 
         <div class="footer">
-            <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+            <p>&copy; 2020-2026 Car Service Management System. All rights reserved.</p>
         </div>
     </div>
 
@@ -2363,6 +2333,7 @@
             } catch(e) { window.location.href = 'logreg.html'; return; }
 
             initThemeToggle();
+            initializeTaskTracking();
             document.getElementById('user-name').textContent = currentUser.name || 'Technician User';
             const avatar = document.getElementById('user-avatar');
             avatar.textContent = (currentUser.name || 'T').charAt(0).toUpperCase();
@@ -2476,7 +2447,7 @@
                 const card = document.createElement('div');
                 card.className = `advisor-card ${advisor.isActive?'active':''}`;
                 card.setAttribute('data-id', advisor.id);
-                card.innerHTML = `<div class="advisor-avatar" style="background: linear-gradient(135deg, #3498db, #2980b9);">${advisor.avatar}</div>
+                card.innerHTML = `<div class="advisor-avatar" style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));">${advisor.avatar}</div>
                     <div class="advisor-info"><h4>${advisor.name}</h4><p>${advisor.role}</p><div class="advisor-status"><span class="status-dot online"></span><span>Online</span></div></div>`;
                 card.addEventListener('click', () => selectAdvisor(advisor.id));
                 advisorList.appendChild(card);
@@ -2633,7 +2604,7 @@
                             </div>
                             <div class="job-details-grid" style="margin-top:1rem; margin-bottom:1rem;">
                                 <div class="detail-item"><div class="detail-icon"><i class="fas fa-clock"></i></div><div class="detail-info"><h5>Estimated Hours</h5><p>${job.estimatedHours||'TBD'} hrs</p></div></div>
-                                <div class="detail-item"><div class="detail-icon"><i class="fas fa-dollar-sign"></i></div><div class="detail-info"><h5>Estimated Cost</h5><p>${job.estimatedCost?`$${job.estimatedCost}`:'TBD'}</p></div></div>
+                                <div class="detail-item"><div class="detail-icon"><i class="fas fa-dollar-sign"></i></div><div class="detail-info"><h5>Estimated Cost</h5><p>${job.estimatedCost?`₹${job.estimatedCost}`:'TBD'}</p></div></div>
                                 <div class="detail-item"><div class="detail-icon"><i class="fas fa-user-tie"></i></div><div class="detail-info"><h5>Assigned Advisor</h5><p>${job.assignedAdvisor||'Service Advisor'}</p></div></div>
                                 <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar-alt"></i></div><div class="detail-info"><h5>Assigned Date</h5><p>${job.assignedDate?formatDate(job.assignedDate):'Today'}</p></div></div>
                             </div>
@@ -2705,6 +2676,7 @@
                 job.totalServiceTime = parseFloat((elapsedMs/(1000*60*60)).toFixed(2));
             } else job.totalServiceTime = job.totalServiceTime||0;
             job.status = 'completed'; job.completionTime = new Date().toISOString();
+            trackTaskCompletion(jobId);
             if (!vehicle.totalServiceTime) vehicle.totalServiceTime = 0;
             vehicle.totalServiceTime = (vehicle.totalServiceTime||0) + job.totalServiceTime;
             localStorage.setItem('vsms_vehicles', JSON.stringify(vehicles));
@@ -2723,10 +2695,65 @@
             showNotification(`✅ Completed: ${job.serviceName||'Job'} (${job.totalServiceTime.toFixed(1)} hrs)`, 'success');
         }
 
-        // ===== rest of functions (dashboard stats, QC, modals, etc) – unchanged but essential =====
+        // ===== Task Tracking Functions (per-technician) =====
+        function initializeTaskTracking() {
+            // Ensure per-technician keys exist to avoid sharing counts between technicians
+            const techId = currentUser?.id || 'anon';
+            const allTimeKey = `vsms_alltime_completed_${techId}`;
+            const byDateKey = `vsms_completed_by_date_${techId}`;
+            if (!localStorage.getItem(allTimeKey)) localStorage.setItem(allTimeKey, '0');
+            if (!localStorage.getItem(byDateKey)) localStorage.setItem(byDateKey, JSON.stringify({}));
+        }
+
+        function getToday() {
+            const now = new Date();
+            return now.toISOString().split('T')[0];
+        }
+
+        function trackTaskCompletion(jobId) {
+            const techId = currentUser?.id || 'anon';
+            const today = getToday();
+            const byDateKey = `vsms_completed_by_date_${techId}`;
+            const allTimeKey = `vsms_alltime_completed_${techId}`;
+            const completedByDate = JSON.parse(localStorage.getItem(byDateKey) || '{}');
+            if (!completedByDate[today]) completedByDate[today] = [];
+            // Use jobId to avoid duplicate counting for same technician
+            if (!completedByDate[today].includes(jobId)) {
+                completedByDate[today].push(jobId);
+                localStorage.setItem(byDateKey, JSON.stringify(completedByDate));
+                const allTime = parseInt(localStorage.getItem(allTimeKey) || '0');
+                localStorage.setItem(allTimeKey, String(allTime + 1));
+            }
+        }
+
+        function getTodayCompletedCount() {
+            const techId = currentUser?.id || 'anon';
+            const today = getToday();
+            const byDateKey = `vsms_completed_by_date_${techId}`;
+            const completedByDate = JSON.parse(localStorage.getItem(byDateKey) || '{}');
+            return (completedByDate[today] || []).length;
+        }
+
+        function getAllTimeCompletedCount() {
+            const techId = currentUser?.id || 'anon';
+            const allTimeKey = `vsms_alltime_completed_${techId}`;
+            return parseInt(localStorage.getItem(allTimeKey) || '0');
+        }
+
         function updateDashboardStats() {
-            const total = assignedJobs.length, completed = assignedJobs.filter(j=>j.status==='completed').length, inProgress = assignedJobs.filter(j=>j.status==='in-progress').length, high = assignedJobs.filter(j=>j.priority==='High'||j.priority==='high'||j.priority==='urgent').length;
-            document.getElementById('total-tasks').textContent = total; document.getElementById('completed-tasks').textContent = completed; document.getElementById('inprogress-tasks').textContent = inProgress; document.getElementById('highpriority-tasks').textContent = high;
+            const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
+            const currentTechId = currentUser?.id;
+            const currentTechName = currentUser?.name;
+            
+            const assignedTasksCount = assignedJobs.filter(j => j.status === 'pending').length;
+            const inProgressCount = assignedJobs.filter(j => j.status === 'in-progress').length;
+            const allTimeCompleted = getAllTimeCompletedCount();
+            const todayCompleted = getTodayCompletedCount();
+            
+            document.getElementById('total-tasks').textContent = assignedTasksCount;
+            document.getElementById('completed-tasks').textContent = allTimeCompleted;
+            document.getElementById('inprogress-tasks').textContent = inProgressCount;
+            document.getElementById('today-completed-tasks').textContent = todayCompleted;
         }
         function updateLastUpdateTime() { document.getElementById('last-update-time').textContent = `Last updated: ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`; }
         function loadQualityControllers() {
@@ -2796,7 +2823,7 @@
             document.getElementById('modal-service-name').textContent = job.serviceName||job.type||'General Service';
             let statusClass = 'status-pending'; if(job.status==='in-progress') statusClass='status-in-progress'; if(job.status==='completed') statusClass='status-completed';
             document.getElementById('modal-status').innerHTML = `<span class="status-badge ${statusClass}">${job.status||'pending'}</span>`;
-            document.getElementById('modal-estimated-hours').textContent = `${job.estimatedHours||'TBD'} hrs`; document.getElementById('modal-estimated-cost').textContent = job.estimatedCost?`$${job.estimatedCost}`:'TBD';
+            document.getElementById('modal-estimated-hours').textContent = `${job.estimatedHours||'TBD'} hrs`; document.getElementById('modal-estimated-cost').textContent = job.estimatedCost?`₹${job.estimatedCost}`:'TBD';
             document.getElementById('modal-vehicle-number').textContent = vehicle.vehicleNumber||'-'; document.getElementById('modal-vehicle-model').textContent = vehicle.vehicleModel||'-'; document.getElementById('modal-car-name').textContent = vehicle.carName||'-'; document.getElementById('modal-vehicle-color').textContent = vehicle.color||'-';
             document.getElementById('modal-owner-email').textContent = vehicle.ownerEmail||'-'; document.getElementById('modal-owner-phone').textContent = vehicle.mobileNumber||'-';
             document.getElementById('modal-advisor-name').textContent = vehicle.assignedAdvisor||'-'; document.getElementById('modal-assigned-date').textContent = job.assignedDate?formatDate(job.assignedDate):'-';

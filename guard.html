@@ -894,7 +894,7 @@
 
         /* Theme Toggle Button */
         .theme-toggle {
-            background: none;
+            background: transparent;
             border: 2px solid #10b981;
             color: #2b2d42;
             width: 45px;
@@ -905,7 +905,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s ease;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            flex-shrink: 0;
         }
 
         .theme-toggle:hover {
@@ -958,8 +959,8 @@
         }
 
         html.dark-mode .user-info {
-            border-left: 1px solid var(--border-color);
-            padding-left: 1rem;
+            border-left: none;
+            padding-left: 0;
         }
 
         html.dark-mode .user-details h4 {
@@ -1278,9 +1279,9 @@
         /* Theme Toggle Button Dark Mode */
         html.dark-mode .theme-toggle {
             border-color: var(--accent-primary);
-            background: rgba(16, 185, 129, 0.1);
+            background: transparent;
             color: var(--text-primary);
-            transition: all 0.3s;
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
         }
 
         html.dark-mode .theme-toggle:hover {
@@ -1536,7 +1537,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="year">Purchace Year</label>
-                                <input type="number" id="year" required min="1990" max="2025" placeholder="e.g., 2020">
+                                <input type="number" id="year" required min="1990" max="2026" placeholder="e.g., 2020">
                             </div>
                             <div class="form-group">
                                 <label for="color">Color</label>
@@ -1555,7 +1556,7 @@
                         </div>
 
                         <button type="submit" class="submit-btn">
-                            <i class="fas fa-sign-in-alt"></i> Register Vehicle Entry
+                            <i class="fas fa-sign-in-alt"></i> Enter Vehicle
                         </button>
                     </form>
                 </div>
@@ -1590,7 +1591,7 @@
 
             <!-- Footer -->
             <div class="footer">
-                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+                <p>&copy; 2020-2026 Car Service Management System. All rights reserved.</p>
             </div>
         </div>
     </div>
@@ -1927,6 +1928,19 @@
             const mobileRegex = /^[0-9]{10}$/;
             if (!mobileRegex.test(mobileNumber)) {
                 showMessage("Mobile number must be exactly 10 digits!", "error");
+                return;
+            }
+
+            // Check for duplicate number plate
+            const today = new Date().toDateString();
+            const isDuplicate = vehiclesDatabase.some(vehicle => {
+                if (!vehicle.entryTime) return false;
+                const vehicleDate = new Date(vehicle.entryTime);
+                return vehicleDate.toDateString() === today && vehicle.vehicleNumber === vehicleNumber;
+            });
+            
+            if (isDuplicate) {
+                showMessage(`⚠️ Warning: Number plate ${vehicleNumber} has already been registered today!`, "error");
                 return;
             }
 

@@ -57,11 +57,34 @@
             --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.5);
         }
 
+        @media (prefers-color-scheme: dark) {
+            html:not(.dark-mode) {
+                --light-bg: #0f172a;
+                --light-secondary: #1e293b;
+                --card-bg: #1e293b;
+                --card-hover: #334155;
+                --text-primary: #f1f5f9;
+                --text-secondary: #cbd5e1;
+                --text-muted: #94a3b8;
+                --border-color: #475569;
+                --border-hover: #64748b;
+                --accent-primary: #a78bfa;
+                --accent-secondary: #8b5cf6;
+                --accent-light: rgba(167, 139, 250, 0.15);
+                --success: #34d399;
+                --warning: #fbbf24;
+                --error: #f87171;
+                --info: #60a5fa;
+                --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.5);
+            }
+        }
+
         body {
             background: linear-gradient(135deg, var(--light-bg) 0%, var(--light-secondary) 100%);
             color: var(--text-primary);
             min-height: 100vh;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background 0.3s ease, color 0.3s ease, background-color 0.3s ease;
         }
 
         /* Header */
@@ -237,10 +260,10 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .stat-icon.assigned { background: linear-gradient(135deg, var(--info), #1d4ed8); }
-        .stat-icon.in-progress { background: linear-gradient(135deg, var(--warning), #d97706); }
+        .stat-icon.assigned { background: linear-gradient(135deg, var(--info), rgba(29, 78, 216, 0.9)); }
+        .stat-icon.in-progress { background: linear-gradient(135deg, var(--warning), rgba(217, 119, 6, 0.9)); }
         .stat-icon.qc { background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary)); }
-        .stat-icon.completed { background: linear-gradient(135deg, var(--success), #059669); }
+        .stat-icon.completed { background: linear-gradient(135deg, var(--success), rgba(5, 150, 105, 0.9)); }
 
         .stat-card h3 {
             font-size: 2.2rem;
@@ -583,17 +606,17 @@
         }
 
         .action-btn.assign-job {
-            background: linear-gradient(135deg, var(--info), #1d4ed8);
+            background: linear-gradient(135deg, var(--info), rgba(29, 78, 216, 0.9));
             color: white;
         }
 
         .action-btn.job-complete {
-            background: linear-gradient(135deg, var(--success), #059669);
+            background: linear-gradient(135deg, var(--success), rgba(5, 150, 105, 0.9));
             color: white;
         }
 
         .action-btn.start-service {
-            background: linear-gradient(135deg, var(--warning), #d97706);
+            background: linear-gradient(135deg, var(--warning), rgba(217, 119, 6, 0.9));
             color: white;
         }
 
@@ -902,7 +925,7 @@
         }
 
         .modal-btn.assign {
-            background: linear-gradient(135deg, var(--info), #1d4ed8);
+            background: linear-gradient(135deg, var(--info), rgba(29, 78, 216, 0.9));
             color: white;
         }
 
@@ -912,7 +935,7 @@
         }
 
         .modal-btn.submit {
-            background: linear-gradient(135deg, var(--success), #059669);
+            background: linear-gradient(135deg, var(--success), rgba(5, 150, 105, 0.9));
             color: white;
         }
 
@@ -1003,7 +1026,7 @@
         .technician-avatar {
             width: 45px;
             height: 45px;
-            background: linear-gradient(135deg, var(--info), #1d4ed8);
+            background: linear-gradient(135deg, var(--info), rgba(29, 78, 216, 0.9));
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -1177,6 +1200,418 @@
         .vehicles-list::-webkit-scrollbar-thumb:hover,
         .modal-content::-webkit-scrollbar-thumb:hover {
             background: var(--text-muted);
+        }
+
+        /* ===== COMPREHENSIVE DARK MODE FIXES ===== */
+        
+        /* Modal Dark Mode - Enhanced Visibility */
+        html.dark-mode .modal {
+            background: rgba(0, 0, 0, 0.75);
+        }
+        
+        html.dark-mode .modal-content {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .modal-header {
+            border-bottom: 2px solid var(--border-color);
+        }
+        
+        html.dark-mode .modal-header h3 {
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .modal-subtitle {
+            color: var(--text-secondary);
+        }
+        
+        /* Form Elements Dark Mode - Full Visibility */
+        html.dark-mode .form-group label {
+            color: var(--text-secondary);
+        }
+        
+        html.dark-mode .form-group input,
+        html.dark-mode .form-group select,
+        html.dark-mode .form-group textarea {
+            background: var(--card-hover);
+            color: var(--text-primary);
+            border: 2px solid var(--border-color);
+        }
+        
+        html.dark-mode .form-group input::placeholder,
+        html.dark-mode .form-group textarea::placeholder {
+            color: var(--text-muted);
+        }
+        
+        html.dark-mode .form-group input:focus,
+        html.dark-mode .form-group select:focus,
+        html.dark-mode .form-group textarea:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-light);
+        }
+        
+        html.dark-mode select option {
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+        
+        /* Multi-select Dark Mode */
+        html.dark-mode .form-group select[multiple] option:checked {
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            color: white;
+        }
+        
+        /* Modal Buttons Dark Mode */
+        html.dark-mode .modal-btn.cancel {
+            background: var(--card-hover);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        html.dark-mode .modal-btn.cancel:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .modal-btn.assign,
+        html.dark-mode .modal-btn.submit {
+            color: white;
+        }
+        
+        /* Message Box Dark Mode */
+        html.dark-mode .message-box {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        html.dark-mode .message-box.success {
+            border-left: 4px solid var(--success);
+        }
+        
+        html.dark-mode .message-box.error {
+            border-left: 4px solid var(--error);
+        }
+        
+        html.dark-mode .message-box.info {
+            border-left: 4px solid var(--info);
+        }
+        
+        /* Theme Toggle Dark Mode */
+        html.dark-mode .theme-toggle {
+            background: var(--accent-light);
+            border: 2px solid var(--accent-primary);
+            color: var(--text-primary);
+            flex-shrink: 0;
+        }
+        
+        html.dark-mode .theme-toggle:hover {
+            background: var(--accent-primary);
+            color: white;
+        }
+        
+        /* Service Tag Dark Mode */
+        html.dark-mode .service-tag {
+            background: var(--accent-light);
+            border: 1px solid var(--border-color);
+            color: var(--accent-primary);
+        }
+        
+        /* Icon Button Dark Mode */
+        html.dark-mode .icon-btn {
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        html.dark-mode .icon-btn:hover {
+            background: var(--error);
+            color: white;
+            border-color: var(--error);
+        }
+        
+        /* Add Job Button Dark Mode */
+        html.dark-mode .add-job-btn {
+            background: var(--card-hover);
+            border: 2px dashed var(--border-color);
+            color: var(--text-secondary);
+        }
+        
+        html.dark-mode .add-job-btn:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+        
+        /* Technician Card Dark Mode */
+        html.dark-mode .technician-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .technician-card:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-primary);
+        }
+        
+        html.dark-mode .technician-card.selected {
+            background: var(--accent-light);
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--accent-light);
+        }
+        
+        html.dark-mode .technician-info h4 {
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .technician-info p {
+            color: var(--text-secondary);
+        }
+        
+        /* Technician List Dark Mode */
+        html.dark-mode .technician-list {
+            background: var(--card-hover);
+            border: 1px solid var(--border-color);
+        }
+        
+        html.dark-mode .tech-picker-search {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+        
+        html.dark-mode .tech-picker-search input {
+            color: var(--text-primary);
+            background: transparent;
+        }
+        
+        html.dark-mode .tech-picker-search i {
+            color: var(--text-muted);
+        }
+        
+        /* Job Item Dark Mode */
+        html.dark-mode .job-item {
+            background: var(--card-hover);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--accent-primary);
+        }
+        
+        html.dark-mode .job-item-info h5 {
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .job-item-info p {
+            color: var(--text-secondary);
+        }
+        
+        /* Job Status Dark Mode */
+        html.dark-mode .job-status.pending {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        
+        html.dark-mode .job-status.in-progress {
+            background: rgba(96, 165, 250, 0.15);
+            color: var(--info);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+        }
+        
+        html.dark-mode .job-status.completed {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+        
+        /* Job Card Dark Mode */
+        html.dark-mode .job-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--info);
+        }
+        
+        html.dark-mode .job-card .job-title {
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .job-card .job-description {
+            color: var(--text-secondary);
+        }
+        
+        html.dark-mode .job-card .job-estimate {
+            color: var(--text-primary);
+        }
+        
+        /* Vehicle Card Dark Mode */
+        html.dark-mode .vehicle-card {
+            background: var(--card-hover);
+            border: 1px solid var(--border-color);
+            border-left: 4px solid var(--info);
+        }
+        
+        html.dark-mode .vehicle-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-hover);
+        }
+        
+        html.dark-mode .vehicle-header {
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        html.dark-mode .vehicle-number {
+            background: var(--accent-light);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+        
+        /* Vehicle Status Dark Mode */
+        html.dark-mode .vehicle-status.pending {
+            background: rgba(251, 191, 36, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+        
+        html.dark-mode .vehicle-status.in-progress {
+            background: rgba(96, 165, 250, 0.15);
+            color: var(--info);
+            border: 1px solid rgba(96, 165, 250, 0.3);
+        }
+        
+        html.dark-mode .vehicle-status.awaiting-qc {
+            background: rgba(167, 139, 250, 0.15);
+            color: var(--accent-primary);
+            border: 1px solid rgba(167, 139, 250, 0.3);
+        }
+        
+        html.dark-mode .vehicle-status.in-qc {
+            background: rgba(167, 139, 250, 0.25);
+            color: var(--accent-primary);
+            border: 1px solid rgba(167, 139, 250, 0.4);
+        }
+        
+        html.dark-mode .vehicle-status.qc-approved {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(52, 211, 153, 0.3);
+        }
+        
+        html.dark-mode .vehicle-status.qc-rejected {
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--error);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+        }
+        
+        html.dark-mode .vehicle-status.completed {
+            background: rgba(52, 211, 153, 0.25);
+            color: var(--success);
+            border: 1px solid rgba(52, 211, 153, 0.4);
+        }
+        
+        /* Vehicle Details Dark Mode */
+        html.dark-mode .detail-row {
+            color: var(--text-secondary);
+        }
+        
+        /* QC Status Dark Mode */
+        html.dark-mode .qc-status.awaiting {
+            background: rgba(167, 139, 250, 0.15);
+            color: var(--accent-primary);
+            border-left: 3px solid var(--accent-primary);
+        }
+        
+        html.dark-mode .qc-status.approved {
+            background: rgba(52, 211, 153, 0.15);
+            color: var(--success);
+            border-left: 3px solid var(--success);
+        }
+        
+        html.dark-mode .qc-status.rejected {
+            background: rgba(248, 113, 113, 0.15);
+            color: var(--error);
+            border-left: 3px solid var(--error);
+        }
+        
+        /* Time Summary Dark Mode */
+        html.dark-mode .time-summary {
+            background: var(--accent-light);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--success);
+        }
+        
+        html.dark-mode .time-item .label {
+            color: var(--text-secondary);
+        }
+        
+        html.dark-mode .time-item .value {
+            color: var(--text-primary);
+        }
+        
+        /* Service Description Dark Mode */
+        html.dark-mode .service-description {
+            background: var(--accent-light);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--info);
+        }
+        
+        html.dark-mode .service-description h4 {
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .service-description p {
+            color: var(--text-secondary);
+        }
+        
+        /* Timer Display Dark Mode */
+        html.dark-mode .timer-display {
+            background: var(--accent-light);
+            border: 1px solid var(--border-color);
+            border-left: 3px solid var(--info);
+        }
+        
+        html.dark-mode .timer-text {
+            color: var(--text-primary);
+        }
+        
+        html.dark-mode .timer-icon {
+            color: var(--error);
+        }
+        
+        /* Vehicle Actions Dark Mode */
+        html.dark-mode .action-btn:disabled {
+            background: var(--border-color);
+            color: var(--text-muted);
+            cursor: not-allowed;
+        }
+        
+        /* No Data Dark Mode */
+        html.dark-mode .no-data {
+            background: var(--card-bg);
+            color: var(--text-muted);
+            border: 2px dashed var(--border-color);
+        }
+        
+        html.dark-mode .no-data i {
+            color: var(--text-muted);
+        }
+        
+        html.dark-mode .no-data h3 {
+            color: var(--text-primary);
+        }
+        
+        /* Footer Dark Mode */
+        html.dark-mode .footer {
+            color: var(--text-secondary);
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+        }
+        
+        /* Live Time Dark Mode */
+        html.dark-mode .live-time {
+            background: var(--accent-light);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
         }
 
         /* Autofill styles for dark mode */
@@ -1660,37 +2095,6 @@
             border: 1px solid rgba(59, 130, 246, 0.3);
         }
     </style>
-
-    <!-- Unified theme overrides: ensure all dashboards share the same color palette and UI tokens -->
-    <style>
-        :root{
-            --primary: #3b82f6;
-            --accent-primary: #8b5cf6;
-            --accent: var(--primary);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --error: #ef4444;
-            --card-bg: #ffffff;
-            --bg-gradient-from: #f8fafc;
-            --bg-gradient-to: #eef2f7;
-            --text-primary: #1f2937;
-            --text-secondary: #64748b;
-            --border-color: #e2e8f0;
-            --shadow: 0 10px 30px rgba(0,0,0,0.06);
-        }
-
-        body { background: linear-gradient(135deg,var(--bg-gradient-from),var(--bg-gradient-to)); color:var(--text-primary); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        header { background: linear-gradient(135deg,#0f172a 0%, #1f2937 100%); border-bottom: 3px solid var(--primary); }
-        .btn, button { background: var(--primary); color: #fff; border: none; border-radius: 8px; }
-        .btn-primary { background: var(--primary); }
-        .btn-success { background: var(--success); }
-        .btn-warning { background: var(--warning); }
-        .btn-danger { background: var(--error); }
-        .role-badge, .status-badge { border-color: var(--primary); }
-        .card, .stat-card, .vehicle-card, .modal-content { background: var(--card-bg); box-shadow: var(--shadow); border: 1px solid var(--border-color); }
-        a { color: var(--primary); }
-    </style>
-
 </head>
 <body>
     <!-- Header -->
@@ -1828,7 +2232,7 @@
 
             <!-- Footer -->
             <div class="footer">
-                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+                <p>&copy; 2020-2026 Car Service Management System. All rights reserved.</p>
             </div>
         </div>
     </div>
@@ -1947,6 +2351,59 @@
                             <option value="wheel-alignment">Wheel Alignment</option>
                             <option value="tire-rotation">Tire Rotation</option>
                         </optgroup>
+                        <optgroup label="Oil & Fluids">
+                            <option value="power-steering-fluid">Power Steering Fluid Change</option>
+                            <option value="differential-fluid">Differential Fluid Change</option>
+                            <option value="engine-flush">Engine Flush</option>
+                        </optgroup>
+                        <optgroup label="Brakes">
+                            <option value="abs-repair">ABS Repair</option>
+                            <option value="brake-inspection">Brake Inspection</option>
+                            <option value="handbrake-repair">Handbrake Repair</option>
+                        </optgroup>
+                        <optgroup label="Engine">
+                            <option value="fuel-injector-cleaning">Fuel Injector Cleaning</option>
+                            <option value="turbo-repair">Turbocharger Repair</option>
+                            <option value="head-gasket">Head Gasket Replacement</option>
+                            <option value="engine-overhaul">Engine Overhaul</option>
+                        </optgroup>
+                        <optgroup label="Suspension">
+                            <option value="wheel-balancing">Wheel Balancing</option>
+                            <option value="steering-rack">Steering Rack Repair</option>
+                            <option value="bush-replacement">Suspension Bush Replacement</option>
+                        </optgroup>
+                        <optgroup label="Electrical">
+                            <option value="fuse-replacement">Fuse Replacement</option>
+                            <option value="headlight-repair">Headlight Repair</option>
+                            <option value="sensor-repair">Sensor Repair</option>
+                            <option value="ecu-diagnosis">ECU Diagnosis</option>
+                        </optgroup>
+                        <optgroup label="Body & Interior">
+                            <option value="dent-removal">Dent Removal</option>
+                            <option value="painting">Painting & Touch-up</option>
+                            <option value="bumper-repair">Bumper Repair</option>
+                            <option value="interior-cleaning">Interior Deep Cleaning</option>
+                        </optgroup>
+                        <optgroup label="General Service">
+                            <option value="vehicle-inspection">Full Vehicle Inspection</option>
+                            <option value="pickup-drop">Pickup & Drop Service</option>
+                            <option value="car-wash">Car Wash</option>
+                        </optgroup>
+                        <optgroup label="Transmission">
+                            <option value="clutch-replacement">Clutch Replacement</option>
+                            <option value="gearbox-repair">Gearbox Repair</option>
+                            <option value="automatic-transmission">Automatic Transmission Service</option>
+                        </optgroup>
+                        <optgroup label="Cooling System">
+                            <option value="radiator-repair">Radiator Repair</option>
+                            <option value="thermostat-replacement">Thermostat Replacement</option>
+                            <option value="water-pump">Water Pump Replacement</option>
+                        </optgroup>
+                        <optgroup label="Exhaust System">
+                            <option value="silencer-repair">Silencer Repair</option>
+                            <option value="catalytic-converter">Catalytic Converter Replacement</option>
+                            <option value="exhaust-leak">Exhaust Leak Repair</option>
+                        </optgroup>
                         <option value="custom">Custom Service</option>
                     </select>
                     
@@ -1961,7 +2418,7 @@
                         <input type="number" id="estimated-hours" min="0.5" max="24" step="0.5" placeholder="2.5" required>
                     </div>
                     <div class="form-group">
-                        <label for="estimated-cost">Estimated Cost ($) *</label>
+                        <label for="estimated-cost">Estimated Cost (₹) *</label>
                         <input type="number" id="estimated-cost" min="0" step="10" placeholder="150" required>
                     </div>
                 </div>
@@ -2194,6 +2651,39 @@
             'ac-service': 'AC system check, refrigerant recharge, compressor inspection, and cooling performance test.',
             'wheel-alignment': 'Wheel alignment service. Includes tire inspection.',
             'tire-rotation': 'Rotate tires according to manufacturer specifications. Includes tire pressure check and tread depth inspection.',
+            'power-steering-fluid': 'Power steering fluid replacement. Includes steering system inspection.',
+            'differential-fluid': 'Differential fluid change. Includes drivetrain inspection.',
+            'engine-flush': 'Engine flush treatment to remove sludge and deposits before oil refill.',
+            'abs-repair': 'ABS system repair and diagnostic scan. Includes sensor inspection.',
+            'brake-inspection': 'Complete brake system inspection including pads, rotors, and fluid levels.',
+            'handbrake-repair': 'Handbrake adjustment or repair. Includes cable and mechanism inspection.',
+            'fuel-injector-cleaning': 'Fuel injector cleaning service to improve fuel efficiency and performance.',
+            'turbo-repair': 'Turbocharger inspection and repair. Includes boost pressure testing.',
+            'head-gasket': 'Head gasket replacement. Includes engine compression and cooling system test.',
+            'engine-overhaul': 'Complete engine overhaul service including internal component inspection.',
+            'wheel-balancing': 'Wheel balancing service to ensure smooth driving and prevent vibration.',
+            'steering-rack': 'Steering rack repair or replacement. Includes steering alignment check.',
+            'bush-replacement': 'Suspension bush replacement. Includes suspension system inspection.',
+            'fuse-replacement': 'Fuse replacement and electrical circuit testing.',
+            'headlight-repair': 'Headlight repair or replacement. Includes electrical system check.',
+            'sensor-repair': 'Sensor repair or replacement. Includes diagnostic system scan.',
+            'ecu-diagnosis': 'ECU diagnostic scan and system error analysis.',
+            'dent-removal': 'Dent removal service using paint-safe techniques.',
+            'painting': 'Body painting and touch-up service. Includes surface preparation.',
+            'bumper-repair': 'Bumper repair or replacement. Includes alignment check.',
+            'interior-cleaning': 'Interior deep cleaning service including seats, dashboard, and carpets.',
+            'vehicle-inspection': 'Complete vehicle inspection covering safety, engine, and suspension systems.',
+            'pickup-drop': 'Pickup and drop facility for vehicle servicing.',
+            'car-wash': 'Exterior car wash and basic cleaning service.',
+            'clutch-replacement': 'Clutch replacement service. Includes gearbox inspection.',
+            'gearbox-repair': 'Gearbox repair or servicing. Includes transmission performance test.',
+            'automatic-transmission': 'Automatic transmission service including fluid change and diagnostic scan.',
+            'radiator-repair': 'Radiator repair or replacement. Includes cooling system pressure test.',
+            'thermostat-replacement': 'Thermostat replacement. Includes cooling system inspection.',
+            'water-pump': 'Water pump replacement. Includes coolant system test.',
+            'silencer-repair': 'Silencer repair or replacement. Includes exhaust leak inspection.',
+            'catalytic-converter': 'Catalytic converter replacement. Includes emission system check.',
+            'exhaust-leak': 'Exhaust leak repair service. Includes exhaust system inspection.',
             'custom': ''
         };
 
@@ -2363,15 +2853,12 @@
                     technicianList.appendChild(techCard);
                 });
             };
-
             if (searchEl && !searchEl.dataset.bound) {
                 searchEl.dataset.bound = '1';
                 searchEl.addEventListener('input', renderTechnicianPicker);
             }
-
             renderTechnicianPicker();
         }
-
         function getStatusText(status) {
             switch(status) {
                 case 'online': return 'Available';
@@ -2473,29 +2960,22 @@
             // Save updated statuses
             localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
             
-            // ONLY show vehicles explicitly assigned by receptionist to this advisor
-            let assignedVehicles = vehiclesDatabase.filter(v => {
-                return v.assignedAdvisor == currentAdvisorId;
-            }).filter(v => v.serviceStatus !== "delivered");
-            
-            // Show all assigned vehicles that are not completed (pending, in-progress, awaiting-qc, etc.)
-            // Filter out ONLY those where all jobs are completed
+            let assignedVehicles = vehiclesDatabase
+                .filter(v => v.assignedAdvisor == currentAdvisorId)
+                .filter(v => v.serviceStatus !== "delivered");
             assignedVehicles = assignedVehicles.filter(v => {
-                // If no jobs exist yet, ALWAYS show the vehicle (needs inspection/job assignment)
-                if (!v.jobs || !Array.isArray(v.jobs) || v.jobs.length === 0) {
-                    console.log(`Vehicle ${v.id} has no jobs - showing it for inspection/job assignment`);
-                    return true;
-                }
-                
-                // If jobs exist, show unless ALL are completed
-                const allJobsCompleted = v.jobs.every(job => job.status === 'completed');
-                if (allJobsCompleted) {
-                    console.log(`Hiding vehicle ${v.id} from advisor view because all jobs are completed`);
+                if (v.advisorHidden) {
+                    console.log(`Hiding vehicle ${v.id} from advisor view because advisorHidden flag is set`);
                     return false;
                 }
-                
-                // Show vehicles with pending, in-progress, or partial jobs
-                console.log(`Showing vehicle ${v.id} - has ${v.jobs.length} jobs`);
+
+                if (v.jobs && Array.isArray(v.jobs) && v.jobs.length > 0) {
+                    console.log(`Hiding vehicle ${v.id} from advisor view because jobs are already assigned`);
+                    return false;
+                }
+
+                // If no jobs exist yet, show the vehicle (needs inspection/job assignment)
+                console.log(`Vehicle ${v.id} has no jobs - showing it for inspection/job assignment`);
                 return true;
             });
             
@@ -2627,7 +3107,7 @@
                                         <i class="far fa-clock"></i>
                                         <span>${job.estimatedHours} hours</span>
                                         <i class="fas fa-dollar-sign"></i>
-                                        <span>$${job.estimatedCost}</span>
+                                        <span>₹${job.estimatedCost}</span>
                                         ${job.technician ? `<i class="fas fa-user"></i><span>${job.technician}</span>` : ''}
                                     </div>
                                     ${timerHTML}
@@ -3114,7 +3594,7 @@
                     <div class="job-item-info">
                         <h5>${formatJobType(job.type)}</h5>
                         <p>${job.description.substring(0, 60)}${job.description.length > 60 ? '...' : ''}</p>
-                        <p><small>${job.estimatedHours} hours • $${job.estimatedCost} • ${job.technician}</small></p>
+                        <p><small>${job.estimatedHours} hours • ₹${job.estimatedCost} • ${job.technician}</small></p>
                     </div>
                     <div class="job-item-actions">
                         <button class="icon-btn" onclick="removeJob(${job.id})">
@@ -3140,11 +3620,14 @@
             // Update vehicle with jobs and advisor info
             vehiclesDatabase[vehicleIndex].jobs = currentJobs;
             vehiclesDatabase[vehicleIndex].assignedAdvisor = currentAdvisorId;
-            
+
+            // Mark vehicle as hidden from advisor view so it does not reappear after logout/login
+            vehiclesDatabase[vehicleIndex].advisorHidden = true;
+
             // Update vehicle status: Once jobs are assigned, vehicle goes to technician
-            // Status should be "with_technician" to indicate technician should work on it
             vehiclesDatabase[vehicleIndex].serviceStatus = 'in-progress';
-            
+
+            // Persist changes
             localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
             
             // Update technician assignments
@@ -3455,4 +3938,4 @@
         });
     </script>
 </body>
-</html>
+</html> 

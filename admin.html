@@ -840,9 +840,79 @@
             color: #1e40af;
         }
 
+        /* Vehicle workflow status badges */
+        .status-badge.assigned { background: #fde68a; color: #92400e; }
+        .status-badge.in-process { background: #fef3c7; color: #92400e; }
+        .status-badge.completed { background: #d1fae5; color: #065f46; }
+        .status-badge.awaiting-qc { background: #e9d5ff; color: #6b21a8; }
+        .status-badge.in-qc { background: #f3e8ff; color: #6b21a8; }
+        .status-badge.ready-for-delivery { background: #bbf7d0; color: #065f46; }
+        .status-badge.delivered { background: #c7f9ff; color: #0f766e; }
+        .status-badge.not-assigned { background: #fee2e2; color: #991b1b; }
+
         .status-badge.maintenance {
             background: #f3e8ff;
             color: #6b21a8;
+        }
+
+        /* Role Filter Buttons */
+        .role-filter-btn {
+            background: white;
+            border: 2px solid #e2e8f0;
+            color: #475569;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+
+        .role-filter-btn:hover {
+            border-color: #3b82f6;
+            color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .role-filter-btn.active {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .role-filter-btn.active:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        /* Dark Mode - Role Filter Buttons */
+        html.dark-mode .role-filter-btn {
+            background: var(--card-bg-lighter);
+            border-color: var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        html.dark-mode .role-filter-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        }
+
+        html.dark-mode .role-filter-btn.active {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        html.dark-mode .role-filter-btn.active:hover {
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.4);
         }
 
         /* Quick Actions */
@@ -2110,8 +2180,8 @@
                                 <i class="fas fa-search"></i>
                             </button>
                         </div>
-                        <button class="search-clear" onclick="clearGlobalSearch()">
-                            <i class="fas fa-times"></i> Clear
+                        <button class="btn-primary" onclick="refreshContactMessages()">
+                            <i class="fas fa-sync-alt"></i> Refresh
                         </button>
                     </div>
                 </div>
@@ -2159,6 +2229,40 @@
                         </button>
                     </div>
                 </div>
+                <!-- Vehicle Status Filter Buttons -->
+                <div style="display: flex; gap: 10px; margin: 1rem 0 1.5rem; flex-wrap: wrap; align-items: center;">
+                    <button class="role-filter-btn active" data-status="all" onclick="filterVehiclesByStatus('all')">
+                        <i class="fas fa-list"></i> All
+                    </button>
+                    <button class="role-filter-btn" data-status="not-assigned" onclick="filterVehiclesByStatus('not-assigned')">
+                        <i class="fas fa-user-slash"></i> Not Assigned
+                    </button>
+                    <button class="role-filter-btn" data-status="assigned" onclick="filterVehiclesByStatus('assigned')">
+                        <i class="fas fa-user-check"></i> Assigned
+                    </button>
+                    <button class="role-filter-btn" data-status="pending" onclick="filterVehiclesByStatus('pending')">
+                        <i class="fas fa-clock"></i> Pending
+                    </button>
+                    <button class="role-filter-btn" data-status="in-process" onclick="filterVehiclesByStatus('in-process')">
+                        <i class="fas fa-spinner"></i> In Process
+                    </button>
+                    <button class="role-filter-btn" data-status="completed" onclick="filterVehiclesByStatus('completed')">
+                        <i class="fas fa-check-circle"></i> Completed
+                    </button>
+                    <button class="role-filter-btn" data-status="awaiting-qc" onclick="filterVehiclesByStatus('awaiting-qc')">
+                        <i class="fas fa-clipboard-check"></i> Awaiting QC
+                    </button>
+                    <button class="role-filter-btn" data-status="in-qc" onclick="filterVehiclesByStatus('in-qc')">
+                        <i class="fas fa-clipboard-list"></i> In QC
+                    </button>
+                    <button class="role-filter-btn" data-status="ready-for-delivery" onclick="filterVehiclesByStatus('ready-for-delivery')">
+                        <i class="fas fa-check-double"></i> Ready for Delivery
+                    </button>
+                    <button class="role-filter-btn" data-status="delivered" onclick="filterVehiclesByStatus('delivered')">
+                        <i class="fas fa-truck"></i> Delivered
+                    </button>
+                </div>
+
                 <div class="table-container">
                     <table id="vehicles-table">
                         <thead>
@@ -2197,6 +2301,32 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- Role-Based Filter Buttons -->
+                <div style="display: flex; gap: 10px; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center;">
+                    <button class="role-filter-btn active" data-role="all" onclick="filterUsersByRole('all')">
+                        <i class="fas fa-users"></i> All Users
+                    </button>
+                    <button class="role-filter-btn" data-role="admin" onclick="filterUsersByRole('admin')">
+                        <i class="fas fa-user-shield"></i> Admin
+                    </button>
+                    <button class="role-filter-btn" data-role="guard" onclick="filterUsersByRole('guard')">
+                        <i class="fas fa-shield-alt"></i> Security Guard
+                    </button>
+                    <button class="role-filter-btn" data-role="receptionist" onclick="filterUsersByRole('receptionist')">
+                        <i class="fas fa-headset"></i> Receptionist
+                    </button>
+                    <button class="role-filter-btn" data-role="advisor" onclick="filterUsersByRole('advisor')">
+                        <i class="fas fa-user-tie"></i> Service Advisor
+                    </button>
+                    <button class="role-filter-btn" data-role="technician" onclick="filterUsersByRole('technician')">
+                        <i class="fas fa-wrench"></i> Technician
+                    </button>
+                    <button class="role-filter-btn" data-role="qc" onclick="filterUsersByRole('qc')">
+                        <i class="fas fa-clipboard-check"></i> Quality Controller
+                    </button>
+                </div>
+
                 <div class="table-container">
                     <table id="users-table">
                         <thead>
@@ -2288,11 +2418,11 @@
                     <select id="user-role" required>
                         <option value="">-- Select Role --</option>
                         <option value="admin">Administrator</option>
+                        <option value="guard">Security Guard</option>
+                        <option value="receptionist">Receptionist</option>
                         <option value="advisor">Service Advisor</option>
                         <option value="technician">Technician</option>
                         <option value="qc">Quality Controller</option>
-                        <option value="receptionist">Receptionist</option>
-                        <option value="guard">Security Guard</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -2317,6 +2447,22 @@
                     <button type="submit" class="btn-primary">Add User</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Vehicle View Modal -->
+    <div class="modal" id="vehicle-view-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="vehicle-view-title">Vehicle Details</h2>
+                <button class="close-btn" onclick="closeModal('vehicle-view-modal')">&times;</button>
+            </div>
+            <div id="vehicle-view-content" style="max-height:60vh; overflow:auto; padding: 1rem;">
+                <!-- Dynamic vehicle details will be injected here -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('vehicle-view-modal')">Close</button>
+            </div>
         </div>
     </div>
 
@@ -2349,7 +2495,7 @@
                     usersSection.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.08)';
                 }, 1500);
                 
-                showMessage('Navigated to Users section', 'success');
+                showMessage('Users section', 'success');
             }
         }
 
@@ -2369,7 +2515,7 @@
                     vehiclesSection.style.boxShadow = '0 10px 30px rgba(0, 0, 0, 0.08)';
                 }, 1500);
                 
-                showMessage('Navigated to Vehicles section', 'success');
+                showMessage('Vehicles section', 'success');
             }
         }
 
@@ -2414,6 +2560,8 @@
         let currentVehicleSearchTerm = '';
         let currentContactSearchTerm = '';
         let currentGlobalSearchTerm = '';
+        let currentUserRoleFilter = 'all'; // Add role filter state
+        let currentVehicleStatusFilter = 'all'; // Vehicle status filter state
 
         // ===== MIGRATE OLD USERS TO ADD STATUS FIELD =====
         function migrateUsersDatabase() {
@@ -2746,7 +2894,8 @@
                 vehicle.owner?.toLowerCase().includes(searchTerm) ||
                 vehicle.ownerEmail?.toLowerCase().includes(searchTerm) ||
                 vehicle.year?.toString().includes(searchTerm) ||
-                vehicle.id?.toString().includes(searchTerm)
+                vehicle.id?.toString().includes(searchTerm) ||
+                (vehicle.serviceStatus || '').toLowerCase().includes(searchTerm)
             );
 
             // Search in contacts
@@ -2872,11 +3021,8 @@
                 `;
                 
                 vehicles.forEach(vehicle => {
-                    const statusClass = vehicle.status === 'active' ? 'active' : 
-                                      vehicle.status === 'maintenance' ? 'maintenance' : 'inactive';
-                    const statusText = vehicle.status === 'active' ? 'Active' :
-                                     vehicle.status === 'maintenance' ? 'Maintenance' : 'Inactive';
-                    
+                    const wf = getVehicleWorkflowDisplay(vehicle);
+
                     html += `
                         <tr>
                             <td><strong>#${vehicle.id}</strong></td>
@@ -2884,10 +3030,10 @@
                             <td><code>${highlightText(vehicle.plate || vehicle.vehicleNumber || 'N/A', searchTerm)}</code></td>
                             <td>${highlightText(vehicle.year || 'N/A', searchTerm)}</td>
                             <td>${highlightText(vehicle.owner || vehicle.ownerEmail || 'N/A', searchTerm)}</td>
-                            <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                            <td><span class="status-badge ${wf.class}">${wf.label}</span></td>
                             <td>
-                                <button class="btn-danger" onclick="deleteVehicle(${vehicle.id})">
-                                    <i class="fas fa-trash"></i> Delete
+                                <button class="btn-view" onclick="viewVehicleDetails(${vehicle.id})">
+                                    <i class="fas fa-eye"></i> View
                                 </button>
                             </td>
                         </tr>
@@ -2987,7 +3133,8 @@
                 return;
             }
 
-            const filteredUsers = usersDatabase.filter(user => 
+            // Apply both search term and role filter
+            let filteredUsers = usersDatabase.filter(user => 
                 user.name?.toLowerCase().includes(searchTerm) ||
                 user.email?.toLowerCase().includes(searchTerm) ||
                 getRoleName(user.role).toLowerCase().includes(searchTerm) ||
@@ -2995,6 +3142,11 @@
                 (user.status === 'active' && 'active'.includes(searchTerm)) ||
                 (user.status === 'inactive' && 'inactive'.includes(searchTerm))
             );
+
+            // Apply role filter if one is selected
+            if (currentUserRoleFilter !== 'all') {
+                filteredUsers = filteredUsers.filter(user => user.role === currentUserRoleFilter);
+            }
 
             if (filteredUsers.length === 0) {
                 tbody.innerHTML = `
@@ -3053,6 +3205,42 @@
             }
         }
 
+        // Role Filter Function
+        function filterUsersByRole(role) {
+            currentUserRoleFilter = role;
+            currentUserSearchTerm = ''; // Clear search term when filtering by role
+            
+            // Update active state on filter buttons
+            document.querySelectorAll('.role-filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.role-filter-btn[data-role="${role}"]`)?.classList.add('active');
+            
+            // Clear search input
+            const searchInput = document.getElementById('user-search-input');
+            if (searchInput) searchInput.value = '';
+            
+            // Reload users with the new role filter
+            loadUsers();
+        }
+
+        // Vehicle status filter
+        function filterVehiclesByStatus(status) {
+            currentVehicleStatusFilter = status;
+            currentVehicleSearchTerm = '';
+
+            // Update active state on vehicle filter buttons
+            document.querySelectorAll('.role-filter-btn[data-status]').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`.role-filter-btn[data-status="${status}"]`)?.classList.add('active');
+
+            // Clear vehicle search input
+            const searchInput = document.getElementById('vehicle-search-input');
+            if (searchInput) searchInput.value = '';
+
+            // Reload vehicles with the new status filter
+            loadVehicles();
+        }
+
         // Vehicle Search
         function searchVehicles(event) {
             if (event && event.key === 'Enter') {
@@ -3087,10 +3275,16 @@
                 vehicle.id?.toString().includes(searchTerm) ||
                 (vehicle.status === 'active' && 'active'.includes(searchTerm)) ||
                 (vehicle.status === 'maintenance' && 'maintenance'.includes(searchTerm)) ||
-                (vehicle.status === 'inactive' && 'inactive'.includes(searchTerm))
+                (vehicle.status === 'inactive' && 'inactive'.includes(searchTerm)) ||
+                (vehicle.serviceStatus || '').toLowerCase().includes(searchTerm)
             );
 
-            if (filteredVehicles.length === 0) {
+            // Apply vehicle status filter if active
+            let finalVehicles = filteredVehicles;
+            if (currentVehicleStatusFilter && currentVehicleStatusFilter !== 'all') {
+                finalVehicles = filteredVehicles.filter(v => getVehicleWorkflowDisplay(v).class === currentVehicleStatusFilter);
+            }
+            if (finalVehicles.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="7" class="no-results">
@@ -3104,11 +3298,8 @@
             }
 
             tbody.innerHTML = '';
-            filteredVehicles.forEach(vehicle => {
-                const statusClass = vehicle.status === 'active' ? 'active' : 
-                                  vehicle.status === 'maintenance' ? 'maintenance' : 'inactive';
-                const statusText = vehicle.status === 'active' ? 'Active' :
-                                 vehicle.status === 'maintenance' ? 'Maintenance' : 'Inactive';
+            finalVehicles.forEach(vehicle => {
+                const wf = getVehicleWorkflowDisplay(vehicle);
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -3117,10 +3308,10 @@
                     <td><code>${highlightText(vehicle.plate || vehicle.vehicleNumber || 'N/A', searchTerm)}</code></td>
                     <td>${highlightText(vehicle.year || 'N/A', searchTerm)}</td>
                     <td>${highlightText(vehicle.owner || vehicle.ownerEmail || 'N/A', searchTerm)}</td>
-                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td><span class="status-badge ${wf.class}">${wf.label}</span></td>
                     <td>
-                        <button class="btn-danger" onclick="deleteVehicle(${vehicle.id})">
-                            <i class="fas fa-trash"></i> Delete
+                        <button class="btn-view" onclick="viewVehicleDetails(${vehicle.id})">
+                            <i class="fas fa-eye"></i> View
                         </button>
                     </td>
                 `;
@@ -3228,6 +3419,45 @@
             return String(text).replace(regex, '<span class="highlight">$1</span>');
         }
 
+        // Helper to map vehicle.serviceStatus to display label and badge class
+        function getVehicleWorkflowDisplay(vehicle) {
+            // If vehicle is not assigned to any advisor and not already delivered, show Not Assigned
+            const s = (vehicle.serviceStatus || '').toString().toLowerCase();
+            const assigned = vehicle.assignedAdvisor || vehicle.assignedAdvisorId || vehicle.assignedAdvisor === 0;
+            if (!assigned && s !== 'delivered') {
+                return { class: 'not-assigned', label: 'Not Assigned' };
+            }
+
+            switch (s) {
+                case 'assigned':
+                    return { class: 'assigned', label: 'Assigned' };
+                case 'in-process':
+                case 'in_process':
+                case 'inprocess':
+                    return { class: 'in-process', label: 'In Process' };
+                case 'completed':
+                    return { class: 'completed', label: 'Completed' };
+                case 'awaiting-qc':
+                case 'awaiting_qc':
+                case 'awaitingqc':
+                    return { class: 'awaiting-qc', label: 'Awaiting QC' };
+                case 'in-qc':
+                case 'in_qc':
+                case 'inqc':
+                    return { class: 'in-qc', label: 'In QC' };
+                case 'ready-for-delivery':
+                case 'ready_for_delivery':
+                case 'ready':
+                    return { class: 'ready-for-delivery', label: 'Ready for Delivery' };
+                case 'delivered':
+                    return { class: 'delivered', label: 'Delivered' };
+                case 'pending':
+                default:
+                    // Fallback to 'pending' if no serviceStatus present
+                    return { class: 'pending', label: 'Pending' };
+            }
+        }
+
         // ===== LOAD VEHICLES =====
         function loadVehicles() {
             const tbody = document.getElementById('vehicles-tbody');
@@ -3246,11 +3476,14 @@
                 return;
             }
 
-            vehiclesDatabase.forEach(vehicle => {
-                const statusClass = vehicle.status === 'active' ? 'active' : 
-                                  vehicle.status === 'maintenance' ? 'maintenance' : 'inactive';
-                const statusText = vehicle.status === 'active' ? 'Active' :
-                                 vehicle.status === 'maintenance' ? 'Maintenance' : 'Inactive';
+            // Apply vehicle status filter
+            let displayVehicles = vehiclesDatabase;
+            if (currentVehicleStatusFilter && currentVehicleStatusFilter !== 'all') {
+                displayVehicles = vehiclesDatabase.filter(v => getVehicleWorkflowDisplay(v).class === currentVehicleStatusFilter);
+            }
+
+            displayVehicles.forEach(vehicle => {
+                const wf = getVehicleWorkflowDisplay(vehicle);
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -3259,10 +3492,10 @@
                     <td><code>${vehicle.plate || vehicle.vehicleNumber || 'N/A'}</code></td>
                     <td>${vehicle.year || 'N/A'}</td>
                     <td>${vehicle.owner || vehicle.ownerEmail || 'N/A'}</td>
-                    <td><span class="status-badge ${statusClass}">${statusText}</span></td>
+                    <td><span class="status-badge ${wf.class}">${wf.label}</span></td>
                     <td>
-                        <button class="btn-danger" onclick="deleteVehicle(${vehicle.id})">
-                            <i class="fas fa-trash"></i> Delete
+                        <button class="btn-view" onclick="viewVehicleDetails(${vehicle.id})">
+                            <i class="fas fa-eye"></i> View
                         </button>
                     </td>
                 `;
@@ -3275,20 +3508,26 @@
             const tbody = document.getElementById('users-tbody');
             tbody.innerHTML = '';
 
-            if (usersDatabase.length === 0) {
+            // Filter users by role if a role filter is active
+            let filteredUsers = usersDatabase;
+            if (currentUserRoleFilter !== 'all') {
+                filteredUsers = usersDatabase.filter(user => user.role === currentUserRoleFilter);
+            }
+
+            if (filteredUsers.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="6" style="text-align: center; padding: 3rem;">
                             <i class="fas fa-users" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
                             <h3 style="color: #64748b;">No Users Found</h3>
-                            <p style="color: #94a3b8;">Click "Add User" to create a new user account</p>
+                            <p style="color: #94a3b8;">${currentUserRoleFilter !== 'all' ? 'No users with this role' : 'Click "Add User" to create a new user account'}</p>
                         </td>
                     </tr>
                 `;
                 return;
             }
 
-            usersDatabase.forEach(user => {
+            filteredUsers.forEach(user => {
                 const statusClass = user.status === 'active' ? 'active' : 'inactive';
                 const statusText = user.status === 'active' ? 'Active' : 'Inactive';
 
@@ -3404,6 +3643,123 @@
                 updateStatistics();
                 showMessage('Vehicle deleted successfully!', 'success');
             }
+        }
+
+        // ===== VIEW VEHICLE DETAILS =====
+        function viewVehicleDetails(vehicleId) {
+            const vehicle = vehiclesDatabase.find(v => v.id === vehicleId);
+            if (!vehicle) {
+                showMessage('Vehicle not found', 'error');
+                return;
+            }
+
+            // Compute total cost and total service time
+            let totalCost = 0;
+            let totalSeconds = 0; // accumulate seconds from job.actualTime (hours)
+
+            const jobs = vehicle.jobs && Array.isArray(vehicle.jobs) ? vehicle.jobs : [];
+            jobs.forEach(job => {
+                const est = Number(job.estimatedCost) || 0;
+                const actual = Number(job.actualCost) || 0;
+                totalCost += actual > 0 ? actual : est;
+
+                const actualHours = Number(job.actualTime) || 0;
+                totalSeconds += Math.round(actualHours * 3600);
+            });
+
+            // Format totalSeconds to HH:MM:SS
+            const pad = (n) => String(n).padStart(2, '0');
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            const totalTimeStr = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+
+            // Build jobs HTML
+            const jobsHTML = jobs.length === 0 ? '<p style="color: #64748b;">No jobs assigned</p>' : `
+                <table style="width:100%; border-collapse: collapse; margin-top: 0.5rem;">
+                    <thead>
+                        <tr style="text-align:left; border-bottom:1px solid #e6edf3;">
+                            <th>Service</th><th>Technician</th><th>Status</th><th>Est Hours</th><th>Est Cost</th><th>Actual Time</th><th>Actual Cost</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${jobs.map(j => `
+                            <tr style="border-bottom:1px solid #f1f5f9;">
+                                <td>${j.serviceName || formatJobType(j.type)}</td>
+                                <td>${j.technician || (j.technicianId ? 'Tech #' + j.technicianId : 'N/A')}</td>
+                                <td>${(j.status || 'pending').replace('-', ' ')}</td>
+                                <td>${Number(j.estimatedHours || 0).toFixed(2)}</td>
+                                <td>₹${Number(j.estimatedCost || 0).toFixed(2)}</td>
+                                <td>${j.actualTime ? Number(j.actualTime).toFixed(2) + ' h' : '-'}</td>
+                                <td>${j.actualCost ? '₹' + Number(j.actualCost).toFixed(2) : (j.estimatedCost ? '₹' + Number(j.estimatedCost).toFixed(2) : '-')}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+
+            // Inspection report
+            const insp = vehicle.inspectionReport;
+            const inspectionHTML = insp ? `
+                <div style="background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e6edf3;">
+                    <p><strong>Exterior:</strong> ${insp.exterior || 'N/A'}</p>
+                    <p><strong>Interior:</strong> ${insp.interior || 'N/A'}</p>
+                    <p><strong>Engine & Mechanical:</strong> ${insp.engine || 'N/A'}</p>
+                    <p><strong>Fluids:</strong> ${insp.fluids || 'N/A'}</p>
+                    <p><strong>Issues & Recommendations:</strong> ${insp.issues || 'N/A'}</p>
+                    <p><strong>Mileage:</strong> ${insp.mileage || 'N/A'}</p>
+                    ${insp.notes ? `<p><strong>Notes:</strong> ${insp.notes}</p>` : ''}
+                    <p style="font-size:0.85rem;color:#64748b;margin-top:8px;">Inspected by: ${insp.inspectedBy || 'N/A'} on ${insp.inspectionDate ? new Date(insp.inspectionDate).toLocaleString() : 'N/A'}</p>
+                </div>
+            ` : '<p style="color:#64748b;">No inspection report available</p>';
+
+            // Service information
+            const serviceHTML = `
+                <p><strong>Service Status:</strong> ${vehicle.serviceStatus || 'N/A'}</p>
+                ${vehicle.serviceDescription ? `<p><strong>Service Description:</strong> ${vehicle.serviceDescription}</p>` : ''}
+            `;
+
+            // Vehicle basic details
+            const basicHTML = `
+                <p><strong>Owner:</strong> ${vehicle.owner || vehicle.ownerEmail || 'N/A'}</p>
+                <p><strong>Vehicle Number:</strong> ${vehicle.vehicleNumber || vehicle.plate || 'N/A'}</p>
+                <p><strong>Make/Model:</strong> ${vehicle.make || vehicle.carName || 'N/A'}</p>
+                <p><strong>Year / Color:</strong> ${vehicle.year || 'N/A'} ${vehicle.color ? (' / ' + vehicle.color) : ''}</p>
+                <p><strong>Contact:</strong> ${vehicle.mobileNumber || vehicle.ownerPhone || 'N/A'}</p>
+                <p><strong>Arrived:</strong> ${vehicle.entryTime ? new Date(vehicle.entryTime).toLocaleString() : 'N/A'}</p>
+            `;
+
+            // Compose modal content
+            const content = `
+                <section>
+                    <h3>Vehicle Details</h3>
+                    ${basicHTML}
+                </section>
+                <hr />
+                <section>
+                    <h3>Service Information</h3>
+                    ${serviceHTML}
+                </section>
+                <hr />
+                <section>
+                    <h3>Initial Inspection Report</h3>
+                    ${inspectionHTML}
+                </section>
+                <hr />
+                <section>
+                    <h3>Assigned / Completed Jobs</h3>
+                    ${jobsHTML}
+                </section>
+                <hr />
+                <section style="display:flex;gap:1.5rem;align-items:center;">
+                    <div><strong>Total Cost:</strong> ₹${totalCost.toFixed(2)}</div>
+                    <div><strong>Total Service Time:</strong> ${totalTimeStr}</div>
+                </section>
+            `;
+
+            document.getElementById('vehicle-view-title').textContent = `Vehicle #${vehicle.id} — ${vehicle.vehicleNumber || vehicle.plate || ''}`;
+            document.getElementById('vehicle-view-content').innerHTML = content;
+            document.getElementById('vehicle-view-modal').classList.add('show');
         }
 
         // ===== USER MODAL FUNCTIONS =====
@@ -3588,18 +3944,18 @@
             }
             
             let details = `
-📧 Contact Message Details
-━━━━━━━━━━━━━━━━━━━━━━━━━
-Name: ${msg.name}
-Email: ${msg.email}
-Phone: ${msg.phone}
-Type: ${msg.problemType}
-Date: ${new Date(msg.createdAt).toLocaleString()}
+                            📧 Contact Message Details
+                            ━━━━━━━━━━━━━━━━━━━━━━━━━
+                            Name: ${msg.name}
+                            Email: ${msg.email}
+                            Phone: ${msg.phone}
+                            Type: ${msg.problemType}
+                            Date: ${new Date(msg.createdAt).toLocaleString()}
 
-Message:
-${msg.description}
-━━━━━━━━━━━━━━━━━━━━━━━━━
-`;
+                            Message:
+                            ${msg.description}
+                            ━━━━━━━━━━━━━━━━━━━━━━━━━
+                        `;
             
             if (msg.adminResponse) {
                 details += `
