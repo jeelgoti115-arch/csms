@@ -2082,14 +2082,14 @@
             const savedTheme = localStorage.getItem('theme-preference');
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
-                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-regular fa-moon"></i>';
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
             }
             
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', () => {
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
-                    toggleBtn.innerHTML = isDark ? '<i class="fa-regular fa-moon"></i>' : '<i class="fa-solid fa-sun" style="color: rgba(255, 255, 255, 1.00);"></i>';
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fa-solid fa-sun" style="color: rgba(255, 255, 255, 1.00);"></i>';
                     localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
                 });
             }

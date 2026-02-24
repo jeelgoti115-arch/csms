@@ -2398,12 +2398,12 @@
             const toggleBtn = document.getElementById('theme-toggle');
             const html = document.documentElement;
             const savedTheme = localStorage.getItem('vsms-theme-preference');
-            if (savedTheme === 'dark') { html.classList.add('dark-mode'); if(toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-moon"></i>'; }
+            if (savedTheme === 'dark') { html.classList.add('dark-mode'); if(toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>'; }
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', () => {
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
-                    toggleBtn.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
                     localStorage.setItem('vsms-theme-preference', isDark ? 'dark' : 'light');
                 });
             }
@@ -2604,7 +2604,7 @@
                             </div>
                             <div class="job-details-grid" style="margin-top:1rem; margin-bottom:1rem;">
                                 <div class="detail-item"><div class="detail-icon"><i class="fas fa-clock"></i></div><div class="detail-info"><h5>Estimated Hours</h5><p>${job.estimatedHours||'TBD'} hrs</p></div></div>
-                                <div class="detail-item"><div class="detail-icon"><i class="fas fa-dollar-sign"></i></div><div class="detail-info"><h5>Estimated Cost</h5><p>${job.estimatedCost?`₹${job.estimatedCost}`:'TBD'}</p></div></div>
+                                <div class="detail-item"><div class="detail-icon"><i class="fa-solid fa-indian-rupee-sign"></i></div><div class="detail-info"><h5>Estimated Cost</h5><p>${job.estimatedCost?`₹${job.estimatedCost}`:'TBD'}</p></div></div>
                                 <div class="detail-item"><div class="detail-icon"><i class="fas fa-user-tie"></i></div><div class="detail-info"><h5>Assigned Advisor</h5><p>${job.assignedAdvisor||'Service Advisor'}</p></div></div>
                                 <div class="detail-item"><div class="detail-icon"><i class="fas fa-calendar-alt"></i></div><div class="detail-info"><h5>Assigned Date</h5><p>${job.assignedDate?formatDate(job.assignedDate):'Today'}</p></div></div>
                             </div>

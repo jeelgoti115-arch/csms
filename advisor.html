@@ -2572,7 +2572,7 @@
             const savedTheme = localStorage.getItem('vsms-theme-preference');
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
-                if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
             }
             
             // Toggle button click handler
@@ -2580,7 +2580,7 @@
                 toggleBtn.addEventListener('click', () => {
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
-                    toggleBtn.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
                     localStorage.setItem('vsms-theme-preference', isDark ? 'dark' : 'light');
                 });
             }
@@ -2963,21 +2963,14 @@
             let assignedVehicles = vehiclesDatabase
                 .filter(v => v.assignedAdvisor == currentAdvisorId)
                 .filter(v => v.serviceStatus !== "delivered");
-            assignedVehicles = assignedVehicles.filter(v => {
-                if (v.advisorHidden) {
-                    console.log(`Hiding vehicle ${v.id} from advisor view because advisorHidden flag is set`);
-                    return false;
-                }
-
-                if (v.jobs && Array.isArray(v.jobs) && v.jobs.length > 0) {
-                    console.log(`Hiding vehicle ${v.id} from advisor view because jobs are already assigned`);
-                    return false;
-                }
-
-                // If no jobs exist yet, show the vehicle (needs inspection/job assignment)
-                console.log(`Vehicle ${v.id} has no jobs - showing it for inspection/job assignment`);
-                return true;
-            });
+            // Keep all assigned vehicles visible to the advisor (advisor should see inspection and job status).
+            // The UI will automatically remove the "Assign Jobs" button when jobs exist on the vehicle
+            // or when a vehicle has previously had jobs assigned. We use an explicit `jobsAssigned` flag
+            // (set when saving jobs) to ensure the Assign Jobs button NEVER reappears for a vehicle
+            // after jobs have been assigned — even if a jobs array becomes empty due to other bugs.
+            // (Previously vehicles with jobs or advisorHidden were being filtered out — that hid data
+            // and caused inconsistencies on re-login.)
+            // No additional filtering here.
             
             console.log('After advisor filter:', assignedVehicles.length, assignedVehicles);
             console.log('Active tab:', activeTab);
@@ -3054,7 +3047,7 @@
             if (!vehicle.inspectionStatus || vehicle.inspectionStatus === "not-started") {
                 // STEP 1: Show ONLY Inspect button (not yet inspected)
                 actionButtons = `<button class="action-btn start-service" onclick="openInspectionModal(${vehicle.id})"><i class="fas fa-search"></i> Inspect Vehicle</button>`;
-            } else if (vehicle.inspectionStatus === "completed" && (!vehicle.jobs || vehicle.jobs.length === 0)) {
+            } else if (vehicle.inspectionStatus === "completed" && !vehicle.jobsAssigned && (!vehicle.jobs || vehicle.jobs.length === 0)) {
                 // STEP 2: Show ONLY Assign Jobs button (inspected but no jobs assigned yet)
                 actionButtons = `<button class="action-btn assign-job" onclick="openJobListModal(${vehicle.id})"><i class="fas fa-tasks"></i> Assign Jobs</button>`;
             }
@@ -3621,11 +3614,12 @@
             vehiclesDatabase[vehicleIndex].jobs = currentJobs;
             vehiclesDatabase[vehicleIndex].assignedAdvisor = currentAdvisorId;
 
-            // Mark vehicle as hidden from advisor view so it does not reappear after logout/login
-            vehiclesDatabase[vehicleIndex].advisorHidden = true;
+
 
             // Update vehicle status: Once jobs are assigned, vehicle goes to technician
             vehiclesDatabase[vehicleIndex].serviceStatus = 'in-progress';
+            // Mark that jobs have been assigned so the "Assign Jobs" button never reappears
+            vehiclesDatabase[vehicleIndex].jobsAssigned = true;
 
             // Persist changes
             localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
@@ -3902,24 +3896,26 @@
 
             console.log('Advisor dashboard loaded');
             
-            // Refresh timers every second
+            // Refresh assigned vehicles periodically (reduced frequency to avoid UI flicker)
+            // We update the on-screen timers every second via updateTime(), but reload the full list less frequently.
             setInterval(() => {
                 loadAssignedVehicles();
-            }, 1000);
+            }, 5000);
         }
 
         // Run initialization
         initialize();
         
-        // Update time every second
+        // Update time every second (clock-only)
         setInterval(updateTime, 1000);
-        
-        // Auto-refresh data every 10 seconds
+
+        // Auto-refresh data and UI every 5 seconds (reduced from 10s to align with assigned vehicles refresh)
         setInterval(() => {
             vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
             technicians = loadRegisteredTechnicians();
             updateStatistics();
-        }, 10000);
+            loadAssignedVehicles();
+        }, 5000);
         
         // Close modal on escape key
         document.addEventListener('keydown', (e) => {

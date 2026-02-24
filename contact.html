@@ -836,7 +836,7 @@
             margin-top: 2rem;
         }
 
-        .social-link {
+        .social-link-facebook {
             width: 45px;
             height: 45px;
             background: rgba(255, 255, 255, 0.1);
@@ -849,8 +849,81 @@
             transition: var(--transition);
         }
 
-        .social-link:hover {
-            background: var(--primary);
+        .social-link-facebook:hover {
+            background: #1877F2;
+            transform: translateY(-3px);
+        }
+
+
+        .social-link-whatsapp {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-whatsapp:hover {
+            background: #25D366;
+            transform: translateY(-3px);
+        }
+
+        .social-link-linkedln {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-linkedln:hover {
+            background: #0A66C2;
+            transform: translateY(-3px);
+        }
+
+        .social-link-github {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-github:hover {
+            background: #24292e;
+            transform: translateY(-3px);
+        }
+
+        .social-link-yt {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-yt:hover {
+            background: #FF0000;
             transform: translateY(-3px);
         }
 
@@ -1669,20 +1742,20 @@
                         Car Service Management System is more than just software—it's a commitment to excellence in vehicle service operations. We're dedicated to continuous improvement and innovation to serve our clients better every day.
                     </p>
                     <div class="social-links">
-                        <a href="#" class="social-link">
-                            <i class="fa-brands fa-facebook-f"></i>
+                        <a href="#" class="social-link-facebook">
+                            <i class="fa-brands fa-facebook-f fa-lg"></i>
                         </a>
-                        <a href="#" class="social-link">
-                            <i class="fa-brands fa-whatsapp"></i>
+                        <a href="#" class="social-link-whatsapp">
+                            <i class="fa-brands fa-whatsapp fa-lg"></i>
                         </a>
-                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link">
-                            <i class="fab fa-linkedin-in"></i>
+                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link-linkedln">
+                            <i class="fab fa-linkedin-in fa-lg"></i>
                         </a>
-                        <a href="https://github.com/" class="social-link">
-                            <i class="fab fa-github"></i>
+                        <a href="https://github.com/" class="social-link-github">
+                            <i class="fab fa-github fa-lg"></i>
                         </a>
-                        <a href="#" class="social-link">
-                            <i class="fab fa-youtube"></i>
+                        <a href="#" class="social-link-yt">
+                            <i class="fab fa-youtube fa-lg"></i>
                         </a>
                     </div>
                 </div>
@@ -2111,7 +2184,7 @@
             const savedTheme = localStorage.getItem('theme-preference');
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
-                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-regular fa-moon"></i>';
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
             }
             
             // Toggle button click handler
@@ -2119,7 +2192,7 @@
                 toggleBtn.addEventListener('click', () => {
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
-                    toggleBtn.innerHTML = isDark ? '<i class="fa-regular fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
                     localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
                 });
             }

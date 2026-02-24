@@ -2061,7 +2061,6 @@
 
         <!-- Dashboard Content -->
         <div id="dashboard-content">
-            <!-- Dashboard Header -->
             <div class="dashboard-header">
                 <h1>Administrator Dashboard</h1>
                 <p>Complete system management and monitoring for Car Service Management System</p>
@@ -2088,7 +2087,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="stat-card purple">
                     <div class="stat-header">
                         <div class="stat-icon">
@@ -2100,7 +2098,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="stat-card red">
                     <div class="stat-header">
                         <div class="stat-icon">
@@ -2112,7 +2109,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="stat-card green">
                     <div class="stat-header">
                         <div class="stat-icon">
@@ -2124,7 +2120,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="stat-card orange">
                     <div class="stat-header">
                         <div class="stat-icon">
@@ -2259,7 +2254,7 @@
                         <i class="fas fa-check-double"></i> Ready for Delivery
                     </button>
                     <button class="role-filter-btn" data-status="delivered" onclick="filterVehiclesByStatus('delivered')">
-                        <i class="fas fa-truck"></i> Delivered
+                        <i class="fa-solid fa-truck-fast"></i> Delivered
                     </button>
                 </div>
 
@@ -2273,6 +2268,7 @@
                                 <th>Year</th>
                                 <th>Owner</th>
                                 <th>Status</th>
+                                <th>Total Bill</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -2428,8 +2424,8 @@
                 <div class="form-group">
                     <label for="user-status">Account Status *</label>
                     <select id="user-status" required>
-                        <option value="active">Active - Can Login</option>
-                        <option value="inactive">Inactive - Cannot Login</option>
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
                     </select>
                 </div>
                 <div id="technician-fields" style="display: none;">
@@ -2729,8 +2725,8 @@
                                 <i class="fas fa-toggle-on"></i> ACCOUNT STATUS
                             </div>
                             <select id="edit-status-${user.id}" class="form-control" ${user.id === admin.id ? 'disabled' : ''}>
-                                <option value="active" ${user.status === 'active' ? 'selected' : ''}>Active - Can Login</option>
-                                <option value="inactive" ${user.status === 'inactive' ? 'selected' : ''}>Inactive - Cannot Login</option>
+                                <option value="active" ${user.status === 'active' ? 'selected' : ''}>Active</option>
+                                <option value="inactive" ${user.status === 'inactive' ? 'selected' : ''}>Inactive</option>
                             </select>
                             ${user.id === admin.id ? '<small style="color: #f59e0b; display: block; margin-top: 5px;">Cannot change your own status</small>' : ''}
                         </div>
@@ -3008,20 +3004,22 @@
                         <table>
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Make & Model</th>
-                                    <th>License Plate</th>
-                                    <th>Year</th>
-                                    <th>Owner</th>
-                                    <th>Status</th>
-                                    <th>Actions</th>
-                                </tr>
+                                            <th>ID</th>
+                                            <th>Make & Model</th>
+                                            <th>License Plate</th>
+                                            <th>Year</th>
+                                            <th>Owner</th>
+                                            <th>Status</th>
+                                            <th>Total Bill</th>
+                                            <th>Actions</th>
+                                        </tr>
                             </thead>
                             <tbody>
                 `;
                 
                 vehicles.forEach(vehicle => {
                     const wf = getVehicleWorkflowDisplay(vehicle);
+                    const totals = computeVehicleTotals(vehicle);
 
                     html += `
                         <tr>
@@ -3031,10 +3029,16 @@
                             <td>${highlightText(vehicle.year || 'N/A', searchTerm)}</td>
                             <td>${highlightText(vehicle.owner || vehicle.ownerEmail || 'N/A', searchTerm)}</td>
                             <td><span class="status-badge ${wf.class}">${wf.label}</span></td>
+                            <td>₹${(totals.totalCost || 0).toFixed(2)}</td>
                             <td>
-                                <button class="btn-view" onclick="viewVehicleDetails(${vehicle.id})">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
+                                <div class="action-buttons">
+                                    <button class="btn-view" onclick="viewVehicleDetails(${vehicle.id})">
+                                        <i class="fas fa-eye"></i> View
+                                    </button>
+                                    <button class="btn-danger" onclick="deleteVehicle(${vehicle.id})">
+                                        <i class="fas fa-trash"></i> Delete
+                                    </button>
+                                </div>
                             </td>
                         </tr>
                     `;
@@ -3049,15 +3053,16 @@
                     <h3 style="margin: 1.5rem 0 1rem;">
                         <i class="fas fa-envelope" style="color: #3b82f6;"></i> 
                         Contact Messages (${contacts.length})
-                    </h3>
-                    <div class="table-container" style="margin-bottom: 2rem;">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Email</th>
-                                    <th>Phone</th>
-                                    <th>Type</th>
+                    <tr>
+                            <th>ID</th>
+                            <th>Make & Model</th>
+                            <th>License Plate</th>
+                            <th>Year</th>
+                            <th>Owner</th>
+                            <th>Status</th>
+                            <th>Total Bill</th>
+                            <th>Actions</th>
+                        </tr>
                                     <th>Message</th>
                                     <th>Status</th>
                                     <th>Action</th>
@@ -3287,7 +3292,7 @@
             if (finalVehicles.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" class="no-results">
+                        <td colspan="8" class="no-results">
                             <i class="fas fa-car"></i>
                             <h3>No Vehicles Found</h3>
                             <p>No vehicles match "${searchTerm}"</p>
@@ -3300,6 +3305,7 @@
             tbody.innerHTML = '';
             finalVehicles.forEach(vehicle => {
                 const wf = getVehicleWorkflowDisplay(vehicle);
+                const totals = computeVehicleTotals(vehicle);
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -3309,10 +3315,16 @@
                     <td>${highlightText(vehicle.year || 'N/A', searchTerm)}</td>
                     <td>${highlightText(vehicle.owner || vehicle.ownerEmail || 'N/A', searchTerm)}</td>
                     <td><span class="status-badge ${wf.class}">${wf.label}</span></td>
+                    <td>₹${(totals.totalCost || 0).toFixed(2)}</td>
                     <td>
-                        <button class="btn-view" onclick="viewVehicleDetails(${vehicle.id})">
-                            <i class="fas fa-eye"></i> View
-                        </button>
+                        <div class="action-buttons">
+                            <button class="btn-view" onclick="viewVehicleDetails(${vehicle.id})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="btn-danger" onclick="deleteVehicle(${vehicle.id})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -3419,6 +3431,128 @@
             return String(text).replace(regex, '<span class="highlight">$1</span>');
         }
 
+        // Generic helper to read job properties from different naming conventions
+        function getJobValue(job, keys, fallback) {
+            for (const k of keys) {
+                if (job.hasOwnProperty(k) && job[k] !== undefined && job[k] !== null && job[k] !== '') return job[k];
+            }
+            return fallback;
+        }
+
+        function formatJobType(type) {
+            if (!type) return 'Service';
+            // convert camelCase/underscored to Title Case
+            const t = String(type).replace(/[_-]/g, ' ').replace(/([a-z])([A-Z])/g, '$1 $2');
+            return t.split(' ').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+        }
+
+        // Resolve technician name from various job properties or user id lookup
+        function resolveTechnician(job) {
+            const techCandidates = [
+                job.technician, job.technicianName, job.technician_name, job.technician_id, job.technicianId,
+                job.assignedTo, job.assignedTechnician, job.tech, job.techId
+            ];
+            for (const t of techCandidates) {
+                if (t === undefined || t === null || t === '') continue;
+                if (typeof t === 'string' && t.trim()) return t;
+                if (typeof t === 'object') {
+                    if (t.name) return t.name;
+                    if (t.fullName) return t.fullName;
+                }
+                if (typeof t === 'number' || (typeof t === 'string' && /^\d+$/.test(t))) {
+                    const idNum = Number(t);
+                    const u = usersDatabase.find(u => u.id === idNum || u.id == String(idNum));
+                    if (u) return u.name;
+                    return 'Tech #' + t;
+                }
+            }
+            return 'N/A';
+        }
+
+        // Resolve a user value (id, name, or object) to a display string "Name (#id)" or raw value
+        function resolveUserDisplay(val) {
+            if (val === undefined || val === null || val === '') return null;
+            // If object with name/id
+            if (typeof val === 'object') {
+                const name = val.name || val.fullName || val.displayName || val.username;
+                const id = val.id || val.userId || val.uid;
+                if (name && id) return `${name} (#${id})`;
+                if (name) return name;
+                if (id) return `#${id}`;
+            }
+            // If number or numeric string, try user lookup
+            if (typeof val === 'number' || (typeof val === 'string' && /^\d+$/.test(val))) {
+                const idNum = Number(val);
+                const u = usersDatabase.find(u => u.id === idNum || u.id == String(idNum));
+                if (u) return `${u.name} (#${u.id})`;
+                return `#${val}`;
+            }
+            // Otherwise assume it's a name string
+            if (typeof val === 'string') return val;
+            return String(val);
+        }
+
+        // Compute totals for a vehicle (supports multiple job property names used across pages)
+        function computeVehicleTotals(vehicle) {
+            // Possible job containers used by different pages: jobs, assignedJobs, serviceJobs, tasks
+            const possibleKeys = ['jobs', 'assignedJobs', 'serviceJobs', 'tasks', 'assignedTasks'];
+            let jobs = [];
+            for (const k of possibleKeys) {
+                if (vehicle[k] && Array.isArray(vehicle[k])) {
+                    jobs = jobs.concat(vehicle[k]);
+                }
+            }
+            // Also support vehicle.job when it's an array or a single object
+            if (vehicle.job) {
+                if (Array.isArray(vehicle.job)) {
+                    jobs = jobs.concat(vehicle.job);
+                } else if (typeof vehicle.job === 'object') {
+                    jobs.push(vehicle.job);
+                }
+            }
+
+            // Remove undefined/null
+            jobs = jobs.filter(Boolean);
+
+            // If still empty, try to detect arrays on the vehicle object that look like job lists
+            if (jobs.length === 0) {
+                Object.keys(vehicle).forEach(key => {
+                    const val = vehicle[key];
+                    if (Array.isArray(val) && val.length > 0 && typeof val[0] === 'object') {
+                        // Heuristic: check if object looks like a job (has cost or service related keys)
+                        const sample = val[0];
+                        const jobLikeKeys = ['serviceName','service','name','type','estimatedCost','actualCost','cost','price','estimated_amount'];
+                        const isJobLike = jobLikeKeys.some(k => sample.hasOwnProperty(k));
+                        if (isJobLike) {
+                            jobs = jobs.concat(val);
+                        }
+                    }
+                });
+            }
+
+            let totalCost = 0;
+            let totalSeconds = 0;
+
+            jobs.forEach(job => {
+                // Use getJobValue to support many naming conventions
+                const actual = Number(getJobValue(job, ['actualCost','actual_cost','actual','cost','price','amount'], 0)) || 0;
+                const est = Number(getJobValue(job, ['estimatedCost','estCost','estimated_amount','estimated_cost','estimate','price','cost_estimate'], 0)) || 0;
+
+                totalCost += actual > 0 ? actual : est;
+
+                // Time fields (hours) or seconds
+                const actualHours = Number(getJobValue(job, ['actualTime','actual_hours','actualHours','timeHours','hours','estimatedHours','estHours'], 0)) || 0;
+                const timeSeconds = Number(getJobValue(job, ['actualTimeSeconds','timeSeconds','seconds','durationSeconds'], NaN));
+                if (!isNaN(timeSeconds) && timeSeconds > 0) {
+                    totalSeconds += Math.round(timeSeconds);
+                } else {
+                    totalSeconds += Math.round(actualHours * 3600);
+                }
+            });
+
+            return { jobs, totalCost, totalSeconds };
+        }
+
         // Helper to map vehicle.serviceStatus to display label and badge class
         function getVehicleWorkflowDisplay(vehicle) {
             // If vehicle is not assigned to any advisor and not already delivered, show Not Assigned
@@ -3466,7 +3600,7 @@
             if (vehiclesDatabase.length === 0) {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="7" style="text-align: center; padding: 3rem;">
+                        <td colspan="8" style="text-align: center; padding: 3rem;">
                             <i class="fas fa-car" style="font-size: 3rem; color: #cbd5e1; margin-bottom: 1rem;"></i>
                             <h3 style="color: #64748b;">No Vehicles Found</h3>
                             <p style="color: #94a3b8;">Click "Add Vehicle" to register a new vehicle</p>
@@ -3486,6 +3620,7 @@
                 const wf = getVehicleWorkflowDisplay(vehicle);
 
                 const row = document.createElement('tr');
+                const totals = computeVehicleTotals(vehicle);
                 row.innerHTML = `
                     <td><strong>#${vehicle.id}</strong></td>
                     <td>${vehicle.make || vehicle.carName || 'N/A'}</td>
@@ -3493,10 +3628,16 @@
                     <td>${vehicle.year || 'N/A'}</td>
                     <td>${vehicle.owner || vehicle.ownerEmail || 'N/A'}</td>
                     <td><span class="status-badge ${wf.class}">${wf.label}</span></td>
+                    <td>₹${(totals.totalCost || 0).toFixed(2)}</td>
                     <td>
-                        <button class="btn-view" onclick="viewVehicleDetails(${vehicle.id})">
-                            <i class="fas fa-eye"></i> View
-                        </button>
+                        <div class="action-buttons">
+                            <button class="btn-view" onclick="viewVehicleDetails(${vehicle.id})">
+                                <i class="fas fa-eye"></i> View
+                            </button>
+                            <button class="btn-danger" onclick="deleteVehicle(${vehicle.id})">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                        </div>
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -3653,19 +3794,11 @@
                 return;
             }
 
-            // Compute total cost and total service time
-            let totalCost = 0;
-            let totalSeconds = 0; // accumulate seconds from job.actualTime (hours)
-
-            const jobs = vehicle.jobs && Array.isArray(vehicle.jobs) ? vehicle.jobs : [];
-            jobs.forEach(job => {
-                const est = Number(job.estimatedCost) || 0;
-                const actual = Number(job.actualCost) || 0;
-                totalCost += actual > 0 ? actual : est;
-
-                const actualHours = Number(job.actualTime) || 0;
-                totalSeconds += Math.round(actualHours * 3600);
-            });
+            // Compute totals (supports multiple job property names)
+            const totals = computeVehicleTotals(vehicle);
+            const jobs = totals.jobs;
+            const totalCost = totals.totalCost || 0;
+            const totalSeconds = totals.totalSeconds || 0;
 
             // Format totalSeconds to HH:MM:SS
             const pad = (n) => String(n).padStart(2, '0');
@@ -3674,44 +3807,99 @@
             const seconds = totalSeconds % 60;
             const totalTimeStr = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
 
-            // Build jobs HTML
+            // Build jobs HTML (show all assigned/completed jobs; resolve technician name and render extra job fields)
             const jobsHTML = jobs.length === 0 ? '<p style="color: #64748b;">No jobs assigned</p>' : `
-                <table style="width:100%; border-collapse: collapse; margin-top: 0.5rem;">
-                    <thead>
-                        <tr style="text-align:left; border-bottom:1px solid #e6edf3;">
-                            <th>Service</th><th>Technician</th><th>Status</th><th>Est Hours</th><th>Est Cost</th><th>Actual Time</th><th>Actual Cost</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${jobs.map(j => `
-                            <tr style="border-bottom:1px solid #f1f5f9;">
-                                <td>${j.serviceName || formatJobType(j.type)}</td>
-                                <td>${j.technician || (j.technicianId ? 'Tech #' + j.technicianId : 'N/A')}</td>
-                                <td>${(j.status || 'pending').replace('-', ' ')}</td>
-                                <td>${Number(j.estimatedHours || 0).toFixed(2)}</td>
-                                <td>₹${Number(j.estimatedCost || 0).toFixed(2)}</td>
-                                <td>${j.actualTime ? Number(j.actualTime).toFixed(2) + ' h' : '-'}</td>
-                                <td>${j.actualCost ? '₹' + Number(j.actualCost).toFixed(2) : (j.estimatedCost ? '₹' + Number(j.estimatedCost).toFixed(2) : '-')}</td>
-                            </tr>
-                        `).join('')}
-                    </tbody>
-                </table>
+                <div style="margin-top:0.5rem;">
+                    ${jobs.map(j => {
+                        const serviceName = getJobValue(j, ['serviceName','service','name','type'], formatJobType(j.type));
+                        const technicianName = resolveTechnician(j);
+                        const statusText = String(getJobValue(j, ['status','jobStatus','job_status'], 'pending')).replace(/[_-]/g, ' ');
+                        const estHours = Number(getJobValue(j, ['estimatedHours','estHours','estimated_hours','hours'], 0)) || 0;
+                        const estCost = Number(getJobValue(j, ['estimatedCost','estCost','estimated_amount','cost_estimate','price'], 0)) || 0;
+                        const actualTime = Number(getJobValue(j, ['actualTime','actual_hours','timeHours','actualHours','actual_hours'], 0)) || 0;
+                        const actualCost = Number(getJobValue(j, ['actualCost','actual_cost','cost','price','amount'], 0)) || 0;
+                        // Render extra job fields
+                        const jobPrimary = ['serviceName','service','name','type','technician','technicianName','status','jobStatus','estimatedHours','estimated_cost','estimatedCost','actualTime','actualCost','id'];
+                        const jobExtraKeys = Object.keys(j).filter(k => !jobPrimary.includes(k));
+                        const jobExtraHTML = jobExtraKeys.map(k => {
+                            const label = k.replace(/[_-]/g, ' ').replace(/\b\w/g, s => s.toUpperCase());
+                            const val = j[k] === undefined || j[k] === null ? 'N/A' : j[k];
+                            return `<p style="margin:4px 0;"><strong>${label}:</strong> ${val}</p>`;
+                        }).join('');
+
+                        const startedAt = j.startedAt || j.startTime || j.start_date;
+                        const finishedAt = j.finishedAt || j.completedAt || j.completionTime || j.endTime;
+
+                        return `
+                        <div style="background:#fff;padding:10px;border-radius:8px;border:1px solid #eef2f7;margin-bottom:10px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;">
+                                <div style="min-width:220px;">
+                                    <div style="font-weight:600;">${serviceName}</div>
+                                    <div style="font-size:0.9rem;color:#64748b;">Status: ${statusText}</div>
+                                </div>
+                                <div style="min-width:160px;">
+                                    <div style="font-size:0.95rem;"><strong>Technician:</strong> ${technicianName}</div>
+                                    ${startedAt ? `<div style="font-size:0.85rem;color:#64748b;">Started: ${new Date(startedAt).toLocaleString()}</div>` : ''}
+                                    ${finishedAt ? `<div style="font-size:0.85rem;color:#64748b;">Finished: ${new Date(finishedAt).toLocaleString()}</div>` : ''}
+                                </div>
+                                <div style="text-align:right;min-width:160px;">
+                                    <div><strong>Est Hours:</strong> ${estHours.toFixed(2)}</div>
+                                    <div><strong>Est Cost:</strong> ₹${estCost.toFixed(2)}</div>
+                                    <div><strong>Actual Time:</strong> ${actualTime ? actualTime.toFixed(2) + ' h' : '-'}</div>
+                                    <div><strong>Actual Cost:</strong> ${actualCost ? '₹' + actualCost.toFixed(2) : (estCost ? '₹' + estCost.toFixed(2) : '-')}</div>
+                                </div>
+                            </div>
+                            ${jobExtraHTML ? `<hr style="border:none;border-top:1px solid #eef2f7;margin:8px 0;">${jobExtraHTML}` : ''}
+                        </div>
+                        `;
+                    }).join('')}
+                </div>
             `;
 
-            // Inspection report
-            const insp = vehicle.inspectionReport;
-            const inspectionHTML = insp ? `
+            // Inspection report - support several possible property names and show full details + advisor name
+            const insp = vehicle.inspectionReport || vehicle.inspection || vehicle.inspection_report || vehicle.inspectionReportData || vehicle.inspectionData || vehicle.insp;
+            let inspectionHTML = '<p style="color:#64748b;">No inspection report available</p>';
+            if (insp && Object.keys(insp).length > 0) {
+                // Try to resolve advisor/service-advisor name from multiple possible properties; if it's an id, look up usersDatabase
+                const advisorCandidates = [insp.inspectedBy, insp.inspectorName, insp.inspected_by, insp.serviceAdvisorName, insp.advisorName, insp.serviceAdvisor, insp.advisor, insp.inspectorId, insp.serviceAdvisorId, insp.advisorId, vehicle.assignedAdvisor, vehicle.assignedAdvisorName, vehicle.assignedAdvisorId];
+                let advisorName = null;
+                for (const c of advisorCandidates) {
+                    if (c === undefined || c === null || c === '') continue;
+                    if (typeof c === 'string' && c.trim()) { advisorName = c; break; }
+                    if (typeof c === 'number' || (typeof c === 'string' && /^\d+$/.test(c))) {
+                        const idNum = Number(c);
+                        const u = usersDatabase.find(u => u.id === idNum || u.id == String(idNum) || u.id == idNum);
+                        if (u) { advisorName = u.name; break; }
+                        advisorName = 'Advisor #' + c;
+                        break;
+                    }
+                }
+
+                const f = v => v || 'N/A';
+
+                // Render any additional fields that aren't part of the primary inspection keys
+                const primaryKeys = ['exterior','interior','engine','fluids','issues','mileage','notes','inspectionDate','inspectedBy','inspectorName','inspected_by','serviceAdvisor','serviceAdvisorId','advisorName','advisor','inspectorId'];
+                const extraKeys = Object.keys(insp).filter(k => !primaryKeys.includes(k));
+                const extraHTML = extraKeys.map(k => {
+                    const label = k.replace(/[_-]/g, ' ').replace(/\b\w/g, s => s.toUpperCase());
+                    const val = insp[k] === undefined || insp[k] === null ? 'N/A' : insp[k];
+                    return `<p><strong>${label}:</strong> ${val}</p>`;
+                }).join('');
+
+                inspectionHTML = `
                 <div style="background:#f8fafc;padding:12px;border-radius:8px;border:1px solid #e6edf3;">
-                    <p><strong>Exterior:</strong> ${insp.exterior || 'N/A'}</p>
-                    <p><strong>Interior:</strong> ${insp.interior || 'N/A'}</p>
-                    <p><strong>Engine & Mechanical:</strong> ${insp.engine || 'N/A'}</p>
-                    <p><strong>Fluids:</strong> ${insp.fluids || 'N/A'}</p>
-                    <p><strong>Issues & Recommendations:</strong> ${insp.issues || 'N/A'}</p>
-                    <p><strong>Mileage:</strong> ${insp.mileage || 'N/A'}</p>
+                    <p><strong>Exterior:</strong> ${f(insp.exterior)}</p>
+                    <p><strong>Interior:</strong> ${f(insp.interior)}</p>
+                    <p><strong>Engine & Mechanical:</strong> ${f(insp.engine)}</p>
+                    <p><strong>Fluids:</strong> ${f(insp.fluids)}</p>
+                    <p><strong>Issues & Recommendations:</strong> ${f(insp.issues)}</p>
+                    <p><strong>Mileage:</strong> ${f(insp.mileage)}</p>
                     ${insp.notes ? `<p><strong>Notes:</strong> ${insp.notes}</p>` : ''}
-                    <p style="font-size:0.85rem;color:#64748b;margin-top:8px;">Inspected by: ${insp.inspectedBy || 'N/A'} on ${insp.inspectionDate ? new Date(insp.inspectionDate).toLocaleString() : 'N/A'}</p>
+                    ${extraHTML ? `<hr style="border:none;border-top:1px solid #e6edf3;margin:8px 0;">${extraHTML}` : ''}
+                    <p style="font-size:0.85rem;color:#64748b;margin-top:8px;">Inspected by: ${advisorName || 'N/A'} ${insp.inspectionDate ? 'on ' + new Date(insp.inspectionDate).toLocaleString() : ''}</p>
                 </div>
-            ` : '<p style="color:#64748b;">No inspection report available</p>';
+            `;
+            }
 
             // Service information
             const serviceHTML = `
@@ -3729,11 +3917,106 @@
                 <p><strong>Arrived:</strong> ${vehicle.entryTime ? new Date(vehicle.entryTime).toLocaleString() : 'N/A'}</p>
             `;
 
+            // Assigned users (Advisor, Technician, QC) - show names with id where available
+            const assignedInfo = [];
+            // Advisor
+            const advisorKeys = ['assignedAdvisor','assignedAdvisorName','advisor','advisorName','serviceAdvisor','serviceAdvisorName','assignedAdvisorId','advisorId','serviceAdvisorId'];
+            let advisorVal = null;
+            for (const k of advisorKeys) { if (vehicle[k] !== undefined) { advisorVal = vehicle[k]; break; } }
+            const advisorDisplay = resolveUserDisplay(advisorVal) || (vehicle.assignedAdvisorId ? resolveUserDisplay(vehicle.assignedAdvisorId) : null) || 'N/A';
+            assignedInfo.push({role:'Advisor', val: advisorDisplay});
+
+            // Technicians (collect from vehicle properties and from job entries)
+            const techKeys = ['assignedTechnician','assignedTechnicians','technicians','technician','technicianName','tech','techs','assignedTechs','assignedTechnicianId','assignedTo'];
+            let techVal = null;
+            for (const k of techKeys) { if (vehicle[k] !== undefined) { techVal = vehicle[k]; break; } }
+
+            // helper to add technician value(s) to a set (handles id/name/object/array)
+            const techSet = new Set();
+            const addTechVal = (v) => {
+                if (v === undefined || v === null) return;
+                if (Array.isArray(v)) return v.forEach(x => addTechVal(x));
+                if (typeof v === 'object') {
+                    if (v.name) return techSet.add(v.name);
+                    if (v.id !== undefined) return techSet.add('#' + String(v.id));
+                    // fallback to stringified object
+                    return techSet.add(JSON.stringify(v));
+                }
+                // primitive (number or string)
+                techSet.add(v);
+            };
+
+            // Add any technicians directly on the vehicle
+            addTechVal(techVal);
+            if (vehicle.assignedTo) addTechVal(vehicle.assignedTo);
+
+            // Also pull technicians referenced in jobs (jobs may contain technician, technicianId, technicianName, assignedTo etc.)
+            if (Array.isArray(jobs)) {
+                jobs.forEach(j => {
+                    const candidateKeys = ['technician','technicianId','technicianName','assignedTo','assignedTechnician','assignedTechnicians','tech','checkedBy','assignedUser','worker','userId'];
+                    for (const k of candidateKeys) {
+                        if (j[k] !== undefined && j[k] !== null) {
+                            addTechVal(j[k]);
+                        }
+                    }
+                    // also support nested objects like j.technician = {id:..., name:...}
+                    if (j.technician && typeof j.technician === 'object') addTechVal(j.technician);
+                });
+            }
+
+            // Resolve and format technician display
+            let techDisplay = 'N/A';
+            const techArr = Array.from(techSet).map(t => resolveUserDisplay(t)).filter(Boolean);
+            if (techArr.length) techDisplay = techArr.join(', ');
+            assignedInfo.push({role:'Technician(s)', val: techDisplay});
+
+            // QC / Quality Controller (from vehicle OR from jobs where technician selected a QC for check)
+            const qcKeys = ['assignedQC','qc','qcName','qualityController','qualityControllerName','qcId','qualityControllerId','checkedBy','checked_by','inspectedBy','inspectorId'];
+            let qcVal = null;
+            for (const k of qcKeys) { if (vehicle[k] !== undefined) { qcVal = vehicle[k]; break; } }
+
+            // Look into jobs for any QC that was selected when sending to QC
+            const qcSet = new Set();
+            if (qcVal !== undefined && qcVal !== null) addTechVal(qcVal); // reuse addTechVal to normalize
+            if (Array.isArray(jobs)) {
+                jobs.forEach(j => {
+                    for (const k of qcKeys) {
+                        if (j[k] !== undefined && j[k] !== null) addTechVal(j[k]);
+                    }
+                    // some systems store qc selection under job.qc or job.qualityController
+                    if (j.qc !== undefined && j.qc !== null) addTechVal(j.qc);
+                    if (j.qualityController !== undefined && j.qualityController !== null) addTechVal(j.qualityController);
+                });
+            }
+
+            // Build QC display - prefer explicit vehicle qc value first then job-derived
+            let qcDisplay = 'N/A';
+            // Collect potential qc values from vehicle keys first
+            const potentialQCs = [];
+            for (const k of qcKeys) { if (vehicle[k] !== undefined && vehicle[k] !== null) potentialQCs.push(vehicle[k]); }
+            if (Array.isArray(jobs)) {
+                jobs.forEach(j => {
+                    for (const k of qcKeys) { if (j[k] !== undefined && j[k] !== null) potentialQCs.push(j[k]); }
+                    if (j.qc !== undefined && j.qc !== null) potentialQCs.push(j.qc);
+                });
+            }
+            // Resolve and dedupe
+            const resolvedQCs = Array.from(new Set(potentialQCs.map(q => resolveUserDisplay(q)).filter(Boolean)));
+            if (resolvedQCs.length) qcDisplay = resolvedQCs.join(', ');
+            assignedInfo.push({role:'QC', val: qcDisplay});
+
+            const assignedUsersHTML = `
+                <div style="background:#fff;padding:10px;border-radius:8px;border:1px solid #eef2f7;margin-bottom:8px;">
+                    ${assignedInfo.map(a => `<div style="margin:4px 0;"><strong>${a.role}:</strong> ${a.val}</div>`).join('')}
+                </div>
+            `;
+
             // Compose modal content
             const content = `
                 <section>
                     <h3>Vehicle Details</h3>
                     ${basicHTML}
+                    ${assignedUsersHTML}
                 </section>
                 <hr />
                 <section>
@@ -3751,15 +4034,317 @@
                     ${jobsHTML}
                 </section>
                 <hr />
-                <section style="display:flex;gap:1.5rem;align-items:center;">
-                    <div><strong>Total Cost:</strong> ₹${totalCost.toFixed(2)}</div>
-                    <div><strong>Total Service Time:</strong> ${totalTimeStr}</div>
+                <section style="display:flex;flex-direction:column;gap:0.75rem;">
+                    <div style="display:flex;gap:1.5rem;align-items:center;">
+                        <div><strong>Total Cost:</strong> ₹${totalCost.toFixed(2)}</div>
+                        <div><strong>Total Service Time:</strong> ${totalTimeStr}</div>
+                    </div>
+                    <div style="display:flex;gap:0.5rem;">
+                        <button type="button" class="btn" onclick="printVehicleBill()" style="background:#1e40af;color:#fff;border:none;padding:8px 10px;border-radius:6px;cursor:pointer;">Generate Bill & Print</button>
+                        <button type="button" class="btn" onclick="printVehicleView()" style="background:#047857;color:#fff;border:none;padding:8px 10px;border-radius:6px;cursor:pointer;">Print Details</button>
+                    </div>
                 </section>
             `;
+
+            // Expose current view data for the print/bill helpers
+            window._vehicleForPrint = vehicle;
+            window._vehicleJobsForPrint = jobs;
+            window._vehicleTotalsForPrint = { totalCost, totalSeconds, totalTimeStr };
 
             document.getElementById('vehicle-view-title').textContent = `Vehicle #${vehicle.id} — ${vehicle.vehicleNumber || vehicle.plate || ''}`;
             document.getElementById('vehicle-view-content').innerHTML = content;
             document.getElementById('vehicle-view-modal').classList.add('show');
+        }
+
+        // ===== BILL & PRINT HELPERS =====
+        function formatCurrency(v) {
+            const n = Number(v) || 0;
+            try {
+                return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 2 }).format(n);
+            } catch (e) {
+                return '₹' + n.toFixed(2);
+            }
+        }
+
+        function formatDuration(totalSeconds) {
+            const pad = n => String(n).padStart(2, '0');
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        }
+
+        function generateBillHTML() {
+            const vehicle = window._vehicleForPrint || {};
+            const jobs = window._vehicleJobsForPrint || [];
+            const totals = window._vehicleTotalsForPrint || { totalCost: 0, totalSeconds: 0, totalTimeStr: '00:00:00' };
+            // Compute subtotal from jobs (use actualCost if present, otherwise estimate)
+            const jobCosts = (jobs || []).map(j => Number(getJobValue(j, ['actualCost','actual_cost','actual','cost','price','amount'], getJobValue(j, ['estimatedCost','estCost','estimated_amount','cost_estimate','price'], 0))) || 0);
+            const subtotal = jobCosts.reduce((s, v) => s + v, 0);
+            const totalSeconds = Number(totals.totalSeconds) || 0;
+            const totalTimeStr = totals.totalTimeStr || formatDuration(totalSeconds);
+            const labourRate = 0.01; // 1% labour
+            const gstRate = 0.18; // 18% GST
+            const labour = +((subtotal * labourRate)).toFixed(2);
+            const tax = +(((subtotal + labour) * gstRate)).toFixed(2);
+            const grandTotal = +((subtotal + labour + tax)).toFixed(2);
+
+            // Build job rows with more details (technician, started/finished, hours, amount)
+            const jobRows = jobs.length === 0 ? '<tr><td colspan="6" style="text-align:center;color:#666;padding:12px;">No jobs</td></tr>' : jobs.map(j => {
+                const name = getJobValue(j, ['serviceName','service','name','type'], formatJobType(j.type));
+                const technicianName = resolveTechnician(j) || resolveUserDisplay(j.technician) || '-';
+                const startedAt = j.startedAt || j.startTime || j.start_date || '';
+                const finishedAt = j.finishedAt || j.completedAt || j.completionTime || j.endTime || '';
+                const startedStr = startedAt ? new Date(startedAt).toLocaleString() : '-';
+                const finishedStr = finishedAt ? new Date(finishedAt).toLocaleString() : '-';
+                const hours = Number(getJobValue(j, ['actualTime','actual_hours','timeHours','hours','estimatedHours','estHours'], 0)) || 0;
+                const cost = Number(getJobValue(j, ['actualCost','actual_cost','actual','cost','price','amount'], getJobValue(j, ['estimatedCost','estCost','estimated_amount','cost_estimate','price'], 0))) || 0;
+                // extra fields under service name
+                const jobPrimary = ['serviceName','service','name','type','technician','technicianName','status','jobStatus','estimatedHours','estimated_cost','estimatedCost','actualTime','actualCost','id','startedAt','startTime','completedAt'];
+                const extras = Object.keys(j).filter(k => !jobPrimary.includes(k));
+                const extrasHtml = extras.length ? `<div style="font-size:0.9rem;color:#555;margin-top:6px;">${extras.map(k => `<div><strong>${k.replace(/[_-]/g,' ').replace(/\b\w/g,s=>s.toUpperCase())}:</strong> ${j[k]===undefined||j[k]===null?'N/A':j[k]}</div>`).join('')}</div>` : '';
+                return `<tr>
+                            <td style="padding:8px;border-bottom:1px solid #eee;vertical-align:top;">
+                                <div style="font-weight:600">${name}</div>
+                                ${extrasHtml}
+                            </td>
+                            <td style="padding:8px;border-bottom:1px solid #eee;">${technicianName}</td>
+                            <td style="padding:8px;border-bottom:1px solid #eee;">${startedStr}</td>
+                            <td style="padding:8px;border-bottom:1px solid #eee;">${finishedStr}</td>
+                            <td style="padding:8px;border-bottom:1px solid #eee;text-align:right">${hours}</td>
+                            <td style="padding:8px;border-bottom:1px solid #eee;text-align:right">${formatCurrency(cost)}</td>
+                        </tr>`;
+            }).join('');
+
+            // Build receipt-style listing (left: job name, right: amount)
+            const receiptList = (jobs.length === 0) ? '<div style="color:#666;padding:8px 0">No jobs</div>' : jobs.map(j => {
+                const name = getJobValue(j, ['serviceName','service','name','type'], formatJobType(j.type));
+                const cost = Number(getJobValue(j, ['actualCost','actual_cost','actual','cost','price','amount'], getJobValue(j, ['estimatedCost','estCost','estimated_amount','cost_estimate','price'], 0))) || 0;
+                return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px dashed #eee;"><div style="flex:1">${name}</div><div style="min-width:120px;text-align:right">${formatCurrency(cost)}</div></div>`;
+            }).join('');
+
+            // Inspection summary
+            const insp = vehicle.inspectionReport || vehicle.inspection || vehicle.inspection_report || vehicle.inspectionReportData || vehicle.inspectionData || vehicle.insp || null;
+            let inspHtml = '<p style="color:#666;margin:6px 0;">No inspection report</p>';
+            if (insp && Object.keys(insp).length > 0) {
+                const f = v => v || 'N/A';
+                inspHtml = `<div style="background:#f8fafc;padding:8px;border-radius:6px;border:1px solid #e6edf3;">
+                                <div><strong>Exterior:</strong> ${f(insp.exterior)}</div>
+                                <div><strong>Interior:</strong> ${f(insp.interior)}</div>
+                                <div><strong>Engine:</strong> ${f(insp.engine)}</div>
+                                <div><strong>Fluids:</strong> ${f(insp.fluids)}</div>
+                                <div><strong>Issues:</strong> ${f(insp.issues)}</div>
+                            </div>`;
+            }
+
+            // Assigned users (advisor, technicians, qc)
+            const advisorKeys = ['assignedAdvisor','assignedAdvisorName','advisor','advisorName','serviceAdvisor','serviceAdvisorName','assignedAdvisorId','advisorId','serviceAdvisorId'];
+            let advisorVal = null;
+            for (const k of advisorKeys) { if (vehicle[k] !== undefined) { advisorVal = vehicle[k]; break; } }
+            const advisorDisplay = resolveUserDisplay(advisorVal) || (vehicle.assignedAdvisorId ? resolveUserDisplay(vehicle.assignedAdvisorId) : null) || 'N/A';
+
+            const techKeys = ['assignedTechnician','assignedTechnicians','technicians','technician','technicianName','tech','techs','assignedTechs','assignedTechnicianId','assignedTo'];
+            let techVal = null;
+            for (const k of techKeys) { if (vehicle[k] !== undefined) { techVal = vehicle[k]; break; } }
+            const techSet = new Set();
+            const addTechVal = (v) => {
+                if (v === undefined || v === null) return;
+                if (Array.isArray(v)) return v.forEach(x => addTechVal(x));
+                if (typeof v === 'object') {
+                    if (v.name) return techSet.add(v.name);
+                    if (v.id !== undefined) return techSet.add('#' + String(v.id));
+                    return techSet.add(JSON.stringify(v));
+                }
+                techSet.add(v);
+            };
+            addTechVal(techVal);
+            if (vehicle.assignedTo) addTechVal(vehicle.assignedTo);
+            if (Array.isArray(jobs)) {
+                jobs.forEach(j => {
+                    const candidateKeys = ['technician','technicianId','technicianName','assignedTo','assignedTechnician','assignedTechnicians','tech','checkedBy','assignedUser','worker','userId'];
+                    for (const k of candidateKeys) { if (j[k] !== undefined && j[k] !== null) addTechVal(j[k]); }
+                    if (j.technician && typeof j.technician === 'object') addTechVal(j.technician);
+                });
+            }
+            const techArr = Array.from(techSet).map(t => resolveUserDisplay(t)).filter(Boolean);
+            const techDisplay = techArr.length ? techArr.join(', ') : 'N/A';
+
+            // QC
+            const qcKeys = ['assignedQC','qc','qcName','qualityController','qualityControllerName','qcId','qualityControllerId','checkedBy','checked_by','inspectedBy','inspectorId'];
+            const potentialQCs = [];
+            for (const k of qcKeys) { if (vehicle[k] !== undefined && vehicle[k] !== null) potentialQCs.push(vehicle[k]); }
+            if (Array.isArray(jobs)) { jobs.forEach(j => { for (const k of qcKeys) { if (j[k] !== undefined && j[k] !== null) potentialQCs.push(j[k]); } if (j.qc !== undefined && j.qc !== null) potentialQCs.push(j.qc); }); }
+            const resolvedQCs = Array.from(new Set(potentialQCs.map(q => resolveUserDisplay(q)).filter(Boolean)));
+            const qcDisplay = resolvedQCs.length ? resolvedQCs.join(', ') : 'N/A';
+
+            const html = `
+                <!doctype html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <title>Bill - Vehicle ${vehicle.vehicleNumber || vehicle.plate || vehicle.id || ''}</title>
+                    <style>
+                        /* Print-optimized A4 layout and modern invoice styling */
+                        @page { size: A4; margin: 12mm; }
+                        :root{--muted:#6b7280;--accent:#1e40af;--accent-2:#5b21b6;--bg:#f8fafc}
+                        html,body{height:100%;-webkit-print-color-adjust:exact}
+                        body{font-family: "Segoe UI", Roboto, Arial, Helvetica, sans-serif; color:#111; margin:0; background:#fff}
+                        .page{width:210mm;max-width:180mm;margin:0 auto;padding:16mm;background:#fff}
+                        .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
+                        .brand{display:flex;gap:14px;align-items:center}
+                        .logo{width:56px;height:56px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+                        h1{margin:0;font-size:20px;letter-spacing:0.2px}
+                        .muted{color:var(--muted);font-size:12px}
+                        .grid{display:flex;gap:16px}
+                        .col{flex:1}
+                        .right-col{text-align:right}
+                        .card{background:var(--bg);padding:10px;border-radius:6px;border:1px solid #eef3f7}
+                        .bill-table{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+                        .bill-table thead th{background:#fafafa;padding:10px;text-align:left;border-bottom:1px solid #e6eef6;font-weight:700;color:#374151}
+                        .bill-table tbody td{padding:10px;border-bottom:1px solid #f3f4f6;vertical-align:top}
+                        .bill-table tbody tr:last-child td{border-bottom:none}
+                        .service-title{font-weight:600;margin-bottom:6px}
+                        .service-extras{font-size:12px;color:#475569;margin-top:6px}
+                        .totals{padding:12px;border-radius:8px;background:linear-gradient(180deg,#ffffff,#fbfbff);border:1px solid #eef3f7}
+                        .totals .line{display:flex;justify-content:space-between;padding:6px 0;color:#111}
+                        .totals .muted{color:var(--muted);font-size:12px}
+                        .grand{font-size:1.15rem;font-weight:800;margin-top:6px;color:var(--accent)}
+                        .inspection-box{background:#f8fafc;padding:12px;border-radius:6px;border:1px solid #e6edf3}
+                        .receipt-list{background:#fff;padding:8px;border-radius:6px;border:1px dashed #e6eef6}
+                        /* Jobs card list for spacious print layout */
+                        .jobs-cards{margin-top:6px}
+                        .job-card{display:grid;grid-template-columns:35% 18% 18% 18% 6% 5%;gap:10px;padding:12px;background:#fff;border-radius:8px;box-shadow:0 1px 3px rgba(16,24,40,0.04);margin-bottom:12px;border:1px solid #f1f5f9}
+                        .job-card .service-name{font-weight:600}
+                        .job-card .extras{font-size:12px;color:#475569;margin-top:6px}
+                        .job-card div{align-self:center}
+                        .receipt-list .row{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px dashed #f0f2f6}
+                        .receipt-list .row:last-child{border-bottom:none}
+                        .company-contact{font-size:12px;color:var(--muted)}
+                        .divider{height:1px;background:#eef2f7;margin:12px 0}
+                        @media print{body{margin:0} .page{box-shadow:none;margin:0;padding:12mm} .no-print{display:none} .logo{box-shadow:none} }
+                    </style>
+                </head>
+                <body>
+                    <div class="page">
+                        <div class="header">
+                            <div class="brand">
+                                <div class="logo">VS</div>
+                                <div>
+                                    <h1 style="margin-bottom:6px">Service Bill</h1>
+                                    <div class="muted">Vehicle: ${vehicle.vehicleNumber || vehicle.plate || 'N/A'}</div>
+                                    <div class="muted">Owner: ${vehicle.owner || vehicle.ownerEmail || 'N/A'}</div>
+                                </div>
+                            </div>
+                            <div class="right-col muted">
+                                <div>${new Date().toLocaleString()}</div>
+                                <div>Bill ID: ${vehicle.id || Date.now()}</div>
+                            </div>
+                        </div>
+
+                        <div class="grid">
+                            <div class="col card">
+                                <h3 style="margin:0 0 8px 0">Vehicle Details</h3>
+                                <div><strong>Make/Model:</strong> ${vehicle.make || vehicle.carName || 'N/A'}</div>
+                                <div><strong>Year / Color:</strong> ${vehicle.year || 'N/A'} ${vehicle.color ? (' / ' + vehicle.color) : ''}</div>
+                                <div><strong>Contact:</strong> ${vehicle.mobileNumber || vehicle.ownerPhone || 'N/A'}</div>
+                                <div><strong>Arrived:</strong> ${vehicle.entryTime ? new Date(vehicle.entryTime).toLocaleString() : 'N/A'}</div>
+                            </div>
+                            <div class="col card">
+                                <h3 style="margin:0 0 8px 0">Service Info</h3>
+                                <div><strong>Status:</strong> ${vehicle.serviceStatus || 'N/A'}</div>
+                                ${vehicle.serviceDescription ? `<div style="margin-top:6px;"><strong>Description:</strong> ${vehicle.serviceDescription}</div>` : ''}
+                                <div style="margin-top:8px"><strong>Advisor:</strong> ${advisorDisplay}</div>
+                                <div><strong>Technician(s):</strong> ${techDisplay}</div>
+                                <div><strong>QC:</strong> ${qcDisplay}</div>
+                            </div>
+                                <div class="col totals">
+                                <div style="font-size:0.95rem;color:var(--muted)">Subtotal</div>
+                                <div style="font-weight:600">${formatCurrency(subtotal)}</div>
+                                <div style="font-size:0.95rem;color:var(--muted);margin-top:6px">Labour (1%)</div>
+                                <div style="font-weight:600">${formatCurrency(labour)}</div>
+                                <div style="font-size:0.95rem;color:var(--muted);margin-top:6px">GST (18%)</div>
+                                <div style="font-weight:600">${formatCurrency(tax)}</div>
+                                <div style="font-size:0.95rem;color:var(--muted);margin-top:6px">Total Service Time</div>
+                                <div style="font-weight:600">${totalTimeStr}</div>
+                                <div class="grand">Grand Total: ${formatCurrency(grandTotal)}</div>
+                            </div>
+                        </div>
+
+                        <div class="section">
+                            <h3 style="margin:12px 0">Services</h3>
+                            <div style="background:#fff;padding:12px;border-radius:6px;border:1px solid #eef3f7;margin-bottom:12px;">
+                                <h4 style="margin:0 0 8px 0">Service Receipt</h4>
+                                ${receiptList}
+                                <div style="margin-top:8px;border-top:1px solid #eee;padding-top:8px;">
+                                    <div style="display:flex;justify-content:space-between;padding:4px 0"><div>Subtotal</div><div>${formatCurrency(subtotal)}</div></div>
+                                    <div style="display:flex;justify-content:space-between;padding:4px 0"><div>Labour (1%)</div><div>${formatCurrency(labour)}</div></div>
+                                    <div style="display:flex;justify-content:space-between;padding:4px 0"><div>GST (18%)</div><div>${formatCurrency(tax)}</div></div>
+                                    <div style="display:flex;justify-content:space-between;padding:8px 0;font-weight:700;border-top:1px solid #eee;margin-top:6px"><div>Grand Total</div><div>${formatCurrency(grandTotal)}</div></div>
+                                </div>
+                            </div>
+                            <div class="jobs-cards">
+                                ${jobs.length === 0 ? '<div style="color:#666;padding:8px 0">No jobs</div>' : ''}
+                                ${(() => {
+                                    // Render jobs as spaced cards for better print layout
+                                    return (jobs || []).map(j => {
+                                        const name = getJobValue(j, ['serviceName','service','name','type'], formatJobType(j.type));
+                                        const technicianName = resolveTechnician(j) || resolveUserDisplay(j.technician) || '-';
+                                        const startedAt = j.startedAt || j.startTime || j.start_date || '';
+                                        const finishedAt = j.finishedAt || j.completedAt || j.completionTime || j.endTime || '';
+                                        const startedStr = startedAt ? new Date(startedAt).toLocaleString() : '-';
+                                        const finishedStr = finishedAt ? new Date(finishedAt).toLocaleString() : '-';
+                                        const hours = Number(getJobValue(j, ['actualTime','actual_hours','timeHours','hours','estimatedHours','estHours'], 0)) || 0;
+                                        const cost = Number(getJobValue(j, ['actualCost','actual_cost','actual','cost','price','amount'], getJobValue(j, ['estimatedCost','estCost','estimated_amount','cost_estimate','price'], 0))) || 0;
+                                        const jobPrimary = ['serviceName','service','name','type','technician','technicianName','status','jobStatus','estimatedHours','estimated_cost','estimatedCost','actualTime','actualCost','id','startedAt','startTime','completedAt'];
+                                        const extras = Object.keys(j).filter(k => !jobPrimary.includes(k));
+                                        const extrasHtml = extras.length ? `<div class="extras">${extras.map(k => `<div><strong>${k.replace(/[_-]/g,' ').replace(/\b\w/g,s=>s.toUpperCase())}:</strong> ${j[k]===undefined||j[k]===null?'N/A':j[k]}</div>`).join('')}</div>` : '';
+                                        return `<div class="job-card">
+                                                    <div><div class="service-name">${name}</div>${extrasHtml}</div>
+                                                    <div>${technicianName}</div>
+                                                    <div>${startedStr}</div>
+                                                    <div>${finishedStr}</div>
+                                                    <div style="text-align:right">${hours}</div>
+                                                    <div style="text-align:right">${formatCurrency(cost)}</div>
+                                                </div>`;
+                                    }).join('');
+                                })()}
+                            </div>
+                        </div>
+
+                        <div class="section" style="margin-top:18px">
+                            <h3 style="margin:6px 0">Inspection Summary</h3>
+                            <div class="inspection-box">${inspHtml}</div>
+                        </div>
+
+                        <div style="margin-top:28px;color:#666">Thank you for choosing our service.</div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            return html;
+        }
+
+        function openPrintWindow(html, title) {
+            const w = window.open('', '_blank');
+            if (!w) { alert('Popup blocked. Please allow popups for this site to print.'); return; }
+            w.document.write(html);
+            w.document.close();
+            // Give the new window a moment to render before printing
+            setTimeout(() => { try { w.focus(); w.print(); } catch (e) { console.error(e); } }, 500);
+        }
+
+        function printVehicleBill() {
+            const html = generateBillHTML();
+            openPrintWindow(html, 'Service Bill');
+        }
+
+        function printVehicleView() {
+            // Print the same modal content (title + content)
+            const title = document.getElementById('vehicle-view-title')?.textContent || 'Vehicle Details';
+            const content = document.getElementById('vehicle-view-content')?.innerHTML || '';
+            const html = `<!doctype html><html><head><meta charset="utf-8"><title>${title}</title><style>body{font-family:Arial,Helvetica,sans-serif;color:#111;margin:24px} .muted{color:#666} @media print{button{display:none}}</style></head><body><h2>${title}</h2><div>${content}</div></body></html>`;
+            openPrintWindow(html, title);
         }
 
         // ===== USER MODAL FUNCTIONS =====
@@ -3991,6 +4576,22 @@ ${msg.adminResponse}
         }
 
         function logout() {
+            // Persist in-memory databases to localStorage to avoid accidental data loss on logout
+            try {
+                if (typeof vehiclesDatabase !== 'undefined' && vehiclesDatabase !== null) {
+                    localStorage.setItem(VEHICLES_KEY, JSON.stringify(vehiclesDatabase));
+                }
+                if (typeof usersDatabase !== 'undefined' && usersDatabase !== null) {
+                    localStorage.setItem(USERS_KEY, JSON.stringify(usersDatabase));
+                }
+                if (typeof contactsDatabase !== 'undefined' && contactsDatabase !== null) {
+                    localStorage.setItem('vsms_contacts', JSON.stringify(contactsDatabase));
+                }
+            } catch (e) {
+                console.error('Error persisting data on logout', e);
+            }
+
+            // Remove only the current session marker and redirect to login
             localStorage.removeItem('vsms_current_user');
             window.location.href = 'logreg.html';
         }
@@ -4012,7 +4613,7 @@ ${msg.adminResponse}
             const savedTheme = localStorage.getItem('theme-preference');
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
-                if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
             }
             
             // Toggle button click handler
@@ -4021,7 +4622,7 @@ ${msg.adminResponse}
                     e.preventDefault();
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
-                    toggleBtn.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
                     localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
                 });
             }

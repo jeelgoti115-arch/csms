@@ -895,7 +895,7 @@
             margin-top: 2rem;
         }
 
-        .social-link {
+        .social-link-facebook {
             width: 45px;
             height: 45px;
             background: rgba(255, 255, 255, 0.1);
@@ -908,8 +908,81 @@
             transition: var(--transition);
         }
 
-        .social-link:hover {
-            background: var(--primary);
+        .social-link-facebook:hover {
+            background: #1877F2;
+            transform: translateY(-3px);
+        }
+
+
+        .social-link-whatsapp {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-whatsapp:hover {
+            background: #25D366;
+            transform: translateY(-3px);
+        }
+
+        .social-link-linkedln {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-linkedln:hover {
+            background: #0A66C2;
+            transform: translateY(-3px);
+        }
+
+        .social-link-github {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-github:hover {
+            background: #24292e;
+            transform: translateY(-3px);
+        }
+
+        .social-link-yt {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-yt:hover {
+            background: #FF0000;
             transform: translateY(-3px);
         }
 
@@ -1498,24 +1571,6 @@
                                 <i class="fas fa-sign-in-alt"></i> Login to System
                             </button>
                         </div>
-                        
-                        <div class="form-divider">
-                            <span>Or continue with</span>
-                        </div>
-                        
-                        <div class="social-login">
-                            <button type="button" class="social-btn">
-                                <i class="fab fa-google"></i>
-                            </button>
-                            <button type="button" class="social-btn">
-                                <i class="fab fa-facebook-f"></i>
-                            </button>
-                            <button type="button" class="social-btn">
-                                <i class="fab fa-twitter"></i>
-                            </button>
-                        </div>
-                        
-                        <!-- Registration is disabled on this page; account creation is restricted to Admin page -->
                     </form>
                 </div>
                 
@@ -1534,20 +1589,20 @@
                         Car Service Management System is more than just software—it's a commitment to excellence in vehicle service operations. We're dedicated to continuous improvement and innovation to serve our clients better every day.
                     </p>
                     <div class="social-links">
-                        <a href="#" class="social-link">
-                            <i class="fa-brands fa-facebook-f"></i>
+                        <a href="#" class="social-link-facebook">
+                            <i class="fa-brands fa-facebook-f fa-lg"></i>
                         </a>
-                        <a href="#" class="social-link">
-                            <i class="fa-brands fa-whatsapp"></i>
+                        <a href="#" class="social-link-whatsapp">
+                            <i class="fa-brands fa-whatsapp fa-lg"></i>
                         </a>
-                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link">
-                            <i class="fab fa-linkedin-in"></i>
+                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link-linkedln">
+                            <i class="fab fa-linkedin-in fa-lg"></i>
                         </a>
-                        <a href="https://github.com/" class="social-link">
-                            <i class="fab fa-github"></i>
+                        <a href="https://github.com/" class="social-link-github">
+                            <i class="fab fa-github fa-lg"></i>
                         </a>
-                        <a href="#" class="social-link">
-                            <i class="fab fa-youtube"></i>
+                        <a href="#" class="social-link-yt">
+                            <i class="fab fa-youtube fa-lg"></i>
                         </a>
                     </div>
                 </div>
@@ -1612,13 +1667,13 @@
     </div>
 
     <script>
-        // Mobile menu toggle
+        // Mobile menu toggle=======================================
         function toggleMobileMenu() {
             const navLinks = document.getElementById('navLinks');
             navLinks.classList.toggle('active');
         }
 
-        // Intersection Observer for animations
+        // Intersection Observer for animations=======================================
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -1632,16 +1687,16 @@
             });
         }, observerOptions);
 
-        // Observe elements
+        // Observe elements=======================================
         document.querySelectorAll('.fade-in, .slide-in-left').forEach(el => {
             observer.observe(el);
         });
 
-        // Check if user is already logged in
+        // Check if user is already logged in=======================================
         function checkExistingSession() {
             const currentUser = JSON.parse(localStorage.getItem('vsms_current_user'));
             if (currentUser) {
-                // Show logged in message
+                // Show logged in message=======================================
                 const messageBox = document.getElementById('logged-in-message');
                 const details = document.getElementById('logged-in-details');
                 const dashboardLink = document.getElementById('go-to-dashboard');
@@ -1652,7 +1707,7 @@
                     messageBox.classList.add('show');
                     // Hide login form (registration not available on this page)
                     document.getElementById('login-box').style.display = 'none';
-                    // Update page header
+                    // Update page header=======================================
                     const pageHeader = document.querySelector('.page-header h1');
                     const pageSubtitle = document.querySelector('.page-header p');
                     if (pageHeader) {
@@ -1662,7 +1717,7 @@
                         pageSubtitle.textContent = `You are logged in with ${roleName} role. Access your dashboard to manage vehicle services.`;
                     }
                     
-                    // Update section title
+                    // Update section title=======================================
                     const sectionTitle = document.querySelector('.section-title h2');
                     if (sectionTitle) {
                         sectionTitle.textContent = `Current Session`;
@@ -1673,12 +1728,12 @@
                     }
                 }
                 
-                // Set dashboard link
+                // Set dashboard link=======================================
                 if (dashboardLink) {
                     dashboardLink.href = `${currentUser.role}.html`;
                 }
                 
-                // Set logout functionality
+                // Set logout functionality=======================================
                 if (logoutLink) {
                     logoutLink.addEventListener('click', function(e) {
                         e.preventDefault();
@@ -1689,14 +1744,14 @@
             }
         }
         
-        // DOM Elements
+        // DOM Elements=======================================
         const loginBox = document.getElementById('login-box');
         const loginForm = document.getElementById('login-form');
         
         // User database
         let usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
 
-        // ===== MIGRATE OLD USERS TO ADD STATUS FIELD =====
+        // ===== MIGRATE OLD USERS TO ADD STATUS FIELD ============================================
         function migrateUsersDatabase() {
             let migrated = false;
             usersDatabase = usersDatabase.map(user => {
@@ -1713,7 +1768,7 @@
         }
         migrateUsersDatabase();
         
-        // Role descriptions
+        // Role descriptions=======================================
         const roleDescriptions = {
             admin: {
                 title: "Administrator Role",
@@ -1747,16 +1802,16 @@
             }
         };
         
-        // Check for existing session on page load
+        // Check for existing session on page load=======================================
         document.addEventListener('DOMContentLoaded', function() {
             checkExistingSession();
             
-            // Only setup form events if user is not logged in
+            // Only setup form events if user is not logged in=======================================
             if (!JSON.parse(localStorage.getItem('vsms_current_user'))) {
                 setupFormEvents();
             }
             
-            // Add social login button functionality
+            // Add social login button functionality=======================================
             document.querySelectorAll('.social-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     showMessage('Social login feature is coming soon!', 'info');
@@ -1765,7 +1820,7 @@
         });
         
         function setupFormEvents() {
-            // Only allow login on this page. Account creation is restricted to Admin page.
+            // Only allow login on this page. Account creation is restricted to Admin page.=======================================
             loginForm.addEventListener('submit', function(e) {
                 e.preventDefault();
 
@@ -1773,13 +1828,13 @@
                 const password = document.getElementById('login-password').value;
                 const selectedRole = document.getElementById('login-role').value;
 
-                // Basic validation
+                // Basic validation=======================================
                 if (!email || !password || !selectedRole) {
                     showMessage('Please fill in all fields including role', 'error');
                     return;
                 }
 
-                // Check in local usersDatabase
+                // Check in local usersDatabase=======================================
                 const user = usersDatabase.find(u => u.email === email && u.password === password);
                 
                 if (!user) {
@@ -1787,9 +1842,9 @@
                     return;
                 }
                 
-                // ==== CHECK USER STATUS - NEW ====
+                // ==== CHECK USER STATUS - NEW ===========================================
                 if (user.status === 'inactive') {
-                    // Show inactive account modal
+                    // Show inactive account modal=======================================
                     document.getElementById('inactive-account-modal').style.display = 'flex';
                     document.getElementById('inactive-message').innerHTML = 
                         `Your account has been deactivated. Please contact the administrator.`;
@@ -1806,7 +1861,7 @@
             });
         }
         
-        // Helper functions
+        // Helper functions=======================================
         function getRoleName(roleCode) {
             switch(roleCode) {
                 case 'admin': return 'Administrator';
@@ -1820,13 +1875,13 @@
         }
         
         function showMessage(message, type) {
-            // Remove any existing message
+            // Remove any existing message=======================================
             const existingMessage = document.querySelector('.message-box');
             if (existingMessage) {
                 existingMessage.remove();
             }
             
-            // Create message element
+            // Create message element=======================================
             const messageBox = document.createElement('div');
             messageBox.className = `message-box message-${type}`;
             messageBox.innerHTML = `
@@ -1836,14 +1891,14 @@
             
             document.body.appendChild(messageBox);
             
-            // Add close button functionality
+            // Add close button functionality=======================================
             const closeBtn = messageBox.querySelector('.message-close');
             closeBtn.addEventListener('click', () => {
                 messageBox.style.animation = 'slideOut 0.3s ease';
                 setTimeout(() => messageBox.remove(), 300);
             });
             
-            // Auto remove after 5 seconds
+            // Auto remove after 5 seconds=======================================
             setTimeout(() => {
                 if (messageBox.parentNode) {
                     messageBox.style.animation = 'slideOut 0.3s ease';
@@ -1852,33 +1907,33 @@
             }, 5000);
         }
         
-        // Close inactive account modal
+        // Close inactive account modal=======================================
         function closeInactiveModal() {
             document.getElementById('inactive-account-modal').style.display = 'none';
         }
         
-        // Handle successful login
+        // Handle successful login=======================================
         function loginSuccess(user) {
-            // Set current user in session
+            // Set current user in session=======================================
             localStorage.setItem('vsms_current_user', JSON.stringify(user));
             
-            // Show redirect overlay
+            // Show redirect overlay=======================================
             const redirectOverlay = document.getElementById('redirect-overlay');
             const redirectRoleIcon = document.getElementById('redirect-role-icon');
             const redirectTitle = document.getElementById('redirect-title');
             const redirectMessage = document.getElementById('redirect-message');
             const redirectCountdown = document.getElementById('redirect-countdown');
             
-            // Set role-specific info
+            // Set role-specific info=======================================
             const roleInfo = roleDescriptions[user.role];
             redirectRoleIcon.textContent = roleInfo.icon;
             redirectTitle.textContent = `Welcome, ${user.name}!`;
             redirectMessage.textContent = `You are logged in as ${getRoleName(user.role)}.`;
             
-            // Show overlay
+            // Show overlay=======================================
             redirectOverlay.classList.add('show');
             
-            // Start countdown for redirect
+            // Start countdown for redirect=======================================
             let countdown = 3;
             updateCountdown();
             
@@ -1888,13 +1943,13 @@
                     countdown--;
                     setTimeout(updateCountdown, 1000);
                 } else {
-                    // Redirect to the appropriate dashboard
+                    // Redirect to the appropriate dashboard=======================================
                     window.location.href = `${user.role}.html`;
                 }
             }
         }
         
-        // Initialize sample users with STATUS field
+        // Initialize sample users with STATUS field=======================================
         function initializeSampleUsers() {
             if (usersDatabase.length === 0) {
                 usersDatabase = [
@@ -1966,10 +2021,10 @@
             }
         }
         
-        // Initialize sample data
+        // Initialize sample data=======================================
         initializeSampleUsers();
         
-        // Smooth scrolling for anchor links
+        // Smooth scrolling for anchor links=======================================
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -1983,14 +2038,14 @@
                         behavior: 'smooth'
                     });
                     
-                    // Close mobile menu if open
+                    // Close mobile menu if open=======================================
                     const navLinks = document.getElementById('navLinks');
                     navLinks.classList.remove('active');
                 }
             });
         });
 
-        // Add scroll effect to header
+        // Add scroll effect to header=======================================
         window.addEventListener('scroll', () => {
             const header = document.querySelector('header');
             if (window.scrollY > 50) {
@@ -2002,30 +2057,30 @@
             }
         });
 
-        /* Theme Toggle Handler */
+        /* Theme Toggle Handler======================================= */
         function initThemeToggle() {
             const toggleBtn = document.getElementById('theme-toggle');
             const html = document.documentElement;
             
-            // Check localStorage for saved preference
+            // Check localStorage for saved preference=======================================
             const savedTheme = localStorage.getItem('theme-preference');
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
-                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-regular fa-moon"></i>';
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
             }
             
-            // Toggle button click handler
+            // Toggle button click handler=======================================
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', () => {
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
-                    toggleBtn.innerHTML = isDark ? '<i class="fa-regular fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
                     localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
                 });
             }
         }
         
-        // Initialize theme toggle when DOM is ready
+        // Initialize theme toggle when DOM is ready=======================================
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', initThemeToggle);
         } else {

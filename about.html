@@ -503,88 +503,6 @@
             line-height: 1.5;
         }
 
-        /* Timeline */
-        .timeline {
-            position: relative;
-            max-width: 800px;
-            margin: 0 auto 4rem;
-            padding: 2rem 0;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 2px;
-            height: 100%;
-            background: var(--gradient);
-            opacity: 0.3;
-        }
-
-        .timeline-item {
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .timeline-item:nth-child(odd) {
-            padding-right: calc(50% + 30px);
-            text-align: right;
-        }
-
-        .timeline-item:nth-child(even) {
-            padding-left: calc(50% + 30px);
-        }
-
-        .timeline-dot {
-            position: absolute;
-            top: 0;
-            width: 20px;
-            height: 20px;
-            background: var(--gradient);
-            border-radius: 50%;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
-            border: 4px solid white;
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.2);
-        }
-
-        .timeline-content {
-            background: var(--card-bg);
-            padding: 2rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .timeline-content:hover {
-            transform: translateY(-5px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .timeline-year {
-            color: var(--primary);
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-        }
-
-        .timeline-title {
-            color: var(--dark);
-            margin-bottom: 0.5rem;
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-
-        .timeline-desc {
-            color: var(--gray);
-            font-size: 0.95rem;
-            line-height: 1.5;
-        }
-
         /* Stats Section */
         .stats-section {
             background: var(--gradient);
@@ -820,7 +738,7 @@
             margin-top: 2rem;
         }
 
-        .social-link {
+        .social-link-facebook {
             width: 45px;
             height: 45px;
             background: rgba(255, 255, 255, 0.1);
@@ -833,8 +751,81 @@
             transition: var(--transition);
         }
 
-        .social-link:hover {
-            background: var(--primary);
+        .social-link-facebook:hover {
+            background: #1877F2;
+            transform: translateY(-3px);
+        }
+
+
+        .social-link-whatsapp {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-whatsapp:hover {
+            background: #25D366;
+            transform: translateY(-3px);
+        }
+
+        .social-link-linkedln {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-linkedln:hover {
+            background: #0A66C2;
+            transform: translateY(-3px);
+        }
+
+        .social-link-github {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-github:hover {
+            background: #24292e;
+            transform: translateY(-3px);
+        }
+
+        .social-link-yt {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .social-link-yt:hover {
+            background: #FF0000;
             transform: translateY(-3px);
         }
 
@@ -893,20 +884,6 @@
                 font-size: 3.5rem;
             }
             
-            .timeline::before {
-                left: 30px;
-            }
-            
-            .timeline-item:nth-child(odd),
-            .timeline-item:nth-child(even) {
-                padding-left: 60px;
-                padding-right: 0;
-                text-align: left;
-            }
-            
-            .timeline-dot {
-                left: 30px;
-            }
         }
 
         @media (max-width: 768px) {
@@ -1375,51 +1352,6 @@
             </div>
         </section>
 
-        <!-- ================================== Timeline ================================== -->
-        <section class="section">
-            <div class="section-title slide-in-left">
-                <h2>Our Journey</h2>
-                <p>Key milestones in the evolution of CSMS</p>
-            </div>
-            
-            <div class="timeline">
-                <div class="timeline-item fade-in">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-year">2020</div>
-                        <h3 class="timeline-title">CSMS Founded</h3>
-                        <p class="timeline-desc">Conceptualization and development of the initial CSMS platform begins with a focus on basic vehicle tracking.</p>
-                    </div>
-                </div>
-                
-                <div class="timeline-item fade-in">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-year">2021</div>
-                        <h3 class="timeline-title">First Major Release</h3>
-                        <p class="timeline-desc">Launch of CSMS v1.0 with role-based access control and basic vehicle management features.</p>
-                    </div>
-                </div>
-                
-                <div class="timeline-item fade-in">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-year">2022</div>
-                        <h3 class="timeline-title">Expansion & Growth</h3>
-                        <p class="timeline-desc">Added advanced features including real-time analytics, mobile optimization, and enhanced security protocols.</p>
-                    </div>
-                </div>
-                <div class="timeline-item fade-in">
-                    <div class="timeline-dot"></div>
-                    <div class="timeline-content">
-                        <div class="timeline-year">2023</div>
-                        <h3 class="timeline-title">Current Platform</h3>
-                        <p class="timeline-desc">Complete system overhaul with four distinct user roles, comprehensive vehicle tracking, and contact management.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- ==================================== Stats Section ==================================== -->
         <section class="stats-section">
             <div class="stats-content">
@@ -1474,20 +1406,20 @@
                         Car Service Management System is more than just software—it's a commitment to excellence in vehicle service operations. We're dedicated to continuous improvement and innovation to serve our clients better every day.
                     </p>
                     <div class="social-links">
-                        <a href="#" class="social-link">
-                            <i class="fa-brands fa-facebook-f"></i>
+                        <a href="#" class="social-link-facebook">
+                            <i class="fa-brands fa-facebook-f fa-lg"></i>
                         </a>
-                        <a href="#" class="social-link">
-                            <i class="fa-brands fa-whatsapp"></i>
+                        <a href="#" class="social-link-whatsapp">
+                            <i class="fa-brands fa-whatsapp fa-lg"></i>
                         </a>
-                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link">
-                            <i class="fab fa-linkedin-in"></i>
+                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link-linkedln">
+                            <i class="fab fa-linkedin-in fa-lg"></i>
                         </a>
-                        <a href="https://github.com/" class="social-link">
-                            <i class="fab fa-github"></i>
+                        <a href="https://github.com/" class="social-link-github">
+                            <i class="fab fa-github fa-lg"></i>
                         </a>
-                        <a href="#" class="social-link">
-                            <i class="fab fa-youtube"></i>
+                        <a href="#" class="social-link-yt">
+                            <i class="fab fa-youtube fa-lg"></i>
                         </a>
                     </div>
                 </div>
@@ -1572,10 +1504,10 @@
                 const totalUsers = usersDatabase.length;
                 
                 // Update stats with animation
-                animateNumber('stat-vehicles', Math.max(totalVehicles, 100), 500);
+                animateNumber('stat-vehicles', Math.max(totalVehicles, 100), 2500);
                 animateNumber('stat-users', Math.max(totalUsers, 20), 100);
                 animateNumber('stat-service', Math.max(totalVehicles / 10, 10), 50);
-                animateNumber('stat-satisfaction', 98, 98);
+                animateNumber('stat-satisfaction', 92, 92);
                 
                 // Remove scroll listener after animation
                 window.removeEventListener('scroll', animateStats);
@@ -1690,7 +1622,7 @@
             const savedTheme = localStorage.getItem('theme-preference');
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
-                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-regular fa-moon"></i>';
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
             }
             
             // Toggle button click handler
@@ -1698,7 +1630,7 @@
                 toggleBtn.addEventListener('click', () => {
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
-                    toggleBtn.innerHTML = isDark ? '<i class="fa-regular fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i> ' : '<i class="fas fa-sun"></i>';
                     localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
                 });
             }

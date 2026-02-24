@@ -2044,7 +2044,19 @@
                     assignedAdvisor: v.assignedAdvisor || null,
                     serviceDescription: v.serviceDescription || '',
                     inspectionStatus: v.inspectionStatus || 'not-started',
+                    // Preserve detailed service data so delivery does not strip important information
+                    inspectionReport: v.inspectionReport || null,
+                    jobs: v.jobs || [],
+                    jobsAssigned: v.jobsAssigned || false,
+                    totalServiceTime: (v.totalServiceTime !== undefined) ? v.totalServiceTime : (v.totalServiceTime === 0 ? 0 : null),
+                    totalCost: (v.totalCost !== undefined) ? v.totalCost : (v.totalCost === 0 ? 0 : null),
+                    serviceStartTime: v.serviceStartTime || null,
+                    serviceCompletionTime: v.serviceCompletionTime || null,
                     qcCheck: v.qcCheck || 'pending', // preserve
+                    qcStatus: v.qcStatus || null,
+                    qcNotes: v.qcNotes || null,
+                    qcPriority: v.qcPriority || null,
+                    sentToQcTime: v.sentToQcTime || null,
                 };
             });
             
@@ -2649,14 +2661,14 @@
             const savedTheme = localStorage.getItem('theme-preference');
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
-                if (toggleBtn) toggleBtn.innerHTML = '<i class="fas fa-moon"></i>';
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
             }
             
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', () => {
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
-                    toggleBtn.innerHTML = isDark ? '<i class="fas fa-moon"></i>' : '<i class="fa-solid fa-sun" style="color: rgba(255, 255, 255, 1.00);"></i>';
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fa-solid fa-sun" style="color: rgba(255, 255, 255, 1.00);"></i>';
                     localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
                 });
             }
