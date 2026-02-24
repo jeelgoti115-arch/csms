@@ -4230,7 +4230,7 @@
                             <div class="brand">
                                 <div class="logo">VS</div>
                                 <div>
-                                    <h1 style="margin-bottom:6px">Service Bill</h1>
+                                    <h1 style="margin-bottom:6px">Vehicle Service</h1>
                                     <div class="muted">Vehicle: ${vehicle.vehicleNumber || vehicle.plate || 'N/A'}</div>
                                     <div class="muted">Owner: ${vehicle.owner || vehicle.ownerEmail || 'N/A'}</div>
                                 </div>
@@ -4270,6 +4270,11 @@
                             </div>
                         </div>
 
+                        <div class="section" style="margin-top:18px">
+                            <h3 style="margin:6px 0">Inspection Summary</h3>
+                            <div class="inspection-box">${inspHtml}</div>
+                        </div>
+
                         <div class="section">
                             <h3 style="margin:12px 0">Services</h3>
                             <div style="background:#fff;padding:12px;border-radius:6px;border:1px solid #eef3f7;margin-bottom:12px;">
@@ -4282,38 +4287,26 @@
                                     <div style="display:flex;justify-content:space-between;padding:8px 0;font-weight:700;border-top:1px solid #eee;margin-top:6px"><div>Grand Total</div><div>${formatCurrency(grandTotal)}</div></div>
                                 </div>
                             </div>
-                            <div class="jobs-cards">
-                                ${jobs.length === 0 ? '<div style="color:#666;padding:8px 0">No jobs</div>' : ''}
-                                ${(() => {
-                                    // Render jobs as spaced cards for better print layout
-                                    return (jobs || []).map(j => {
-                                        const name = getJobValue(j, ['serviceName','service','name','type'], formatJobType(j.type));
-                                        const technicianName = resolveTechnician(j) || resolveUserDisplay(j.technician) || '-';
-                                        const startedAt = j.startedAt || j.startTime || j.start_date || '';
-                                        const finishedAt = j.finishedAt || j.completedAt || j.completionTime || j.endTime || '';
-                                        const startedStr = startedAt ? new Date(startedAt).toLocaleString() : '-';
-                                        const finishedStr = finishedAt ? new Date(finishedAt).toLocaleString() : '-';
-                                        const hours = Number(getJobValue(j, ['actualTime','actual_hours','timeHours','hours','estimatedHours','estHours'], 0)) || 0;
-                                        const cost = Number(getJobValue(j, ['actualCost','actual_cost','actual','cost','price','amount'], getJobValue(j, ['estimatedCost','estCost','estimated_amount','cost_estimate','price'], 0))) || 0;
-                                        const jobPrimary = ['serviceName','service','name','type','technician','technicianName','status','jobStatus','estimatedHours','estimated_cost','estimatedCost','actualTime','actualCost','id','startedAt','startTime','completedAt'];
-                                        const extras = Object.keys(j).filter(k => !jobPrimary.includes(k));
-                                        const extrasHtml = extras.length ? `<div class="extras">${extras.map(k => `<div><strong>${k.replace(/[_-]/g,' ').replace(/\b\w/g,s=>s.toUpperCase())}:</strong> ${j[k]===undefined||j[k]===null?'N/A':j[k]}</div>`).join('')}</div>` : '';
-                                        return `<div class="job-card">
-                                                    <div><div class="service-name">${name}</div>${extrasHtml}</div>
-                                                    <div>${technicianName}</div>
-                                                    <div>${startedStr}</div>
-                                                    <div>${finishedStr}</div>
-                                                    <div style="text-align:right">${hours}</div>
-                                                    <div style="text-align:right">${formatCurrency(cost)}</div>
-                                                </div>`;
-                                    }).join('');
-                                })()}
+                            <div class="section" style="margin-top:6px">
+                                <h3 style="margin:8px 0">Job details</h3>
+                                <div style="background:#fff;padding:8px;border-radius:6px;border:1px solid #eef3f7;margin-bottom:12px;">
+                                    <table class="bill-table" style="width:100%;font-size:13px;">
+                                        <thead>
+                                            <tr>
+                                                <th style="padding:10px;text-align:left">Service</th>
+                                                <th style="padding:10px;text-align:left">Technician</th>
+                                                <th style="padding:10px;text-align:left">Started</th>
+                                                <th style="padding:10px;text-align:left">Finished</th>
+                                                <th style="padding:10px;text-align:right">Hours</th>
+                                                <th style="padding:10px;text-align:right">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${jobRows}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
-                        </div>
-
-                        <div class="section" style="margin-top:18px">
-                            <h3 style="margin:6px 0">Inspection Summary</h3>
-                            <div class="inspection-box">${inspHtml}</div>
                         </div>
 
                         <div style="margin-top:28px;color:#666">Thank you for choosing our service.</div>
