@@ -1932,15 +1932,17 @@
             }
 
             // Check for duplicate number plate
-            const today = new Date().toDateString();
+            // Check for duplicate number plate across all records that are not yet delivered
             const isDuplicate = vehiclesDatabase.some(vehicle => {
-                if (!vehicle.entryTime) return false;
-                const vehicleDate = new Date(vehicle.entryTime);
-                return vehicleDate.toDateString() === today && vehicle.vehicleNumber === vehicleNumber;
+                const existingNumber = (vehicle.vehicleNumber || '').toUpperCase().trim();
+                if (!existingNumber || existingNumber !== vehicleNumber) return false;
+                const status = (vehicle.serviceStatus || '').toLowerCase();
+                // If the vehicle's service status is 'delivered' we allow re-entry; otherwise block
+                return status !== 'delivered';
             });
-            
+
             if (isDuplicate) {
-                showMessage(`⚠️ Warning: Number plate ${vehicleNumber} has already been registered today!`, "error");
+                showMessage(`⚠️ Warning: Number plate ${vehicleNumber} is already registered and not yet delivered!`, "error");
                 return;
             }
 

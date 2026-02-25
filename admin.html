@@ -2358,20 +2358,36 @@
             </div>
             <form id="vehicle-form">
                 <div class="form-group">
-                    <label for="vehicle-make">Make & Model *</label>
-                    <input type="text" id="vehicle-make" required placeholder="e.g., Toyota Corolla">
+                    <label for="carName">Car Name *</label>
+                    <input type="text" id="carName" required placeholder="e.g., Toyota Corolla">
                 </div>
                 <div class="form-group">
-                    <label for="vehicle-plate">License Plate *</label>
-                    <input type="text" id="vehicle-plate" required placeholder="e.g., ABC-1234">
+                    <label for="vehicleModel">Model / Variant *</label>
+                    <input type="text" id="vehicleModel" required placeholder="e.g., Altis / VX">
+                </div>
+                <div class="form-group">
+                    <label for="vehicleNumber">Vehicle Number (10 alphanumeric chars) *</label>
+                    <input type="text" id="vehicleNumber" required placeholder="10 alphanumeric characters" minlength="10" maxlength="10" pattern="[A-Za-z0-9]{10}">
                 </div>
                 <div class="form-group">
                     <label for="vehicle-year">Year *</label>
-                    <input type="number" id="vehicle-year" required placeholder="e.g., 2020" min="1990" max="2100">
+                    <input type="number" id="vehicle-year" required placeholder="e.g., 2020" min="1900" max="2100">
+                </div>
+                <div class="form-group">
+                    <label for="color">Color *</label>
+                    <input type="text" id="color" required placeholder="e.g., White">
                 </div>
                 <div class="form-group">
                     <label for="vehicle-owner">Owner Name *</label>
                     <input type="text" id="vehicle-owner" required placeholder="e.g., John Doe">
+                </div>
+                <div class="form-group">
+                    <label for="ownerEmail">Owner Email *</label>
+                    <input type="email" id="ownerEmail" required placeholder="e.g., john@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="mobileNumber">Mobile Number (10 digits) *</label>
+                    <input type="tel" id="mobileNumber" required placeholder="e.g., 9876543210" pattern="\d{10}" maxlength="10">
                 </div>
                 <div class="form-group">
                     <label for="vehicle-status">Status *</label>
@@ -2522,7 +2538,7 @@
                 if (e.key === 'u' || e.key === 'U') {
                     e.preventDefault();
                     scrollToUsersSection();
-                } else if (e.key === 'v' || e.key === 'V') {
+                } else if (e.key === 'c' || e.key === 'C') {
                     e.preventDefault();
                     scrollToVehiclesSection();
                 }
@@ -3715,10 +3731,14 @@
                 title.textContent = 'Edit Vehicle';
                 const vehicle = vehiclesDatabase.find(v => v.id === vehicleId);
                 if (vehicle) {
-                    document.getElementById('vehicle-make').value = vehicle.make || vehicle.carName || '';
-                    document.getElementById('vehicle-plate').value = vehicle.plate || vehicle.vehicleNumber || '';
+                    document.getElementById('carName').value = vehicle.make || vehicle.carName || '';
+                    document.getElementById('vehicleModel').value = vehicle.vehicleModel || vehicle.model || '';
+                    document.getElementById('vehicleNumber').value = vehicle.plate || vehicle.vehicleNumber || '';
                     document.getElementById('vehicle-year').value = vehicle.year || '';
+                    document.getElementById('color').value = vehicle.color || '';
                     document.getElementById('vehicle-owner').value = vehicle.owner || vehicle.ownerEmail || '';
+                    document.getElementById('ownerEmail').value = vehicle.ownerEmail || vehicle.owner || '';
+                    document.getElementById('mobileNumber').value = vehicle.mobileNumber || vehicle.ownerPhone || vehicle.ownerPhoneNumber || '';
                     document.getElementById('vehicle-status').value = vehicle.status || 'active';
                 }
             } else {
@@ -3731,23 +3751,62 @@
         function handleVehicleSubmit(e) {
             e.preventDefault();
 
-            const make = document.getElementById('vehicle-make').value;
-            const plate = document.getElementById('vehicle-plate').value;
-            const year = document.getElementById('vehicle-year').value;
-            const owner = document.getElementById('vehicle-owner').value;
+            const vehicleNumber = (document.getElementById('vehicleNumber').value || '').toUpperCase().trim();
+            const carName = (document.getElementById('carName').value || '').trim();
+            const vehicleModel = (document.getElementById('vehicleModel').value || '').trim();
+            const year = parseInt(document.getElementById('vehicle-year').value);
+            const color = (document.getElementById('color').value || '').trim();
+            const owner = (document.getElementById('vehicle-owner').value || '').trim();
+            const ownerEmail = (document.getElementById('ownerEmail').value || '').trim();
+            const mobileNumber = (document.getElementById('mobileNumber').value || '').trim();
             const status = document.getElementById('vehicle-status').value;
+
+            // Basic validation (same rules as guard page)
+            if (!vehicleNumber || !carName || !vehicleModel || !year || !color || !owner || !ownerEmail || !mobileNumber) {
+                showMessage('Please fill in all required fields!', 'error');
+                return;
+            }
+
+            const vehicleNumberRegex = /^[A-Za-z0-9]{10}$/;
+            if (!vehicleNumberRegex.test(vehicleNumber)) {
+                showMessage('Vehicle number must be exactly 10 alphanumeric characters!', 'error');
+                return;
+            }
+
+            const mobileRegex = /^[0-9]{10}$/;
+            if (!mobileRegex.test(mobileNumber)) {
+                showMessage('Mobile number must be exactly 10 digits!', 'error');
+                return;
+            }
+
+            // Duplicate check: don't allow adding a vehicle with same plate if it's not delivered
+            const isDuplicate = vehiclesDatabase.some(v => {
+                const existing = ((v.vehicleNumber || v.plate) || '').toString().toUpperCase().trim();
+                if (!existing || existing !== vehicleNumber) return false;
+                if (editingVehicleId && v.id === editingVehicleId) return false; // allow updating same record
+                const statusSvc = (v.serviceStatus || '').toString().toLowerCase();
+                return statusSvc !== 'delivered';
+            });
+
+            if (isDuplicate) {
+                showMessage(`⚠️ Warning: Number plate ${vehicleNumber} is already registered and not yet delivered!`, 'error');
+                return;
+            }
 
             if (editingVehicleId) {
                 // Update existing vehicle
                 const vehicle = vehiclesDatabase.find(v => v.id === editingVehicleId);
                 if (vehicle) {
-                    vehicle.make = make;
-                    vehicle.carName = make;
-                    vehicle.plate = plate;
-                    vehicle.vehicleNumber = plate;
+                    vehicle.make = carName;
+                    vehicle.carName = carName;
+                    vehicle.vehicleModel = vehicleModel;
+                    vehicle.plate = vehicleNumber;
+                    vehicle.vehicleNumber = vehicleNumber;
                     vehicle.year = year;
+                    vehicle.color = color;
                     vehicle.owner = owner;
-                    vehicle.ownerEmail = owner;
+                    vehicle.ownerEmail = ownerEmail;
+                    vehicle.mobileNumber = mobileNumber;
                     vehicle.status = status;
                     vehicle.updatedAt = new Date().toISOString();
                 }
@@ -3755,14 +3814,17 @@
                 // Add new vehicle
                 const newVehicle = {
                     id: Date.now(),
-                    make,
-                    carName: make,
-                    plate,
-                    vehicleNumber: plate,
-                    year,
-                    owner,
-                    ownerEmail: owner,
-                    status,
+                    make: carName,
+                    carName: carName,
+                    vehicleModel: vehicleModel,
+                    plate: vehicleNumber,
+                    vehicleNumber: vehicleNumber,
+                    year: year,
+                    color: color,
+                    owner: owner,
+                    ownerEmail: ownerEmail,
+                    mobileNumber: mobileNumber,
+                    status: status,
                     serviceStatus: 'pending',
                     createdAt: new Date().toISOString()
                 };
@@ -4084,7 +4146,7 @@
             const totalSeconds = Number(totals.totalSeconds) || 0;
             const totalTimeStr = totals.totalTimeStr || formatDuration(totalSeconds);
             const labourRate = 0.01; // 1% labour
-            const gstRate = 0.18; // 18% GST
+            const gstRate = 0.05; // 5% GST
             const labour = +((subtotal * labourRate)).toFixed(2);
             const tax = +(((subtotal + labour) * gstRate)).toFixed(2);
             const grandTotal = +((subtotal + labour + tax)).toFixed(2);
@@ -4192,7 +4254,7 @@
                         .page{width:210mm;max-width:180mm;margin:0 auto;padding:16mm;background:#fff}
                         .header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px}
                         .brand{display:flex;gap:14px;align-items:center}
-                        .logo{width:56px;height:56px;border-radius:8px;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:18px}
+                        img{width:56px;height:56px;border-radius:8px;display:flex;align-items:center;justify-content:center;border:2px solid black}
                         h1{margin:0;font-size:20px;letter-spacing:0.2px}
                         .muted{color:var(--muted);font-size:12px}
                         .grid{display:flex;gap:16px}
@@ -4228,7 +4290,9 @@
                     <div class="page">
                         <div class="header">
                             <div class="brand">
-                                <div class="logo">VS</div>
+                                <div class="logo">
+                                    <img src="images/car-service.png" alt="img">
+                                </div>
                                 <div>
                                     <h1 style="margin-bottom:6px">Vehicle Service</h1>
                                     <div class="muted">Vehicle: ${vehicle.vehicleNumber || vehicle.plate || 'N/A'}</div>
@@ -4262,7 +4326,7 @@
                                 <div style="font-weight:600">${formatCurrency(subtotal)}</div>
                                 <div style="font-size:0.95rem;color:var(--muted);margin-top:6px">Labour (1%)</div>
                                 <div style="font-weight:600">${formatCurrency(labour)}</div>
-                                <div style="font-size:0.95rem;color:var(--muted);margin-top:6px">GST (18%)</div>
+                                <div style="font-size:0.95rem;color:var(--muted);margin-top:6px">GST (5%)</div>
                                 <div style="font-weight:600">${formatCurrency(tax)}</div>
                                 <div style="font-size:0.95rem;color:var(--muted);margin-top:6px">Total Service Time</div>
                                 <div style="font-weight:600">${totalTimeStr}</div>
@@ -4283,7 +4347,7 @@
                                 <div style="margin-top:8px;border-top:1px solid #eee;padding-top:8px;">
                                     <div style="display:flex;justify-content:space-between;padding:4px 0"><div>Subtotal</div><div>${formatCurrency(subtotal)}</div></div>
                                     <div style="display:flex;justify-content:space-between;padding:4px 0"><div>Labour (1%)</div><div>${formatCurrency(labour)}</div></div>
-                                    <div style="display:flex;justify-content:space-between;padding:4px 0"><div>GST (18%)</div><div>${formatCurrency(tax)}</div></div>
+                                    <div style="display:flex;justify-content:space-between;padding:4px 0"><div>GST (5%)</div><div>${formatCurrency(tax)}</div></div>
                                     <div style="display:flex;justify-content:space-between;padding:8px 0;font-weight:700;border-top:1px solid #eee;margin-top:6px"><div>Grand Total</div><div>${formatCurrency(grandTotal)}</div></div>
                                 </div>
                             </div>

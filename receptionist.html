@@ -1522,12 +1522,12 @@
         }
 
         html.dark-mode .logout-btn {
-            background: #ef4444 !important;
+            background: rgba(239, 68, 68, 0.3) !important;
             color: white !important;
         }
 
         html.dark-mode .logout-btn:hover {
-            background: #dc2626 !important;
+            background: rgba(220, 38, 38, 0.3) !important;
         }
 
         html.dark-mode #access-denied {
@@ -1857,9 +1857,6 @@
                             <i class="fas fa-users-cog"></i> Service Advisors
                             <span id="advisors-count" class="live-time" style="margin-left: 0.5rem; font-size: 0.8rem;">0 available</span>
                         </h2>
-                        <button class="new-advisor-btn" onclick="createNewAdvisor()">
-                            <i class="fas fa-user-plus"></i> Add New Advisor
-                        </button>
                     </div>
                     
                     <div class="advisors-grid" id="advisors-list">
@@ -2739,44 +2736,6 @@
         } else {
             initialize();
         }
-
-        // ===== DEMO: Inject a ready-for-delivery vehicle if none exists (FOR TESTING) =====
-        // This ensures the Deliver button is visible immediately. Remove in production.
-        setTimeout(() => {
-            const hasReadyVehicle = vehiclesDatabase.some(v => v.serviceStatus === 'ready-for-delivery' && v.status === 'entry');
-            if (!hasReadyVehicle && vehiclesDatabase.length > 0) {
-                // find a completed vehicle or create one
-                let demoVehicle = vehiclesDatabase.find(v => v.serviceStatus === 'completed' && v.status === 'entry');
-                if (demoVehicle) {
-                    demoVehicle.serviceStatus = 'ready-for-delivery';
-                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
-                    filterVehicles();
-                    showMessage("Demo: Completed vehicle marked as READY FOR DELIVERY. Deliver button active!", "success");
-                } else {
-                    // create dummy ready vehicle
-                    const dummyId = vehiclesDatabase.length + 100;
-                    vehiclesDatabase.push({
-                        id: dummyId,
-                        vehicleNumber: 'READY-01',
-                        carName: 'Demo Ready',
-                        vehicleModel: 'QC Passed',
-                        year: '2024',
-                        color: 'Silver',
-                        ownerEmail: 'ready@demo.com',
-                        mobileNumber: '555-READY',
-                        entryTime: new Date().toISOString(),
-                        status: 'entry',
-                        serviceStatus: 'ready-for-delivery',
-                        assignedAdvisor: 1, // assuming advisor id 1 exists
-                        serviceDescription: 'QC completed, ready for delivery',
-                        qcCheck: 'passed'
-                    });
-                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
-                    filterVehicles();
-                    showMessage("Demo: Created a READY FOR DELIVERY vehicle. Deliver button active!", "success");
-                }
-            }
-        }, 500);
     </script>
 </body>
 </html>
