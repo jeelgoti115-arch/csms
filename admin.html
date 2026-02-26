@@ -6,7 +6,7 @@
     <title>CSMS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="icon" type="image/png" href="images/car-service.png">
+    <link rel="shortcut icon" href="/images/favicon.ico" />
     <style>
         * {
             margin: 0;
@@ -1916,10 +1916,6 @@
                 gap: 0.5rem;
             }
 
-            .action-buttons {
-                flex-direction: column;
-            }
-
             .action-buttons button {
                 width: 100%;
             }
@@ -2344,7 +2340,7 @@
 
             <!-- Footer -->
             <div class="footer">
-                <p>&copy; 2020-2024 Car Service Management System. All rights reserved.</p>
+                <p>&copy; 2020-2026 Car Service Management System. All rights reserved.</p>
             </div>
         </div>
     </div>
@@ -2393,8 +2389,14 @@
                     <label for="vehicle-status">Status *</label>
                     <select id="vehicle-status" required>
                         <option value="active">Active</option>
-                        <option value="maintenance">Under Maintenance</option>
-                        <option value="inactive">Inactive</option>
+                        <option value="NotAssigned">Not Assigned</option>
+                        <option value="Pending">Pending</option>
+                        <option value="InProgress">In Progress</option>
+                        <option value="Completed">Completed</option>
+                        <option value="AwaitingQC">Awaiting QC</option>
+                        <option value="InQC">In QC</option>
+                        <option value="ReadyForDelivery">Ready For Delivery</option>
+                        <option value="inactive">Delivered</option>
                     </select>
                 </div>
                 <div class="modal-footer">
@@ -2425,6 +2427,16 @@
                     <label for="user-password">Password *</label>
                     <input type="password" id="user-password" required placeholder="Create password (min. 8 characters)">
                 </div>
+                <div id="technician-fields" style="display: none;">
+                    <div class="form-group">
+                        <label for="user-phone">Phone (Technician)</label>
+                        <input type="tel" id="user-phone" placeholder="Enter phone number">
+                    </div>
+                    <div class="form-group">
+                        <label for="user-specialization">Specialization (Technician)</label>
+                        <input type="text" id="user-specialization" placeholder="e.g., Engine Repair">
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="user-role">Role *</label>
                     <select id="user-role" required>
@@ -2443,16 +2455,6 @@
                         <option value="active">Active</option>
                         <option value="inactive">Inactive</option>
                     </select>
-                </div>
-                <div id="technician-fields" style="display: none;">
-                    <div class="form-group">
-                        <label for="user-phone">Phone (Technician)</label>
-                        <input type="tel" id="user-phone" placeholder="Enter phone number">
-                    </div>
-                    <div class="form-group">
-                        <label for="user-specialization">Specialization (Technician)</label>
-                        <input type="text" id="user-specialization" placeholder="e.g., Engine Repair">
-                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn-secondary" onclick="closeModal('user-modal')">Cancel</button>
@@ -2473,6 +2475,8 @@
                 <!-- Dynamic vehicle details will be injected here -->
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn" onclick="printVehicleView()" style="background:#047857;color:#fff;border:none;padding:8px 10px;border-radius:10px;cursor:pointer;">Print Details</button>
+                <button type="button" class="btn" onclick="printVehicleBill()" style="background:#1e40af;color:#fff;border:none;padding:8px 10px;border-radius:10px;cursor:pointer;">Generate Bill & Print</button>
                 <button class="btn-secondary" onclick="closeModal('vehicle-view-modal')">Close</button>
             </div>
         </div>
@@ -2538,7 +2542,7 @@
                 if (e.key === 'u' || e.key === 'U') {
                     e.preventDefault();
                     scrollToUsersSection();
-                } else if (e.key === 'c' || e.key === 'C') {
+                } else if (e.key === 'v' || e.key === 'V') {
                     e.preventDefault();
                     scrollToVehiclesSection();
                 }
@@ -3069,7 +3073,7 @@
                     <h3 style="margin: 1.5rem 0 1rem;">
                         <i class="fas fa-envelope" style="color: #3b82f6;"></i> 
                         Contact Messages (${contacts.length})
-                    <tr>
+                        <tr>
                             <th>ID</th>
                             <th>Make & Model</th>
                             <th>License Plate</th>
@@ -3079,10 +3083,10 @@
                             <th>Total Bill</th>
                             <th>Actions</th>
                         </tr>
-                                    <th>Message</th>
-                                    <th>Status</th>
-                                    <th>Action</th>
-                                </tr>
+                            <th>Message</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
                             </thead>
                             <tbody>
                 `;
@@ -3098,7 +3102,7 @@
                             <td><span style="background:#3b82f6;color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${highlightText(msg.problemType, searchTerm)}</span></td>
                             <td style="max-width:250px;">${highlightText(msg.description.substring(0, 50) + (msg.description.length > 50 ? '...' : ''), searchTerm)}</td>
                             <td><span style="background:${statusColor};color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${msg.status}</span></td>
-                            <td><button onclick="viewContactMessageDetail(${msg.id})" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.85rem;">View</button></td>
+                            <td><button onclick="viewContactMessageDetail(${Number(msg.id)})" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.85rem;">View</button></td>
                         </tr>
                     `;
                 });
@@ -3423,7 +3427,7 @@
                     <td style="padding:12px;"><span style="background:#3b82f6;color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${highlightText(msg.problemType, searchTerm)}</span></td>
                     <td style="padding:12px;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${msg.description}">${highlightText(msg.description.substring(0, 50) + (msg.description.length > 50 ? '...' : ''), searchTerm)}</td>
                     <td style="padding:12px;"><span style="background:${statusColor};color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${msg.status}</span></td>
-                    <td style="padding:12px;text-align:center;"><button onclick="viewContactMessageDetail(${msg.id})" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.85rem;">View</button></td>
+                    <td style="padding:12px;text-align:center;"><button onclick="viewContactMessageDetail(${Number(msg.id)})" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.85rem;">View</button></td>
                 </tr>`;
             });
             
@@ -3646,7 +3650,7 @@
                     <td><span class="status-badge ${wf.class}">${wf.label}</span></td>
                     <td>₹${(totals.totalCost || 0).toFixed(2)}</td>
                     <td>
-                        <div class="action-buttons">
+                        <div class="action-buttons" style="">
                             <button class="btn-view" onclick="viewVehicleDetails(${vehicle.id})">
                                 <i class="fas fa-eye"></i> View
                             </button>
@@ -3981,96 +3985,181 @@
 
             // Assigned users (Advisor, Technician, QC) - show names with id where available
             const assignedInfo = [];
+
+            // Helper: format a person/assignee into "Name (#id)" when possible
+            function formatPerson(p) {
+                if (p === undefined || p === null || p === '') return null;
+                // If already an object with name/id
+                if (typeof p === 'object') {
+                    const name = p.name || p.fullName || p.displayName || p.username || null;
+                    const id = p.id || p.userId || p.uid || null;
+                    if (name && id) return `${name} (#${id})`;
+                    if (id && !name) {
+                        const u = usersDatabase.find(u => u.id === Number(id) || String(u.id) === String(id));
+                        if (u) return `${u.name} (#${u.id})`;
+                        return `#${id}`;
+                    }
+                    if (name && !id) {
+                        // try lookup by name
+                        const u = usersDatabase.find(u => String(u.name).toLowerCase() === String(name).toLowerCase());
+                        if (u) return `${u.name} (#${u.id})`;
+                        return `${name} (#N/A)`;
+                    }
+                    return JSON.stringify(p);
+                }
+
+                // If string like "Name (#id)" already
+                if (typeof p === 'string') {
+                    const m = p.match(/^(.+)\s*\(#(\d+)\)$/);
+                    if (m) return `${m[1].trim()} (#${m[2]})`;
+                    // If string prefixed with '#123'
+                    if (/^#?\d+$/.test(p)) {
+                        const id = Number(p.replace('#', ''));
+                        const u = usersDatabase.find(u => u.id === id || String(u.id) === String(id));
+                        if (u) return `${u.name} (#${u.id})`;
+                        return `#${id}`;
+                    }
+                    // otherwise try to find by name
+                    const u = usersDatabase.find(u => String(u.name).toLowerCase() === String(p).toLowerCase());
+                    if (u) return `${u.name} (#${u.id})`;
+                    return `${p} (#N/A)`;
+                }
+
+                // If number
+                if (typeof p === 'number') {
+                    const u = usersDatabase.find(u => u.id === p || String(u.id) === String(p));
+                    if (u) return `${u.name} (#${u.id})`;
+                    return `#${p}`;
+                }
+
+                return String(p);
+            }
+
             // Advisor
             const advisorKeys = ['assignedAdvisor','assignedAdvisorName','advisor','advisorName','serviceAdvisor','serviceAdvisorName','assignedAdvisorId','advisorId','serviceAdvisorId'];
             let advisorVal = null;
-            for (const k of advisorKeys) { if (vehicle[k] !== undefined) { advisorVal = vehicle[k]; break; } }
-            const advisorDisplay = resolveUserDisplay(advisorVal) || (vehicle.assignedAdvisorId ? resolveUserDisplay(vehicle.assignedAdvisorId) : null) || 'N/A';
+            for (const k of advisorKeys) { if (vehicle[k] !== undefined && vehicle[k] !== null) { advisorVal = vehicle[k]; break; } }
+            const advisorDisplay = formatPerson(advisorVal) || (vehicle.assignedAdvisorId ? formatPerson(vehicle.assignedAdvisorId) : null) || 'N/A';
             assignedInfo.push({role:'Advisor', val: advisorDisplay});
 
             // Technicians (collect from vehicle properties and from job entries)
             const techKeys = ['assignedTechnician','assignedTechnicians','technicians','technician','technicianName','tech','techs','assignedTechs','assignedTechnicianId','assignedTo'];
-            let techVal = null;
-            for (const k of techKeys) { if (vehicle[k] !== undefined) { techVal = vehicle[k]; break; } }
-
-            // helper to add technician value(s) to a set (handles id/name/object/array)
-            const techSet = new Set();
-            const addTechVal = (v) => {
-                if (v === undefined || v === null) return;
-                if (Array.isArray(v)) return v.forEach(x => addTechVal(x));
-                if (typeof v === 'object') {
-                    if (v.name) return techSet.add(v.name);
-                    if (v.id !== undefined) return techSet.add('#' + String(v.id));
-                    // fallback to stringified object
-                    return techSet.add(JSON.stringify(v));
-                }
-                // primitive (number or string)
-                techSet.add(v);
-            };
-
-            // Add any technicians directly on the vehicle
-            addTechVal(techVal);
-            if (vehicle.assignedTo) addTechVal(vehicle.assignedTo);
-
-            // Also pull technicians referenced in jobs (jobs may contain technician, technicianId, technicianName, assignedTo etc.)
+            const techCandidates = [];
+            for (const k of techKeys) { if (vehicle[k] !== undefined && vehicle[k] !== null) techCandidates.push(vehicle[k]); }
+            if (vehicle.assignedTo) techCandidates.push(vehicle.assignedTo);
             if (Array.isArray(jobs)) {
                 jobs.forEach(j => {
                     const candidateKeys = ['technician','technicianId','technicianName','assignedTo','assignedTechnician','assignedTechnicians','tech','checkedBy','assignedUser','worker','userId'];
                     for (const k of candidateKeys) {
-                        if (j[k] !== undefined && j[k] !== null) {
-                            addTechVal(j[k]);
-                        }
+                        if (j[k] !== undefined && j[k] !== null) techCandidates.push(j[k]);
                     }
-                    // also support nested objects like j.technician = {id:..., name:...}
-                    if (j.technician && typeof j.technician === 'object') addTechVal(j.technician);
+                    if (j.technician && typeof j.technician === 'object') techCandidates.push(j.technician);
                 });
             }
 
-            // Resolve and format technician display
-            let techDisplay = 'N/A';
-            const techArr = Array.from(techSet).map(t => resolveUserDisplay(t)).filter(Boolean);
-            if (techArr.length) techDisplay = techArr.join(', ');
-            assignedInfo.push({role:'Technician(s)', val: techDisplay});
+            // Normalize technician candidates into formatted strings and dedupe by id/name
+            const techFormatted = [];
+            // helper to extract normalized details for dedupe and display
+            function resolvePersonDetails(p) {
+                if (p === undefined || p === null) return null;
+                // If object
+                if (typeof p === 'object') {
+                    const id = p.id || p.userId || p.uid || null;
+                    const name = p.name || p.fullName || p.displayName || p.username || null;
+                    const display = (name && id) ? `${name} (#${id})` : (name ? `${name} (#N/A)` : (id ? `#${id}` : null));
+                    const nameKey = name ? String(name).toLowerCase().replace(/^\s+|\s+$/g,'') : null;
+                    return { display, id: id ? Number(id) : null, nameKey };
+                }
+                // If number
+                if (typeof p === 'number') {
+                    const id = p;
+                    const u = usersDatabase.find(u => u.id === id || String(u.id) === String(id));
+                    if (u) return { display: `${u.name} (#${u.id})`, id: Number(u.id), nameKey: String(u.name).toLowerCase() };
+                    return { display: `#${id}`, id: Number(id), nameKey: null };
+                }
+                // If string
+                if (typeof p === 'string') {
+                    const s = p.trim();
+                    // Try to parse "Name (#id)"
+                    const m = s.match(/^(.+)\s*\(#(\d+)\)$/);
+                    if (m) {
+                        const name = m[1].trim(); const id = Number(m[2]);
+                        const u = usersDatabase.find(u => u.id === id || String(u.id) === String(id));
+                        if (u) return { display: `${u.name} (#${u.id})`, id: Number(u.id), nameKey: String(u.name).toLowerCase() };
+                        return { display: `${name} (#${id})`, id: Number(id), nameKey: String(name).toLowerCase() };
+                    }
+                    // If plain numeric string
+                    if (/^#?\d+$/.test(s)) {
+                        const id = Number(s.replace('#',''));
+                        const u = usersDatabase.find(u => u.id === id || String(u.id) === String(id));
+                        if (u) return { display: `${u.name} (#${u.id})`, id: Number(u.id), nameKey: String(u.name).toLowerCase() };
+                        return { display: `#${id}`, id: Number(id), nameKey: null };
+                    }
+                    // Otherwise try find user by exact name
+                    const uByName = usersDatabase.find(u => String(u.name).toLowerCase() === s.toLowerCase());
+                    if (uByName) return { display: `${uByName.name} (#${uByName.id})`, id: Number(uByName.id), nameKey: String(uByName.name).toLowerCase() };
+                    // Fallback: strip role prefixes/suffixes like 'Technician ' and trailing '- ...'
+                    const stripped = s.replace(/^(technician|advisor|qc|quality controller)\s*/i, '').split('-')[0].trim();
+                    return { display: `${stripped} (#N/A)`, id: null, nameKey: stripped ? stripped.toLowerCase() : null };
+                }
+                return null;
+            }
 
-            // QC / Quality Controller (from vehicle OR from jobs where technician selected a QC for check)
+            const techById = new Map();
+            const techByName = new Map();
+            techCandidates.flat(Infinity).forEach(c => {
+                const d = resolvePersonDetails(c);
+                if (!d || !d.display) return;
+                if (d.id) {
+                    // prefer id-based entry; replace any name-only entry
+                    techById.set(String(d.id), d.display);
+                    if (d.nameKey && techByName.has(d.nameKey)) techByName.delete(d.nameKey);
+                } else if (d.nameKey) {
+                    if (!techByName.has(d.nameKey)) techByName.set(d.nameKey, d.display);
+                } else {
+                    // fallback: use display as key
+                    if (!techByName.has(d.display)) techByName.set(d.display, d.display);
+                }
+            });
+            // Merge id entries first, then remaining name entries
+            for (const val of techById.values()) techFormatted.push(val);
+            for (const val of techByName.values()) techFormatted.push(val);
+            const techDisplay = techFormatted.length ? techFormatted.join(', ') : 'N/A';
+            // Do not display assigned technicians in the vehicle details modal per requirement
+
+            // QC / Quality Controller
             const qcKeys = ['assignedQC','qc','qcName','qualityController','qualityControllerName','qcId','qualityControllerId','checkedBy','checked_by','inspectedBy','inspectorId'];
-            let qcVal = null;
-            for (const k of qcKeys) { if (vehicle[k] !== undefined) { qcVal = vehicle[k]; break; } }
-
-            // Look into jobs for any QC that was selected when sending to QC
-            const qcSet = new Set();
-            if (qcVal !== undefined && qcVal !== null) addTechVal(qcVal); // reuse addTechVal to normalize
+            const qcCandidates = [];
+            for (const k of qcKeys) { if (vehicle[k] !== undefined && vehicle[k] !== null) qcCandidates.push(vehicle[k]); }
             if (Array.isArray(jobs)) {
                 jobs.forEach(j => {
-                    for (const k of qcKeys) {
-                        if (j[k] !== undefined && j[k] !== null) addTechVal(j[k]);
-                    }
-                    // some systems store qc selection under job.qc or job.qualityController
-                    if (j.qc !== undefined && j.qc !== null) addTechVal(j.qc);
-                    if (j.qualityController !== undefined && j.qualityController !== null) addTechVal(j.qualityController);
+                    for (const k of qcKeys) { if (j[k] !== undefined && j[k] !== null) qcCandidates.push(j[k]); }
+                    if (j.qc !== undefined && j.qc !== null) qcCandidates.push(j.qc);
+                    if (j.qualityController !== undefined && j.qualityController !== null) qcCandidates.push(j.qualityController);
                 });
             }
-
-            // Build QC display - prefer explicit vehicle qc value first then job-derived
-            let qcDisplay = 'N/A';
-            // Collect potential qc values from vehicle keys first
-            const potentialQCs = [];
-            for (const k of qcKeys) { if (vehicle[k] !== undefined && vehicle[k] !== null) potentialQCs.push(vehicle[k]); }
-            if (Array.isArray(jobs)) {
-                jobs.forEach(j => {
-                    for (const k of qcKeys) { if (j[k] !== undefined && j[k] !== null) potentialQCs.push(j[k]); }
-                    if (j.qc !== undefined && j.qc !== null) potentialQCs.push(j.qc);
-                });
-            }
-            // Resolve and dedupe
-            const resolvedQCs = Array.from(new Set(potentialQCs.map(q => resolveUserDisplay(q)).filter(Boolean)));
-            if (resolvedQCs.length) qcDisplay = resolvedQCs.join(', ');
-            assignedInfo.push({role:'QC', val: qcDisplay});
+            const qcFormatted = [];
+            const qcById = new Map();
+            const qcByName = new Map();
+            qcCandidates.flat(Infinity).forEach(c => {
+                const d = resolvePersonDetails(c);
+                if (!d || !d.display) return;
+                if (d.id) {
+                    qcById.set(String(d.id), d.display);
+                    if (d.nameKey && qcByName.has(d.nameKey)) qcByName.delete(d.nameKey);
+                } else if (d.nameKey) {
+                    if (!qcByName.has(d.nameKey)) qcByName.set(d.nameKey, d.display);
+                } else {
+                    if (!qcByName.has(d.display)) qcByName.set(d.display, d.display);
+                }
+            });
+            for (const val of qcById.values()) qcFormatted.push(val);
+            for (const val of qcByName.values()) qcFormatted.push(val);
+            const qcDisplay = qcFormatted.length ? qcFormatted.join(', ') : 'N/A';
+            // Do not display assigned QCs in the vehicle details modal per requirement
 
             const assignedUsersHTML = `
-                <div style="background:#fff;padding:10px;border-radius:8px;border:1px solid #eef2f7;margin-bottom:8px;">
-                    ${assignedInfo.map(a => `<div style="margin:4px 0;"><strong>${a.role}:</strong> ${a.val}</div>`).join('')}
-                </div>
+                   <p> ${assignedInfo.map(a => `<div style="margin:4px 0;"><strong>${a.role}:</strong> ${a.val}</div>`).join('')}</p>
             `;
 
             // Compose modal content
@@ -4078,6 +4167,10 @@
                 <section>
                     <h3>Vehicle Details</h3>
                     ${basicHTML}
+                </section>
+                <hr />
+                <section>
+                    <h3>Assigned Advisor</h3>
                     ${assignedUsersHTML}
                 </section>
                 <hr />
@@ -4100,10 +4193,6 @@
                     <div style="display:flex;gap:1.5rem;align-items:center;">
                         <div><strong>Total Cost:</strong> ₹${totalCost.toFixed(2)}</div>
                         <div><strong>Total Service Time:</strong> ${totalTimeStr}</div>
-                    </div>
-                    <div style="display:flex;gap:0.5rem;">
-                        <button type="button" class="btn" onclick="printVehicleBill()" style="background:#1e40af;color:#fff;border:none;padding:8px 10px;border-radius:6px;cursor:pointer;">Generate Bill & Print</button>
-                        <button type="button" class="btn" onclick="printVehicleView()" style="background:#047857;color:#fff;border:none;padding:8px 10px;border-radius:6px;cursor:pointer;">Print Details</button>
                     </div>
                 </section>
             `;
@@ -4151,10 +4240,9 @@
             const tax = +(((subtotal + labour) * gstRate)).toFixed(2);
             const grandTotal = +((subtotal + labour + tax)).toFixed(2);
 
-            // Build job rows with more details (technician, started/finished, hours, amount)
-            const jobRows = jobs.length === 0 ? '<tr><td colspan="6" style="text-align:center;color:#666;padding:12px;">No jobs</td></tr>' : jobs.map(j => {
+            // Build job rows with more details (started/finished, hours, amount)
+            const jobRows = jobs.length === 0 ? '<tr><td colspan="5" style="text-align:center;color:#666;padding:12px;">No jobs</td></tr>' : jobs.map(j => {
                 const name = getJobValue(j, ['serviceName','service','name','type'], formatJobType(j.type));
-                const technicianName = resolveTechnician(j) || resolveUserDisplay(j.technician) || '-';
                 const startedAt = j.startedAt || j.startTime || j.start_date || '';
                 const finishedAt = j.finishedAt || j.completedAt || j.completionTime || j.endTime || '';
                 const startedStr = startedAt ? new Date(startedAt).toLocaleString() : '-';
@@ -4170,7 +4258,6 @@
                                 <div style="font-weight:600">${name}</div>
                                 ${extrasHtml}
                             </td>
-                            <td style="padding:8px;border-bottom:1px solid #eee;">${technicianName}</td>
                             <td style="padding:8px;border-bottom:1px solid #eee;">${startedStr}</td>
                             <td style="padding:8px;border-bottom:1px solid #eee;">${finishedStr}</td>
                             <td style="padding:8px;border-bottom:1px solid #eee;text-align:right">${hours}</td>
@@ -4318,8 +4405,6 @@
                                 <div><strong>Status:</strong> ${vehicle.serviceStatus || 'N/A'}</div>
                                 ${vehicle.serviceDescription ? `<div style="margin-top:6px;"><strong>Description:</strong> ${vehicle.serviceDescription}</div>` : ''}
                                 <div style="margin-top:8px"><strong>Advisor:</strong> ${advisorDisplay}</div>
-                                <div><strong>Technician(s):</strong> ${techDisplay}</div>
-                                <div><strong>QC:</strong> ${qcDisplay}</div>
                             </div>
                                 <div class="col totals">
                                 <div style="font-size:0.95rem;color:var(--muted)">Subtotal</div>
@@ -4357,13 +4442,12 @@
                                     <table class="bill-table" style="width:100%;font-size:13px;">
                                         <thead>
                                             <tr>
-                                                <th style="padding:10px;text-align:left">Service</th>
-                                                <th style="padding:10px;text-align:left">Technician</th>
-                                                <th style="padding:10px;text-align:left">Started</th>
-                                                <th style="padding:10px;text-align:left">Finished</th>
-                                                <th style="padding:10px;text-align:right">Hours</th>
-                                                <th style="padding:10px;text-align:right">Amount</th>
-                                            </tr>
+                                                    <th style="padding:10px;text-align:left">Service</th>
+                                                    <th style="padding:10px;text-align:left">Started</th>
+                                                    <th style="padding:10px;text-align:left">Finished</th>
+                                                    <th style="padding:10px;text-align:right">Hours</th>
+                                                    <th style="padding:10px;text-align:right">Amount</th>
+                                                </tr>
                                         </thead>
                                         <tbody>
                                             ${jobRows}
@@ -4540,7 +4624,10 @@
         }
         
         function refreshContactMessages() {
-            contactsDatabase = JSON.parse(localStorage.getItem('vsms_contacts')) || [];
+                // Prefer in-memory dynamic contactsDatabase when available; fall back to localStorage for persisted data
+                contactsDatabase = (typeof contactsDatabase !== 'undefined' && Array.isArray(contactsDatabase) && contactsDatabase.length > 0)
+                    ? contactsDatabase
+                    : (JSON.parse(localStorage.getItem('vsms_contacts')) || []);
             const container = document.getElementById('contact-messages-container');
             
             if (contactsDatabase.length === 0) {
@@ -4556,7 +4643,7 @@
                 '<th style="padding:12px;text-align:left;">Type</th>' +
                 '<th style="padding:12px;text-align:left;">Message</th>' +
                 '<th style="padding:12px;text-align:left;">Status</th>' +
-                '<th style="padding:12px;text-align:center;">Action</th>' +
+                '<th style="padding:12px;text-align:left;">Action</th>' +
                 '</tr></thead><tbody>';
             
             contactsDatabase.forEach(msg => {
@@ -4565,10 +4652,11 @@
                     <td style="padding:12px;"><strong>${msg.name}</strong></td>
                     <td style="padding:12px;"><a href="mailto:${msg.email}">${msg.email}</a></td>
                     <td style="padding:12px;"><a href="tel:${msg.phone}">${msg.phone}</a></td>
-                    <td style="padding:12px;"><span style="background:#3b82f6;color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${msg.problemType}</span></td>
+                    <td style="padding:12px;"><span style="background:#3b82f6;color:white;padding:4px 8px;border-radius:8px;font-size:0.85rem;text-transform:capitalize;">${msg.problemType}</span></td>
                     <td style="padding:12px;max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${msg.description}">${msg.description.substring(0, 50)}...</td>
-                    <td style="padding:12px;"><span style="background:${statusColor};color:white;padding:4px 8px;border-radius:4px;font-size:0.85rem;text-transform:capitalize;">${msg.status}</span></td>
-                    <td style="padding:12px;text-align:center;"><button onclick="viewContactMessageDetail(${msg.id})" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:4px;cursor:pointer;font-size:0.85rem;">View</button></td>
+                    <td style="padding:12px;"><span style="background:${statusColor};color:white;padding:4px 8px;border-radius:8px;font-size:0.85rem;text-transform:capitalize;">${msg.status}</span></td>
+                    <td style="padding:12px;"><div><button onclick="viewContactMessageDetail(${Number(msg.id)})" style="padding:6px 12px;background:#3b82f6;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;margin-right:8px;">View</button><button onclick="deleteContactMessage(${Number(msg.id)})"style="padding:6px 12px;background:#dc2626;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;margin-right:8px;">Delete</button></div></td>
+                    
                 </tr>`;
             });
             
@@ -4577,8 +4665,20 @@
         }
         
         function viewContactMessageDetail(msgId) {
-            const contacts = JSON.parse(localStorage.getItem('vsms_contacts')) || [];
-            const msg = contacts.find(c => c.id === msgId);
+            // Use in-memory contactsDatabase first (dynamic session data), otherwise fall back to persisted storage
+            const contacts = (typeof contactsDatabase !== 'undefined' && Array.isArray(contactsDatabase) && contactsDatabase.length > 0)
+                ? contactsDatabase
+                : (JSON.parse(localStorage.getItem('vsms_contacts')) || []);
+
+            // Tolerant comparison: IDs may be numbers or strings; compare as numbers when possible
+            const numericId = Number(msgId);
+            const msg = contacts.find(c => {
+                if (c == null) return false;
+                // prefer numeric comparison if c.id is numeric-like
+                const cid = Number(c.id);
+                if (!Number.isNaN(cid) && !Number.isNaN(numericId)) return cid === numericId;
+                return String(c.id) === String(msgId);
+            });
             
             if (!msg) {
                 showMessage('Message not found', 'error');
@@ -4601,9 +4701,9 @@
             
             if (msg.adminResponse) {
                 details += `
-Admin Response (${new Date(msg.respondedAt).toLocaleString()}):
-${msg.adminResponse}
-`;
+                            Admin Response (${new Date(msg.respondedAt).toLocaleString()}):
+                            ${msg.adminResponse}
+                        `;
             }
             
             const response = prompt(details + '\n\nEnter your response (or cancel to skip):', msg.adminResponse || '');
@@ -4620,6 +4720,41 @@ ${msg.adminResponse}
             
             localStorage.setItem('vsms_contacts', JSON.stringify(contacts));
             showMessage('Response saved! Email notification sent to ' + msg.email, 'success');
+            refreshContactMessages();
+        }
+
+        
+        function deleteContactMessage(msgId) {
+            if (!confirm('Delete this message permanently?')) return;
+
+            const contacts = (typeof contactsDatabase !== 'undefined' && Array.isArray(contactsDatabase))
+                ? contactsDatabase
+                : (JSON.parse(localStorage.getItem('vsms_contacts')) || []);
+
+            const numericId = Number(msgId);
+            const idx = contacts.findIndex(c => {
+                if (c == null) return false;
+                const cid = Number(c.id);
+                if (!Number.isNaN(cid) && !Number.isNaN(numericId)) return cid === numericId;
+                return String(c.id) === String(msgId);
+            });
+
+            if (idx === -1) {
+                showMessage('Message not found', 'error');
+                return;
+            }
+
+            contacts.splice(idx, 1);
+
+            // Update both in-memory and persisted storage
+            contactsDatabase = contacts;
+            try {
+                localStorage.setItem('vsms_contacts', JSON.stringify(contacts));
+            } catch (e) {
+                console.error('Error saving contacts after delete', e);
+            }
+
+            showMessage('Message deleted', 'success');
             refreshContactMessages();
         }
         

@@ -6,7 +6,7 @@
     <title>CSMS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <link rel="icon" type="image/png" href="images/car-service.png">
+    <link rel="shortcut icon" href="/images/favicon.ico" />
     <style>
         * {
             margin: 0;
@@ -2348,8 +2348,12 @@
                         <optgroup label="General Service">
                             <option value="general-service">General Service</option>
                             <option value="ac-service">AC Service</option>
+                        </optgroup>
+                        <optgroup label="Tyre and Wheel Work">
+                            <option value="puncture-repair">Puncture Repair</option>
+                            <option value="tyre-changing">Tyre Changing</option>
+                            <option value="wheel-rotation">Wheel Rotation</option>
                             <option value="wheel-alignment">Wheel Alignment</option>
-                            <option value="tire-rotation">Tire Rotation</option>
                         </optgroup>
                         <optgroup label="Oil & Fluids">
                             <option value="power-steering-fluid">Power Steering Fluid Change</option>
@@ -2650,7 +2654,9 @@
             'general-service': 'Complete vehicle inspection, fluid top-up, filter check, and safety inspection.',
             'ac-service': 'AC system check, refrigerant recharge, compressor inspection, and cooling performance test.',
             'wheel-alignment': 'Wheel alignment service. Includes tire inspection.',
-            'tire-rotation': 'Rotate tires according to manufacturer specifications. Includes tire pressure check and tread depth inspection.',
+            'puncture-repair': 'Removal of wheel, dismounting of tyre to inspect and patch the puncture from the inside, remounting, and wheel balancing.',
+            'tyre-changing': 'Removal of old tyres, mounting and balancing of new tyres onto your existing rims, and valve stem replacement.',
+            'wheel-rotation': 'Moving tyres between front and rear positions to promote even wear, including re-torquing of lug nuts and a tyre pressure check.',
             'power-steering-fluid': 'Power steering fluid replacement. Includes steering system inspection.',
             'differential-fluid': 'Differential fluid change. Includes drivetrain inspection.',
             'engine-flush': 'Engine flush treatment to remove sludge and deposits before oil refill.',
@@ -2715,7 +2721,8 @@
                             phone: tech.phone || "N/A",
                             avatarText: avatarText,
                             workload: workload,
-                            status: getTechnicianStatus(tech.id, workload),
+                            // Preserve persisted account status; if absent treat as active
+                            status: (tech.status || 'active') === 'inactive' ? 'inactive' : getTechnicianStatus(tech.id, workload),
                             joinDate: tech.createdAt || new Date().toISOString(),
                             completedJobs: 0
                         };
@@ -2849,7 +2856,12 @@
                         </div>
                     `;
 
-                    techCard.addEventListener('click', () => selectTechnician(technician.id));
+                    // If technician account is inactive, render but do not allow selection
+                    if (technician.status === 'inactive') {
+                        techCard.classList.add('inactive');
+                    } else {
+                        techCard.addEventListener('click', () => selectTechnician(technician.id));
+                    }
                     technicianList.appendChild(techCard);
                 });
             };
@@ -2864,6 +2876,7 @@
                 case 'online': return 'Available';
                 case 'offline': return 'Offline';
                 case 'busy': return 'Busy';
+                case 'inactive': return 'Deactivated';
                 default: return 'Unknown';
             }
         }
@@ -2873,18 +2886,27 @@
                 case 'online': return 'online';
                 case 'offline': return 'offline';
                 case 'busy': return 'busy';
+                case 'inactive': return 'inactive';
                 default: return 'offline';
             }
         }
 
         function selectTechnician(technicianId) {
+            // Defense: ensure technician account is active
+            const tech = technicians.find(t => t.id === technicianId);
+            if (tech && tech.status === 'inactive') {
+                showMessage('Cannot select a deactivated technician. Please choose an active technician.', 'error');
+                return;
+            }
+
             selectedTechnicianId = technicianId;
             
             // Update UI
             document.querySelectorAll('.technician-card').forEach(card => {
                 card.classList.remove('selected');
             });
-            document.querySelector(`.technician-card[data-id="${technicianId}"]`).classList.add('selected');
+            const el = document.querySelector(`.technician-card[data-id="${technicianId}"]`);
+            if (el) el.classList.add('selected');
         }
 
         // ===== UPDATE STATISTICS =====
@@ -3542,6 +3564,11 @@
             const technician = technicians.find(t => t.id == selectedTechnicianId);
             if (!technician) {
                 showMessage("Selected technician not found!", "error");
+                return;
+            }
+            // Prevent assigning to deactivated technicians
+            if (technician.status === 'inactive') {
+                showMessage('Selected technician has been deactivated and cannot be assigned.', 'error');
                 return;
             }
             

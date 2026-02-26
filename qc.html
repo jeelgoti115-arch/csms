@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSMS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="images/car-service.png">
+    <link rel="shortcut icon" href="/images/favicon.ico" />
     <style>
         * {
             margin: 0;
@@ -2320,6 +2320,43 @@
                 qcVehicles = qcVehicles.filter(v => 
                     v.serviceStatus === "rework-required" || v.qcStatus === "rejected"
                 );
+            }
+
+            // Only show vehicles that are explicitly assigned to the current QC user.
+            // Vehicles without an explicit QC assignee will be hidden.
+            try {
+                const qcAssignmentKeys = ['qcAssignedTo','qcAssignedToName','assignedQC','assignedQc','assignedQcId','qcAssignee','assignedToQc','qualityController','qualityControllerId','qualityControllerName','qcId','qcUser','assignedQCId','assignedQcUser','assignedTo','qc_assignee'];
+                qcVehicles = qcVehicles.filter(v => {
+                    const assignedVals = [];
+                    for (const k of qcAssignmentKeys) {
+                        if (v[k] !== undefined && v[k] !== null) assignedVals.push(v[k]);
+                    }
+
+                    // If no QC assignment exists, do not show the vehicle
+                    if (assignedVals.length === 0) return false;
+
+                    // Check if any assigned value matches the current logged-in QC
+                    return assignedVals.some(val => {
+                        if (!val) return false;
+                        // object-shaped assignment
+                        if (typeof val === 'object') {
+                            if (val.id !== undefined && String(val.id) === String(user.id)) return true;
+                            if (val.userId !== undefined && String(val.userId) === String(user.id)) return true;
+                            if (val.email && user.email && String(val.email).toLowerCase() === String(user.email).toLowerCase()) return true;
+                            if (val.name && user.name && String(val.name).trim() === String(user.name).trim()) return true;
+                            return false;
+                        }
+
+                        const s = String(val);
+                        if (/^\d+$/.test(s) && user.id && String(user.id) === s) return true;
+                        if (user.email && s.toLowerCase() === String(user.email).toLowerCase()) return true;
+                        if (user.name && s.trim() === String(user.name).trim()) return true;
+                        if (user.id && s.includes(String(user.id))) return true;
+                        return false;
+                    });
+                });
+            } catch (e) {
+                console.error('QC filter error', e);
             }
             
             const priorityOrder = { 'urgent': 1, 'high': 2, 'normal': 3 };

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSMS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="images/car-service.png">
+    <link rel="shortcut icon" href="/images/favicon.ico" />
     <style>
         * {
             margin: 0;
@@ -1711,13 +1711,12 @@
                     const pageHeader = document.querySelector('.page-header h1');
                     const pageSubtitle = document.querySelector('.page-header p');
                     if (pageHeader) {
-                        pageHeader.textContent = `Welcome back, ${currentUser.name}!`;
+                        pageHeader.textContent = `Hello, ${currentUser.name}!`;
                     }
                     if (pageSubtitle) {
                         pageSubtitle.textContent = `You are logged in with ${roleName} role. Access your dashboard to manage vehicle services.`;
                     }
-                    
-                    // Update section title=======================================
+
                     const sectionTitle = document.querySelector('.section-title h2');
                     if (sectionTitle) {
                         sectionTitle.textContent = `Current Session`;

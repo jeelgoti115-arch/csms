@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSMS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="images/car-service.png">
+    <link rel="shortcut icon" href="/images/favicon.ico" />
     <style>
         * {
             margin: 0;
@@ -2562,7 +2562,7 @@
                         actionButton = `<button class="btn btn-primary btn-start-job" data-id="${job.id}" data-vehicle-id="${job.vehicleId}"><i class="fas fa-play-circle"></i> Start Task</button>`;
                     } else if (job.status === 'in-progress') {
                         statusText = "In Progress"; statusBg = "status-in-progress"; statusIcon = "fas fa-spinner fa-spin";
-                        actionButton = `<button class="btn btn-success btn-complete-job" data-id="${job.id}" data-vehicle-id="${job.vehicleId}"><i class="fas fa-check-circle"></i> Mark Complete</button>`;
+                        actionButton = `<button class="btn btn-success btn-complete-job" data-id="${job.id}" data-vehicle-id="${job.vehicleId}"><i class="fas fa-check-circle"></i> Complete Task</button>`;
                     } else if (job.status === 'completed') {
                         statusText = "Completed"; statusBg = "status-completed"; statusIcon = "fas fa-check-circle";
                         actionButton = `<button class="btn btn-outline" style="cursor: default; opacity: 0.7;" disabled><i class="fas fa-check"></i> Completed (${job.totalServiceTime ? job.totalServiceTime.toFixed(1) + ' hrs' : ''})</button>`;
@@ -2758,7 +2758,15 @@
         function updateLastUpdateTime() { document.getElementById('last-update-time').textContent = `Last updated: ${new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'})}`; }
         function loadQualityControllers() {
             const users = JSON.parse(localStorage.getItem('vsms_users')) || [];
-            qualityControllers = users.filter(u=>u.role && u.role.toLowerCase()==='qc').map((q,i)=>({ id:q.id||`qc_${i+1}`, name:q.name||'Quality Controller', email:q.email||`qc${i}@vsms.com`, specialization:'Quality Assurance', avatarText: (q.name||'QC').split(' ').filter(Boolean).map(n=>n[0]).join('').toUpperCase()||'QC' }));
+            // Preserve persisted account status so inactive QCs can be shown but not selectable
+            qualityControllers = users.filter(u=>u.role && u.role.toLowerCase()==='qc').map((q,i)=>({
+                id: q.id || `qc_${i+1}`,
+                name: q.name || 'Quality Controller',
+                email: q.email || `qc${i}@vsms.com`,
+                specialization: 'Quality Assurance',
+                avatarText: (q.name||'QC').split(' ').filter(Boolean).map(n=>n[0]).join('').toUpperCase()||'QC',
+                status: q.status || 'active'
+            }));
             if(qualityControllers.length===0) qualityControllers = [{ id:4, name:'Sarah QC', email:'qc@vsms.com', specialization:'Senior Quality Controller', avatarText:'SQ' }];
             return qualityControllers;
         }
@@ -2785,9 +2793,18 @@
             if(!filtered.length) { none.style.display = 'block'; return; }
             none.style.display = 'none';
             filtered.forEach(qc=>{
-                const card = document.createElement('div'); card.className = `qc-card ${String(selectedQcId)===String(qc.id)?'selected':''}`; card.setAttribute('data-qc-id', qc.id);
+                const card = document.createElement('div');
+                card.className = `qc-card ${String(selectedQcId)===String(qc.id)?'selected':''} ${qc.status==='inactive' ? 'inactive' : ''}`;
+                card.setAttribute('data-qc-id', qc.id);
                 card.innerHTML = `<div class="qc-avatar">${qc.avatarText}</div><div class="qc-info"><h4>${qc.name}</h4><p>${qc.specialization}</p><p style="margin-top:0.35rem;"><i class="fas fa-envelope" style="color:var(--text-muted);"></i> ${qc.email}</p></div>`;
-                card.addEventListener('click',()=>selectQualityController(qc.id));
+                // Only allow selection if QC account is active
+                if (qc.status !== 'inactive') {
+                    card.addEventListener('click',()=>selectQualityController(qc.id));
+                } else {
+                    // indicate deactivated
+                    const info = card.querySelector('.qc-info');
+                    if (info) info.insertAdjacentHTML('beforeend', '<div style="margin-top:0.35rem; color:#ef4444; font-weight:700;">Deactivated</div>');
+                }
                 list.appendChild(card);
             });
         }
@@ -2800,6 +2817,8 @@
             if(!vehicle) { showNotification('Vehicle not found!','error'); return; }
             if(!confirm(`Assign ${vehicle.vehicleNumber} to selected QC and send to QC?`)) return;
             const qc = qualityControllers.find(q=>String(q.id)===String(selectedQcId));
+            // Defense: ensure QC account is active
+            if (qc && qc.status === 'inactive') { showNotification('Selected QC account is deactivated and cannot be assigned.', 'error'); return; }
             const notes = document.getElementById('qc-send-notes')?.value?.trim()||'';
             if(!vehicle.jobs.every(j=>j.status==='completed')) { showNotification('All jobs must be completed!','error'); return; }
             vehicle.serviceStatus = 'awaiting-qc'; vehicle.qcStatus = 'pending'; vehicle.sentToQcTime = new Date().toISOString(); vehicle.qcAssignedTo = selectedQcId;

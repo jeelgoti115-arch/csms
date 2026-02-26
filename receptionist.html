@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSMS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="images/car-service.png">
+    <link rel="shortcut icon" href="/images/favicon.ico" />
     <style>
         /* ===== FULL CSS (unchanged structure, only minor additions) ===== */
         * {
@@ -2070,7 +2070,8 @@
         // ===== GET SERVICE ADVISORS =====
         function getServiceAdvisors() {
             const advisors = usersDatabase.filter(user => user.role === 'advisor');
-            
+
+            // Include status so UI can show inactive users but prevent selection
             return advisors.map(advisor => ({
                 id: advisor.id,
                 name: advisor.name || 'Advisor',
@@ -2079,7 +2080,8 @@
                 specialization: advisor.specialization || "General Service",
                 assignedVehicles: advisor.assignedVehicles || 0,
                 completedServices: advisor.completedServices || 0,
-                createdAt: advisor.createdAt || new Date().toISOString()
+                createdAt: advisor.createdAt || new Date().toISOString(),
+                status: advisor.status || 'active'
             }));
         }
 
@@ -2159,7 +2161,7 @@
                 });
                 
                 return `
-                    <div class="advisor-card-selection" data-advisor-id="${advisor.id}" id="advisor-card-${advisor.id}">
+                    <div class="advisor-card-selection ${advisor.status === 'inactive' ? 'inactive' : ''}" data-advisor-id="${advisor.id}" id="advisor-card-${advisor.id}">
                         <div class="advisor-info">
                             <div class="advisor-avatar">
                                 ${advisor.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
@@ -2172,6 +2174,7 @@
                                 </small>
                             </div>
                         </div>
+                        ${advisor.status === 'inactive' ? `<div style="margin-top:0.5rem; color:#ef4444; font-weight:700;">Deactivated</div>` : ''}
                         <div class="advisor-stats">
                             <div class="stat-item">
                                 <i class="fas fa-phone"></i>
@@ -2409,11 +2412,14 @@
                     v.assignedAdvisor === advisor.id && v.serviceStatus !== "delivered"
                 ).length;
                 
+                // If advisor is inactive, render card but do NOT attach onclick handler
+                const onclickAttr = advisor.status === 'inactive' ? '' : `onclick="handleAdvisorSelection(${advisor.id})"`;
+
                 return `
-                    <div class="advisor-card-selection modal-advisor-card" 
+                    <div class="advisor-card-selection modal-advisor-card ${advisor.status === 'inactive' ? 'inactive' : ''}" 
                          data-advisor-id="${advisor.id}" 
                          id="modal-advisor-${advisor.id}"
-                         onclick="handleAdvisorSelection(${advisor.id})">
+                         ${onclickAttr}>
                         <div class="advisor-info">
                             <div class="advisor-avatar">
                                 ${advisor.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
@@ -2440,6 +2446,7 @@
                                 <span>Completed: ${advisor.completedServices}</span>
                             </div>
                         </div>
+                           ${advisor.status === 'inactive' ? `<div style="margin-top:0.5rem; color:#ef4444; font-weight:700;">Deactivated</div>` : ''}
                     </div>
                 `;
             }).join('');
@@ -2451,6 +2458,13 @@
         }
 
         function handleAdvisorSelection(advisorId) {
+            // Prevent selecting deactivated advisors
+            const user = usersDatabase.find(u => u.id === advisorId && u.role === 'advisor');
+            if (user && user.status === 'inactive') {
+                showMessage('Selected advisor has been deactivated and cannot be assigned.', 'error');
+                return;
+            }
+
             selectedAdvisorForAssignment = advisorId;
             
             document.querySelectorAll('.modal-advisor-card').forEach(card => {
@@ -2486,6 +2500,13 @@
         function assignAdvisor(vehicleId, advisorId, serviceDescription) {
             const vehicleIndex = vehiclesDatabase.findIndex(v => v.id === vehicleId);
             if (vehicleIndex !== -1) {
+                // Ensure advisor is active before assigning (defense-in-depth)
+                const advisorUser = usersDatabase.find(u => u.id === advisorId && u.role === 'advisor');
+                if (advisorUser && advisorUser.status === 'inactive') {
+                    showMessage('Cannot assign a deactivated advisor. Please select an active advisor.', 'error');
+                    return;
+                }
+
                 vehiclesDatabase[vehicleIndex].assignedAdvisor = advisorId;
                 vehiclesDatabase[vehicleIndex].serviceStatus = "pending";
                 vehiclesDatabase[vehicleIndex].serviceDescription = serviceDescription;

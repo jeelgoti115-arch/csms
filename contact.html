@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CSMS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="images/car-service.png">
+    <link rel="shortcut icon" href="/images/favicon.ico" />
     <style>
         * {
             margin: 0;
@@ -2039,9 +2039,15 @@
             const userRole = currentUser ? currentUser.role : 'guest';
             const userId = currentUser ? currentUser.id : null;
 
-            // Create message object
+            // Create message object with numeric sequential id (prefer numeric ids)
+            const maxExistingId = contactMessages.reduce((max, m) => {
+                const nid = Number(m && m.id);
+                return Number.isFinite(nid) ? Math.max(max, nid) : max;
+            }, 0);
+            const newId = maxExistingId + 1;
+
             const newMessage = {
-                id: Math.random().toString(36).slice(2,9),
+                id: newId,
                 userId: userId,
                 userRole: userRole,
                 name: name,
