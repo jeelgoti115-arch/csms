@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/features.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-car"></i>
+                Car<span>Service</span>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="features.html" class="active"><i class="fas fa-star"></i> Features</a></li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li class="theme-toggle-item">
+                    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="floating-element floating-1"></div>
+        <div class="floating-element floating-2"></div>
+        <div class="page-header-content">
+            <div class="page-header-badge floating">
+                <i class="fas fa-bolt"></i>
+                Features
+            </div>
+            <h1 class="fade-in">CSMS Feature Showcase</h1>
+            <p class="fade-in">Discover the comprehensive suite of tools designed to revolutionize vehicle service management with cutting-edge technology and intuitive design.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Core Features -->
+        <section class="section">
+            <div class="section-title slide-in-left">
+                <h2>Core Features</h2>
+                <p>Essential tools that form the foundation of CSMS</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>Smart Role System</h3>
+                    <p>Advanced role-based access with granular permissions, activity tracking, and automated workflow assignments for six distinct user roles.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> Administrator: Full system control</li>
+                        <li><i class="fas fa-check-circle"></i> Service Advisor: Service management</li>
+                        <li><i class="fas fa-check-circle"></i> Receptionist: Customer interface</li>
+                        <li><i class="fas fa-check-circle"></i> Security Guard: Entry/exit tracking</li>
+                        <li><i class="fas fa-check-circle"></i> Technician: Repair operations</li>
+                        <li><i class="fas fa-check-circle"></i> Quality Controller: Service verification</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-car"></i>
+                    </div>
+                    <h3>AI Vehicle Tracking</h3>
+                    <p>Intelligent vehicle recognition, predictive maintenance scheduling, and real-time status updates with automated notifications.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> Automatic vehicle recognition</li>
+                        <li><i class="fas fa-check-circle"></i> Predictive maintenance alerts</li>
+                        <li><i class="fas fa-check-circle"></i> Real-time status tracking</li>
+                        <li><i class="fas fa-check-circle"></i> Service history database</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fa-solid fa-chart-line"></i>
+                    </div>
+                    <h3>Live Analytics Dashboard</h3>
+                    <p>Interactive dashboards with predictive insights, performance metrics, and data-driven decision making tools.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> Real-time KPIs monitoring</li>
+                        <li><i class="fas fa-check-circle"></i> Predictive analytics</li>
+                        <li><i class="fas fa-check-circle"></i> Customizable reports</li>
+                        <li><i class="fas fa-check-circle"></i> Performance metrics</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile First Design</h3>
+                    <p>Progressive web app with offline capabilities, push notifications, and native-like experience across all devices.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> Progressive Web App</li>
+                        <li><i class="fas fa-check-circle"></i> Offline capabilities</li>
+                        <li><i class="fas fa-check-circle"></i> Push notifications</li>
+                        <li><i class="fas fa-check-circle"></i> Native app experience</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3>Secure Cloud Storage</h3>
+                    <p>Military-grade encryption, automated backups, and GDPR-compliant data management with regular security audits.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> AES-256 encryption</li>
+                        <li><i class="fas fa-check-circle"></i> Automated daily backups</li>
+                        <li><i class="fas fa-check-circle"></i> GDPR compliance</li>
+                        <li><i class="fas fa-check-circle"></i> Regular security audits</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Assistant</h3>
+                    <p>24/7 intelligent assistant for queries, automated reports, smart suggestions, and predictive maintenance recommendations.</p>
+                    <ul class="feature-list">
+                        <li><i class="fas fa-check-circle"></i> 24/7 intelligent support</li>
+                        <li><i class="fas fa-check-circle"></i> Automated report generation</li>
+                        <li><i class="fas fa-check-circle"></i> Smart suggestions</li>
+                        <li><i class="fas fa-check-circle"></i> Predictive maintenance</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Role-Based Features -->
+        <section class="section">
+            <div class="section-title slide-in-left">
+                <h2>Role-Specific Features</h2>
+                <p>Customized tools for each user role in the system</p>
+            </div>
+            
+            <!-- Administrator -->
+            <div class="feature-category fade-in">
+                <div class="category-header">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a52);">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h3>Administrator Features</h3>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a52);">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <h3>User Management</h3>
+                        <p>Centralized management of user accounts, roles, and access rights to maintain system security and operational efficiency.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a52);">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3>System Analytics</h3>
+                        <p>Comprehensive system-wide analytics, performance metrics, and detailed reporting capabilities.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #ff6b6b, #ee5a52);">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3>System Configuration</h3>
+                        <p>Advanced system settings, customization options, and configuration management for optimal performance.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Service Advisor -->
+            <div class="feature-category fade-in">
+                <div class="category-header">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #4ecdc4, #44a08d);">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
+                    <h3>Service Advisor Features</h3>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #4ecdc4, #44a08d);">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                        <h3>Service Management</h3>
+                        <p>Manage service requests, assign technicians, track progress, and update service status in real-time.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #4ecdc4, #44a08d);">
+                            <i class="fas fa-file-invoice-dollar"></i>
+                        </div>
+                        <h3>Estimate Generation</h3>
+                        <p>Create detailed service estimates, track costs, and generate invoices with automated calculations.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #4ecdc4, #44a08d);">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h3>Appointment Scheduling</h3>
+                        <p>Schedule service appointments, manage availability, and send automated reminders to customers.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Receptionist -->
+            <div class="feature-category fade-in">
+                <div class="category-header">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #ffd166, #ffb347);">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3>Receptionist Features</h3>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #ffd166, #ffb347);">
+                            <i class="fas fa-user-check"></i>
+                        </div>
+                        <h3>Customer Check-in/Check-out</h3>
+                        <p>Efficiently register arriving customers, verify appointments, and process vehicle handovers.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #ffd166, #ffb347);">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h3>Call Management</h3>
+                        <p>Handle incoming calls, route inquiries to appropriate departments, and maintain communication logs.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #ffd166, #ffb347);">
+                            <i class="fas fa-receipt"></i>
+                        </div>
+                        <h3>Payment Processing</h3>
+                        <p>Process payments, issue receipts, handle billing inquiries, and manage customer accounts.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Security Guard -->
+            <div class="feature-category fade-in">
+                <div class="category-header">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #118ab2, #073b4c);">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>Security Guard Features</h3>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #118ab2, #073b4c);">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <h3>Vehicle Entry/Exit Logging</h3>
+                        <p>Record vehicle arrivals and departures, verify authorization, and maintain security logs.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #118ab2, #073b4c);">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <h3>Visitor Management</h3>
+                        <p>Register visitors, issue temporary passes, and monitor non-staff movement within the premises.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #118ab2, #073b4c);">
+                            <i class="fas fa-camera"></i>
+                        </div>
+                        <h3>Security Monitoring</h3>
+                        <p>Monitor security feeds, report incidents, and maintain safety protocols throughout the facility.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Technician -->
+            <div class="feature-category fade-in">
+                <div class="category-header">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #06d6a0, #04a777);">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>Technician Features</h3>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #06d6a0, #04a777);">
+                            <i class="fas fa-wrench"></i>
+                        </div>
+                        <h3>Work Order Management</h3>
+                        <p>Access assigned work orders, update task status, log parts used, and record service details.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #06d6a0, #04a777);">
+                            <i class="fas fa-clipboard-check"></i>
+                        </div>
+                        <h3>Service Documentation</h3>
+                        <p>Document repair procedures, attach photos, record diagnostics, and maintain service history.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #06d6a0, #04a777);">
+                            <i class="fas fa-box-open"></i>
+                        </div>
+                        <h3>Parts Management</h3>
+                        <p>Request parts, track inventory usage, report shortages, and manage tool allocation.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quality Controller -->
+            <div class="feature-category fade-in">
+                <div class="category-header">
+                    <div class="category-icon" style="background: linear-gradient(135deg, #7209b7, #560bad);">
+                        <i class="fas fa-clipboard-list"></i>
+                    </div>
+                    <h3>Quality Controller Features</h3>
+                </div>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #7209b7, #560bad);">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <h3>Quality Inspection</h3>
+                        <p>Perform post-service inspections, verify repair quality, and ensure compliance with standards.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #7209b7, #560bad);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3>Performance Metrics</h3>
+                        <p>Track technician performance, monitor service quality metrics, and identify improvement areas.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon" style="background: linear-gradient(135deg, #7209b7, #560bad);">
+                            <i class="fas fa-flag"></i>
+                        </div>
+                        <h3>Compliance Reporting</h3>
+                        <p>Generate quality reports, document non-conformities, and ensure regulatory compliance.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Feature Comparison -->
+        <section class="section">
+            <div class="section-title slide-in-left">
+                <h2>Feature Comparison</h2>
+                <p>See how features are distributed across different user roles</p>
+            </div>
+            
+            <div class="comparison-table fade-in">
+                <div class="table-header">
+                    <h3>Role-Based Feature Access</h3>
+                    <p>Comprehensive breakdown of feature availability by user role</p>
+                </div>
+                <div class="table-content">
+                    <div class="comparison-row" style="background: rgba(0,0,0,0.03); font-weight: bold;">
+                        <div class="feature-name">Feature</div>
+                        <div class="role-check admin">Admin</div>
+                        <div class="role-check advisor">Advisor</div>
+                        <div class="role-check receptionist">Receptionist</div>
+                        <div class="role-check guard">Guard</div>
+                        <div class="role-check technician">Technician</div>
+                        <div class="role-check quality">Quality</div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="feature-name">User Management</div>
+                        <div class="role-check admin"><i class="fas fa-check"></i></div>
+                        <div class="role-check advisor"><i class="fas fa-times"></i></div>
+                        <div class="role-check receptionist"><i class="fas fa-times"></i></div>
+                        <div class="role-check guard"><i class="fas fa-times"></i></div>
+                        <div class="role-check technician"><i class="fas fa-times"></i></div>
+                        <div class="role-check quality"><i class="fas fa-times"></i></div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="feature-name">Vehicle Entry/Exit</div>
+                        <div class="role-check admin"><i class="fas fa-times"></i></div>
+                        <div class="role-check advisor"><i class="fas fa-times"></i></div>
+                        <div class="role-check receptionist"><i class="fas fa-times"></i></div>
+                        <div class="role-check guard"><i class="fas fa-check"></i></div>
+                        <div class="role-check technician"><i class="fas fa-times"></i></div>
+                        <div class="role-check quality"><i class="fas fa-times"></i></div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="feature-name">Service Management</div>
+                        <div class="role-check admin"><i class="fas fa-check"></i></div>
+                        <div class="role-check advisor"><i class="fas fa-check"></i></div>
+                        <div class="role-check receptionist"><i class="fas fa-check"></i></div>
+                        <div class="role-check guard"><i class="fas fa-times"></i></div>
+                        <div class="role-check technician"><i class="fas fa-check"></i></div>
+                        <div class="role-check quality"><i class="fas fa-check"></i></div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="feature-name">Report Generation</div>
+                        <div class="role-check admin"><i class="fas fa-check"></i></div>
+                        <div class="role-check advisor"><i class="fas fa-check"></i></div>
+                        <div class="role-check receptionist"><i class="fas fa-check"></i></div>
+                        <div class="role-check guard"><i class="fas fa-times"></i></div>
+                        <div class="role-check technician"><i class="fas fa-check"></i></div>
+                        <div class="role-check quality"><i class="fas fa-check"></i></div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="feature-name">System Configuration</div>
+                        <div class="role-check admin"><i class="fas fa-check"></i></div>
+                        <div class="role-check advisor"><i class="fas fa-times"></i></div>
+                        <div class="role-check receptionist"><i class="fas fa-times"></i></div>
+                        <div class="role-check guard"><i class="fas fa-times"></i></div>
+                        <div class="role-check technician"><i class="fas fa-times"></i></div>
+                        <div class="role-check quality"><i class="fas fa-times"></i></div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="feature-name">Customer Communication</div>
+                        <div class="role-check admin"><i class="fas fa-check"></i></div>
+                        <div class="role-check advisor"><i class="fas fa-check"></i></div>
+                        <div class="role-check receptionist"><i class="fas fa-check"></i></div>
+                        <div class="role-check guard"><i class="fas fa-times"></i></div>
+                        <div class="role-check technician"><i class="fas fa-times"></i></div>
+                        <div class="role-check quality"><i class="fas fa-times"></i></div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="feature-name">Security Monitoring</div>
+                        <div class="role-check admin"><i class="fas fa-check"></i></div>
+                        <div class="role-check advisor"><i class="fas fa-times"></i></div>
+                        <div class="role-check receptionist"><i class="fas fa-times"></i></div>
+                        <div class="role-check guard"><i class="fas fa-check"></i></div>
+                        <div class="role-check technician"><i class="fas fa-times"></i></div>
+                        <div class="role-check quality"><i class="fas fa-times"></i></div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="feature-name">Quality Inspection</div>
+                        <div class="role-check admin"><i class="fas fa-check"></i></div>
+                        <div class="role-check advisor"><i class="fas fa-times"></i></div>
+                        <div class="role-check receptionist"><i class="fas fa-times"></i></div>
+                        <div class="role-check guard"><i class="fas fa-times"></i></div>
+                        <div class="role-check technician"><i class="fas fa-times"></i></div>
+                        <div class="role-check quality"><i class="fas fa-check"></i></div>
+                    </div>
+                    <div class="comparison-row">
+                        <div class="feature-name">Technical Work Orders</div>
+                        <div class="role-check admin"><i class="fas fa-check"></i></div>
+                        <div class="role-check advisor"><i class="fas fa-times"></i></div>
+                        <div class="role-check receptionist"><i class="fas fa-times"></i></div>
+                        <div class="role-check guard"><i class="fas fa-times"></i></div>
+                        <div class="role-check technician"><i class="fas fa-check"></i></div>
+                        <div class="role-check quality"><i class="fas fa-times"></i></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Benefits -->
+        <section class="section">
+            <div class="section-title slide-in-left">
+                <h2>Key Benefits</h2>
+                <p>How CSMS transforms vehicle service management</p>
+            </div>
+            
+            <div class="benefits-grid">
+                <div class="benefit-card fade-in">
+                    <div class="benefit-number">01</div>
+                    <div class="benefit-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h4>Increased Efficiency</h4>
+                    <p>Streamline operations with automated workflows, reducing manual work by up to 70% and increasing overall productivity.</p>
+                </div>
+                <div class="benefit-card fade-in">
+                    <div class="benefit-number">02</div>
+                    <div class="benefit-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h4>Delivery in Time</h4>
+                    <p>The system manages visitor vehicle repair and service processes.It ensures quality work and timely vehicle delivery.</p>
+                </div>
+                
+                <div class="benefit-card fade-in">
+                    <div class="benefit-number">03</div>
+                    <div class="benefit-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4>Enhanced Security</h4>
+                    <p>Advanced security protocols and role-based access ensure data protection and prevent unauthorized access to sensitive information.</p>
+                </div>
+                
+                <div class="benefit-card fade-in">
+                    <div class="benefit-number">04</div>
+                    <div class="benefit-icon">
+                        <i class="fas fa-smile"></i>
+                    </div>
+                    <h4>Improved Customer Satisfaction</h4>
+                    <p>Faster service times, accurate communication, and transparent processes lead to higher customer satisfaction rates.</p>
+                </div>
+                
+                <div class="benefit-card fade-in">
+                    <div class="benefit-number">05</div>
+                    <div class="benefit-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <h4>Cost Reduction</h4>
+                    <p>Optimize resource allocation, reduce errors, and minimize waste, leading to significant cost savings over time.</p>
+                </div>
+                
+                <div class="benefit-card fade-in">
+                    <div class="benefit-number">06</div>
+                    <div class="benefit-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4>Data-Driven Decisions</h4>
+                    <p>Access real-time analytics and insights to make informed decisions and continuously improve service quality.</p>
+                </div>
+                
+                <div class="benefit-card fade-in">
+                    <div class="benefit-number">07</div>
+                    <div class="benefit-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h4>Mobile Accessibility</h4>
+                    <p>Access the system from anywhere, anytime, with full mobile functionality for on-the-go management.</p>
+                </div>
+
+                <div class="benefit-card fade-in">
+                    <div class="benefit-number">08</div>
+                    <div class="benefit-icon">
+                        <i class="fas fa-map-marked-alt"></i>
+                    </div>
+                    <h4>Real-Time Vehicle Tracking</h4>
+                    <p>Track vehicle status at every service stage with live updates for better transparency.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Integrations -->
+        <section class="section">
+            <div class="section-title slide-in-left">
+                <h2>Integrations</h2>
+                <p>Seamlessly connect with your existing tools and systems</p>
+            </div>
+            
+            <div class="integrations-grid">
+                <div class="integration-card fade-in">
+                    <div class="integration-icon">
+                        <i class="fas fa-file-invoice"></i>
+                    </div>
+                    <h4>Accounting Software</h4>
+                    <p>QuickBooks, Xero, and other financial systems</p>
+                </div>
+                <div class="integration-card fade-in">
+                    <div class="integration-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h4>Communication Tools</h4>
+                    <p>Email, SMS, and messaging platforms</p>
+                </div>
+                
+                <div class="integration-card fade-in">
+                    <div class="integration-icon">
+                        <i class="fas fa-chart-pie"></i>
+                    </div>
+                    <h4>Analytics Platforms</h4>
+                    <p>Google Analytics, custom BI tools</p>
+                </div>
+                
+                <div class="integration-card fade-in">
+                    <div class="integration-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h4>Cloud Storage</h4>
+                    <p>Google Drive, Dropbox, OneDrive</p>
+                </div>
+                
+                <div class="integration-card fade-in">
+                    <div class="integration-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h4>CRM Systems</h4>
+                    <p>Salesforce, HubSpot, and other CRMs</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="section">
+            <div class="section-title slide-in-left">
+                <h2>Frequently Asked Questions</h2>
+                <p>Find answers to common questions about CSMS features</p>
+            </div>
+            
+            <div class="faq-container">
+                <div class="faq-item fade-in">
+                    <button class="faq-question">
+                        What makes CSMS different from other vehicle service management systems?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>CSMS stands out with its advanced AI-powered features, comprehensive role-based system, mobile-first design, and robust security protocols. Unlike basic systems, CSMS offers predictive maintenance, real-time analytics, and seamless integrations that transform vehicle service operations.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <button class="faq-question">
+                        How secure is the CSMS platform?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>CSMS employs military-grade AES-256 encryption, regular security audits, GDPR compliance, and automated backups. Our role-based access system ensures users only see what they need, and all data transmission is secured with SSL/TLS encryption.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <button class="faq-question">
+                        Can CSMS be customized for my specific needs?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes, CSMS offers extensive customization options including custom workflows, role configurations, report templates, and integration capabilities. Our platform can be tailored to fit the unique requirements of your service center.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <button class="faq-question">
+                        Is training provided for the CSMS platform?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely! We provide comprehensive training materials, video tutorials, live training sessions, and dedicated customer support to ensure your team can make the most of CSMS features quickly and efficiently.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item fade-in">
+                    <button class="faq-question">
+                        What kind of support is available for CSMS users?
+                        <i class="fas fa-chevron-down"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>CSMS offers 24/7 customer support through multiple channels including email, phone, live chat, and a comprehensive knowledge base. We also provide regular updates, feature enhancements, and dedicated account management for enterprise clients.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="stats-section">
+            <div class="stats-content">
+                <div class="stats-grid">
+                    <div class="stat-item fade-in">
+                        <h3 id="feature-stats-1">45+</h3>
+                        <p>Powerful Features</p>
+                    </div>
+                    <div class="stat-item fade-in">
+                        <h3 id="feature-stats-2">99.9%</h3>
+                        <p>System Uptime</p>
+                    </div>
+                    <div class="stat-item fade-in">
+                        <h3 id="feature-stats-3">6</h3>
+                        <p>User Roles</p>
+                    </div>
+                    <div class="stat-item fade-in">
+                        <h3 id="feature-stats-4">24*7</h3>
+                        <p>Support Available</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <div class="cta-content">
+                <h2 class="slide-in-left">Ready to Experience Advanced Features?</h2>
+                <p class="fade-in">Join thousands of service centers already transforming their operations with SMS's powerful features.</p>
+                <div class="cta-buttons">
+                    <a href="logreg.html" class="btn btn-primary fade-in">
+                        <i class="fas fa-rocket"></i>
+                        Start Free Trial
+                    </a>
+                    <a href="contact.html" class="btn btn-secondary fade-in">
+                        <i class="fas fa-calendar"></i>
+                        Schedule Demo
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <i class="fas fa-car"></i>
+                        Car<span>Service</span>
+                    </div>
+                    <p class="footer-description">
+                        Car Service Management System is more than just software—it's a commitment to excellence in vehicle service operations. We're dedicated to continuous improvement and innovation to serve our clients better every day.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link-facebook">
+                            <i class="fa-brands fa-facebook-f fa-lg"></i>
+                        </a>
+                        <a href="#" class="social-link-whatsapp">
+                            <i class="fa-brands fa-whatsapp fa-lg"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link-linkedln">
+                            <i class="fab fa-linkedin-in fa-lg"></i>
+                        </a>
+                        <a href="https://github.com/" class="social-link-github">
+                            <i class="fab fa-github fa-lg"></i>
+                        </a>
+                        <a href="#" class="social-link-yt">
+                            <i class="fab fa-youtube fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="index.html#features"><i class="fas fa-chevron-right"></i> Features</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Pricing</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Case Studies</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Updates</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="about.html" class="active"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Careers</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Press</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> API Docs</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> System Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2020-2026 Car Service Management System. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements
+        document.querySelectorAll('.fade-in, .slide-in-left').forEach(el => {
+            observer.observe(el);
+        });
+
+        // FAQ functionality
+        document.querySelectorAll('.faq-question').forEach(button => {
+            button.addEventListener('click', () => {
+                const faqItem = button.parentElement;
+                faqItem.classList.toggle('active');
+            });
+        });
+
+        // Animate stats on scroll
+        function animateStats() {
+            const statsSection = document.querySelector('.stats-section');
+            if (!statsSection) return;
+            
+            const statsPosition = statsSection.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+
+            if (statsPosition < screenPosition) {
+                // Animate feature stats
+                animateNumber('feature-stats-1', 45, 40);
+                animateNumber('feature-stats-2', 99.9, 99.9, true);
+                animateNumber('feature-stats-3', 6, 6);
+                animateNumber('feature-stats-4', 24, 24);
+                
+                // Remove scroll listener after animation
+                window.removeEventListener('scroll', animateStats);
+            }
+        }
+
+        // Animate number counting
+        function animateNumber(elementId, target, baseNumber, isPercent = false) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    element.textContent = target + (isPercent ? '%' : '+');
+                    clearInterval(timer);
+                } else {
+                    element.textContent = current.toFixed(isPercent ? 1 : 0) + (isPercent ? '%' : '+');
+                }
+            }, 30);
+        }
+
+        // Initialize
+        window.addEventListener('scroll', animateStats);
+        
+        // Trigger once on load in case stats are already visible
+        setTimeout(animateStats, 100);
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const navLinks = document.getElementById('navLinks');
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.backdropFilter = 'blur(20px)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            }
+        });
+
+        /* Theme Toggle Handler */
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            // Check sessionStorage for saved preference
+            const savedTheme = sessionStorage.getItem('theme-preference');
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
+            }
+            
+            // Toggle button click handler
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
+                    sessionStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+        
+        // Initialize theme toggle when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThemeToggle);
+        } else {
+            initThemeToggle();
+        }
+    </script>
+</body>
+</html>
+

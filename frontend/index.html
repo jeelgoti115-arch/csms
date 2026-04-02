@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+</head>
+<body>
+    <!-- ======================================= Header ======================================= -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-car"></i>
+                Car<span>Service</span>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html" class="active"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="features.html"><i class="fas fa-star"></i> Features</a></li>
+                <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li class="theme-toggle-item">
+                    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+   
+    <!-- ======================================= Hero Section ======================================= -->
+    <section class="hero">
+        <div class="floating-element floating-1"></div>
+        <div class="floating-element floating-2"></div>
+        <div class="hero-content">
+            <div class="hero-badge floating">
+                <i class="fa-solid fa-house"></i>
+                Home
+            </div>
+            <h1 class="fade-in">Car Service Management</h1>
+            <p class="fade-in">Revolutionize your vehicle service operations with our AI-powered platform. Efficient, secure, and designed for excellence.</p>
+            <div class="cta-buttons">
+                <a href="logreg.html" class="btn btn-primary fade-in">
+                    <i class="fas fa-rocket"></i>
+                    Get Started
+                </a>
+                <a href="#features" class="btn btn-outline fade-in">
+                    <i class="fa-solid fa-bars"></i>
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===================================== Features Section ===================================== -->
+    <section class="container" id="features">
+        <div class="section-title slide-in-left">
+            <h2>Powerful Features</h2>
+            <p>Designed to streamline every aspect of vehicle service management</p>
+        </div>
+        
+        <div class="features">
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3>Smart Role System</h3>
+                <p>Advanced role-based access with granular permissions, activity tracking, and automated workflow assignments.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-car"></i>
+                </div>
+                <h3>AI Vehicle Tracking</h3>
+                <p>Intelligent vehicle recognition, predictive maintenance scheduling, and real-time status updates.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Live Analytics</h3>
+                <p>Interactive dashboards, predictive insights, and performance metrics for data-driven decisions.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <h3>Mobile First</h3>
+                <p>Progressive web app with offline capabilities, push notifications, and native-like experience.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-database"></i>
+                </div>
+                <h3>Secure Cloud</h3>
+                <p>Military-grade encryption, automated backups, and GDPR-compliant data management.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+            
+            <div class="feature-card fade-in">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>AI Assistant</h3>
+                <p>24/7 intelligent assistant for queries, automated reports, and smart suggestions.</p>
+                <a href="#" class="feature-link">
+                    Learn more
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ====================================== Roles Section ====================================== -->
+    <section class="container" id="roles">
+        <div class="section-title slide-in-left">
+            <h2>Designed for Every Role</h2>
+            <p>Specialized interfaces for each team member's unique responsibilities</p>
+        </div>
+        
+        <div class="roles-grid">
+            <div class="role-card fade-in">
+                <div class="role-icon admin">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h3>Administrator</h3>
+                <p>Full system control, user management, analytics, and configuration capabilities.</p>
+                <a href="logreg.html" class="role-btn admin">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Admin Portal
+                </a>
+            </div>
+            
+            <div class="role-card fade-in">
+                <div class="role-icon guard">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h3>Security Guard</h3>
+                <p>Vehicle verification, entry/exit logging, and security monitoring & managing.</p>
+                <a href="logreg.html" class="role-btn guard">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Security Portal
+                </a>
+            </div>
+
+            <div class="role-card fade-in">
+                <div class="role-icon receptionist">
+                    <i class="fas fa-user"></i>
+                </div>
+                <h3>Receptionist</h3>
+                <p>Appointment scheduling, customer check-ins, and basic information management.</p>
+                <a href="logreg.html" class="role-btn receptionist">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Reception Portal
+                </a>
+            </div>
+            <div class="role-card fade-in">
+                <div class="role-icon advisor">
+                    <i class="fas fa-user-cog"></i>
+                </div>
+                <h3>Service Advisor</h3>
+                <p>Service management, customer communication, and workflow coordination.</p>
+                <a href="logreg.html" class="role-btn advisor">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Advisor Portal
+                </a>    
+            </div>
+            <br>
+        </div>
+    </section>
+    <!-- ======================================= Stats Section ======================================= -->
+    <section class="stats">
+        <div class="container stats-content">
+            <div class="stats-grid">
+                <div class="stat-item fade-in">
+                    <h3 id="total-vehicles-stats">500+</h3>
+                    <p>Vehicles Managed</p>
+                </div>
+                <div class="stat-item fade-in">
+                    <h3 id="daily-entries-stats">50+</h3>
+                    <p>Daily Entries</p>
+                </div>
+                <div class="stat-item fade-in">
+                    <h3 id="active-users-stats">100+</h3>
+                    <p>Active Users</p>
+                </div>
+                <div class="stat-item fade-in">
+                    <h3 id="satisfaction-rate">98%</h3>
+                    <p>Satisfaction Rate</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================= Testimonials ======================================= -->
+    <section class="container testimonials">
+        <div class="section-title slide-in-left">
+            <h2>Trusted by Industry Leaders</h2>
+            <p>See what our customers say about CSMS</p>
+        </div>
+        
+        <div class="testimonial-grid">
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    "CSMS transformed our service center operations. Efficiency increased by 40% and customer satisfaction skyrocketed."
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">SJ</div>
+                    <div class="author-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>Operations Manager, AutoCare Center</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    "The role-based system is brilliant. Each team member gets exactly what they need. Implementation was seamless."
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">MR</div>
+                    <div class="author-info">
+                        <h4>Michael Rodriguez</h4>
+                        <p>Service Director, Premium Motors</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-card fade-in">
+                <div class="testimonial-content">
+                    "Security features are top-notch. The guard interface makes entry/exit tracking effortless and accurate. Implementation was seamless."
+                </div>
+                <div class="testimonial-author">
+                    <div class="author-avatar">DK</div>
+                    <div class="author-info">
+                        <h4>David Kim</h4>
+                        <p>Security Head, Metro Auto Services</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ======================================= Footer ======================================= -->
+    <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <i class="fas fa-car"></i>
+                        Car<span>Service</span>
+                    </div>
+                    <p class="footer-description">
+                        Car Service Management System is more than just software—it's a commitment to excellence in vehicle service operations. We're dedicated to continuous improvement and innovation to serve our clients better every day.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link-facebook">
+                            <i class="fa-brands fa-facebook-f fa-lg"></i>
+                        </a>
+                        <a href="#" class="social-link-whatsapp">
+                            <i class="fa-brands fa-whatsapp fa-lg"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link-linkedln">
+                            <i class="fab fa-linkedin-in fa-lg"></i>
+                        </a>
+                        <a href="https://github.com/" class="social-link-github">
+                            <i class="fab fa-github fa-lg"></i>
+                        </a>
+                        <a href="#" class="social-link-yt">
+                            <i class="fab fa-youtube fa-lg"></i>
+                        </a>
+                    </div>
+                </div>  
+                
+                <div class="footer-links">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="index.html#features"><i class="fas fa-chevron-right"></i> Features</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Pricing</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Case Studies</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Updates</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="about.html" class="active"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Careers</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Press</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> API Docs</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> System Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2020-2026 Car Service Management System. All rights reserved.</p>
+            </div>
+        </footer>
+
+    <script>
+        // Mobile menu toggle=======================================
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // Intersection Observer for animations=======================================
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements=======================================
+        document.querySelectorAll('.fade-in, .slide-in-left').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Animate stats on scroll=======================================
+        function animateStats() {
+            const statsSection = document.querySelector('.stats');
+            if (!statsSection) return;
+            
+            const statsPosition = statsSection.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+
+            if (statsPosition < screenPosition) {
+                // Get vehicle data from sessionStorage=======================================
+                const vehiclesDatabase = JSON.parse(sessionStorage.getItem('vsms_vehicles')) || [];
+                const totalVehicles = vehiclesDatabase.length;
+                
+                // Calculate daily entries (vehicles added today)=======================================
+                const today = new Date().toISOString().split('T')[0];
+                const dailyEntries = vehiclesDatabase.filter(vehicle => {
+                    const entryDate = vehicle.entryTime ? vehicle.entryTime.split('T')[0] : '';
+                    return entryDate === today;
+                }).length;
+                
+                // Update stats with animation=======================================
+                animateNumber('total-vehicles-stats', Math.max(totalVehicles, 100), 500);
+                animateNumber('daily-entries-stats', Math.max(dailyEntries, 10), 50);
+                animateNumber('active-users-stats', Math.max(totalVehicles * 0.2, 20), 100);
+                
+                // Remove scroll listener after animation=======================================
+                window.removeEventListener('scroll', animateStats);
+            }
+        }
+        // Animate number counting=======================================
+        function animateNumber(elementId, target, baseNumber) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            
+            const finalNumber = target > baseNumber ? target : baseNumber;
+            let current = 0;
+            const increment = Math.ceil(finalNumber / 50);
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= finalNumber) {
+                    element.textContent = finalNumber + '+';
+                    clearInterval(timer);
+                } else {
+                    element.textContent = current + '+';
+                }
+            }, 20);
+        }
+        // Initialize=======================================
+        window.addEventListener('scroll', animateStats); 
+        // Trigger once on load in case stats are already visible=======================================
+        setTimeout(animateStats, 100);
+        // Check if user is logged in and show welcome message=======================================
+        setTimeout(() => {
+            const currentUser = JSON.parse(sessionStorage.getItem('vsms_current_user'));
+            if (currentUser) {
+                // Update hero section to show welcome message=======================================
+                const hero = document.querySelector('.hero h1');
+                if (hero) {
+                    hero.innerHTML = `Welcome back, ${currentUser.name}!`;
+                }
+                const heroSubtitle = document.querySelector('.hero p');
+                if (heroSubtitle) {
+                    const roleName = getRoleName(currentUser.role);
+                    heroSubtitle.textContent = `You are logged in as ${roleName}. Access your dashboard to continue.`;
+                }
+                // Update CTA buttons=======================================
+                const ctaButtons = document.querySelector('.cta-buttons');
+                if (ctaButtons) {
+                    ctaButtons.innerHTML = `
+                        <a href="${currentUser.role}.html" class="btn btn-primary fade-in">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Go to ${getRoleName(currentUser.role)} Dashboard
+                        </a>
+                        <a href="#" id="logout-home" class="btn btn-secondary fade-in">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    `;  
+                    // Add logout event listener=======================================
+                    document.getElementById('logout-home').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        sessionStorage.removeItem('vsms_current_user');
+                        window.location.href = 'index.html';
+                    });
+                }
+            }
+        }, 500);      
+        function getRoleName(roleCode) {
+            switch(roleCode) {
+                case 'admin': return 'Administrator';
+                case 'advisor': return 'Service Advisor';
+                case 'technician': return 'Technician';
+                case 'qc': return 'Quality Controller';
+                case 'receptionist': return 'Receptionist';
+                case 'guard': return 'Security Guard';
+                default: return 'User';
+            }
+        }
+        // Smooth scrolling for anchor links=======================================
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });  
+                    // Close mobile menu if open=======================================
+                    const navLinks = document.getElementById('navLinks');
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+        // Add scroll effect to header=======================================
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.backdropFilter = 'blur(20px)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            }
+        });
+
+        /* Theme Toggle Handler======================================= */
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;
+            
+            // Check sessionStorage for saved preference=======================================
+            const savedTheme = sessionStorage.getItem('theme-preference');
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
+            }
+            
+            // Toggle button click handler=======================================
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
+                    sessionStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+        
+        // Initialize theme toggle when DOM is ready=======================================
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThemeToggle);
+        } else {
+            initThemeToggle();
+        }
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,29 @@
+# Node.js dependencies
+backend/node_modules/
+
+# Environment files
+backend/.env
+.env
+
+# Local logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Uploaded assets and runtime data
+frontend/uploads/
+
+# IDE / editor folders
+.vscode/
+.idea/
+
+# Optional npm cache
+.npm/
+
+# Misc
+coverage/

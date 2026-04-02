@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSMS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/contact.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav>
+            <div class="logo">
+                <i class="fas fa-car"></i>
+                Car<span>Service</span>
+            </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
+                <li><a href="about.html"><i class="fas fa-info-circle"></i> About</a></li>
+                <li><a href="features.html"><i class="fas fa-star"></i> Features</a></li>
+                <li><a href="contact.html" class="active"><i class="fas fa-envelope"></i> Contact</a></li>
+                <li class="theme-toggle-item">
+                    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
+                        <i class="fas fa-sun"></i>
+                    </button>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="floating-element floating-1"></div>
+        <div class="floating-element floating-2"></div>
+        <div class="page-header-content">
+            <div class="page-header-badge floating">
+                <i class="fas fa-headset"></i>
+                Contact Us 24/7
+            </div>
+            <h1 class="fade-in">Contact & Support</h1>
+            <p class="fade-in">Get in touch with our managing team. Report problems, provide feedback, or share your experience with our Car Service Management System.</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Main Content -->
+        <div class="contact-content">
+            <!-- Contact Info -->
+            <div class="contact-info fade-in">
+                <div class="info-card">
+                    <h3><i class="fas fa-info-circle"></i> Contact Information</h3>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Work Address</h4>
+                            <p>Vehicle Service Management System HQ<br>
+                            123 Service Street, Tech Nagar<br>
+                            Mota Varachha, Surat 12345</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Phone Numbers</h4>
+                            <p>General Inquiries: <a href="tel:+919328961867">+91 9328961867</a><br>
+                            Support Hotline: <a href="tel:+919328961867">+91 9328961867</a><br>
+                            Emergency: <a href="tel:+919328961867">+91 9328961867</a></p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Email Addresses</h4>
+                            <p>Admin Team: <a href="mailto:jeelgoti115@gmail.com">jeelgoti115@gmail.com</a><br>
+                            Support: <a href="mailto:jeelgoti115@gmail.com">jeelgoti115@gmail.com</a><br>
+                            Feedback: <a href="mailto:jeelgoti115@gmail.com">jeelgoti115@gmail.com</a></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-card">
+                    <h3><i class="fas fa-clock"></i> Office Hours</h3>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Working Days</h4>
+                            <p>Monday - Friday: 9:00 AM - 6:00 PM<br>
+                            Saturday: 10:00 AM - 4:00 PM<br>
+                            Sunday: Closed</p>
+                        </div>
+                    </div>
+                    
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="fas fa-bullhorn"></i>
+                        </div>
+                        <div class="info-content">
+                            <h4>Response Time</h4>
+                            <p>We typically respond within:<br>
+                            • 1-2 hours for regular basis<br>
+                            • 4-6 hours for general inquiries<br>
+                            • 24 hours for feedback/reviews<br>
+                            Response time may be take more time if team in not available.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Form -->
+            <div class="contact-form-container fade-in">
+                <h2 class="form-title">Connect with Us</h2>
+                <form id="contact-form">
+                    <!-- User Info -->
+                    <div class="form-group">
+                        <label for="user-name">
+                            <i class="fas fa-user"></i>
+                            Your Name <span class="required">*</span>
+                        </label>
+                        <input 
+                            type="text" 
+                            id="user-name" 
+                            class="form-control" 
+                            placeholder="Enter Your Full Name" 
+                            required
+                        >
+                        <div class="form-feedback" id="name-feedback"></div>
+                    </div>
+                    
+                    <div class="form-row" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label for="user-email">
+                                <i class="fas fa-envelope"></i>
+                                Email Address <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="email" 
+                                id="user-email" 
+                                class="form-control" 
+                                placeholder="example@email.com" 
+                                required
+                            >
+                            <div class="form-feedback" id="email-feedback"></div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="user-phone">
+                                <i class="fas fa-phone"></i>
+                                Phone Number <span class="required">*</span>
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="user-phone" 
+                                class="form-control" 
+                                placeholder="Mobile Number" 
+                                required
+                                maxlength="10"
+                            >
+                            <div class="form-feedback" id="phone-feedback"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Problem Type Selection -->
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-exclamation-circle"></i>
+                            Type of Inquiry <span class="required">*</span>
+                        </label>
+                        <div class="problem-type">
+                            <label class="problem-option">
+                                <input type="radio" name="problem-type" value="problem" required>
+                                <div class="radio-custom"></div>
+                                <div class="option-text">
+                                    <i class="fas fa-bug"></i>
+                                    Problem Report
+                                </div>
+                            </label>
+                            
+                            <label class="problem-option">
+                                <input type="radio" name="problem-type" value="feedback">
+                                <div class="radio-custom"></div>
+                                <div class="option-text">
+                                    <i class="fas fa-comment-alt"></i>
+                                    Feedback
+                                </div>
+                            </label>
+                            
+                            <label class="problem-option">
+                                <input type="radio" name="problem-type" value="review">
+                                <div class="radio-custom"></div>
+                                <div class="option-text">
+                                    <i class="fas fa-star"></i>
+                                    Review
+                                </div>
+                            </label>
+                            
+                            <label class="problem-option">
+                                <input type="radio" name="problem-type" value="suggestion">
+                                <div class="radio-custom"></div>
+                                <div class="option-text">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Suggestion
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <!-- Problem Description -->
+                    <div class="form-group">
+                        <label for="problem-description">
+                            <i class="fas fa-edit"></i>
+                            Description <span class="required">*</span>
+                        </label>
+                        <textarea 
+                            id="problem-description" 
+                            class="form-control" 
+                            placeholder="Please describe your problem, feedback, or review in detail. Be as specific as possible to help us understand and address your concern effectively."
+                            required
+                        ></textarea>
+                        <div class="form-feedback" id="description-feedback"></div>
+                        <div style="display: flex; justify-content: space-between; margin-top: 0.5rem;">
+                            <small style="color: var(--gray); font-size: 0.85rem;" id="char-count">
+                                0/1000 characters
+                            </small>
+                        </div>
+                    </div>
+                    <!-- Submit Button -->
+                    <div class="form-group">
+                        <button type="submit" class="btn" id="submit-btn">
+                            <i class="fas fa-paper-plane"></i>
+                            Send Message to Admin
+                        </button>
+                    </div>
+                    
+                    <div style="text-align: center; margin-top: 1.5rem; color: var(--gray); font-size: 0.9rem;">
+                        <p><i class="fas fa-shield-alt"></i> Your information is secure and will only be used to address your inquiry.</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Contact Methods -->
+        <div class="contact-methods-section">
+            <div class="section-title slide-in-left">
+                <h2>Other Ways to Reach Us</h2>
+                <p>Multiple channels available for your convenience</p>
+            </div>
+            
+            <div class="contact-methods">
+                <div class="contact-method fade-in">
+                    <div class="method-icon">
+                        <i class="fab fa-whatsapp"></i>
+                    </div>
+                    <h4>WhatsApp Support</h4>
+                    <p>+91 9328961867</p>
+                    <span class="availability">Available 24/7</span>
+                </div>
+                
+                <div class="contact-method fade-in">
+                    <div class="method-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h4>Live Chat</h4>
+                    <p>On our website</p>
+                    <span class="availability">Mon-Fri, 9AM-6PM</span>
+                </div>
+                
+                <div class="contact-method fade-in">
+                    <div class="method-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h4>Help Desk</h4>
+                    <p>help@vehicleservice.com</p>
+                    <span class="availability">Priority Support</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="map-section fade-in">
+            <div class="map-placeholder">
+                <div class="map-content">
+                    <h3>Visit Our Office</h3>
+                    <p>Come meet us in person at our headquarters in Mota Varachha, Surat</p>
+                    <a href="https://www.google.com/maps?q=21.234096086586977,72.86422058224434" target="_blank" class="map-btn">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Open in Google Maps
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-about">
+                    <div class="footer-logo">
+                        <i class="fas fa-car"></i>
+                        Car<span>Service</span>
+                    </div>
+                    <p class="footer-description">
+                        Car Service Management System is more than just software—it's a commitment to excellence in vehicle service operations. We're dedicated to continuous improvement and innovation to serve our clients better every day.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="social-link-facebook">
+                            <i class="fa-brands fa-facebook-f fa-lg"></i>
+                        </a>
+                        <a href="#" class="social-link-whatsapp">
+                            <i class="fa-brands fa-whatsapp fa-lg"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link-linkedln">
+                            <i class="fab fa-linkedin-in fa-lg"></i>
+                        </a>
+                        <a href="https://github.com/" class="social-link-github">
+                            <i class="fab fa-github fa-lg"></i>
+                        </a>
+                        <a href="#" class="social-link-yt">
+                            <i class="fab fa-youtube fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Product</h3>
+                    <ul>
+                        <li><a href="index.html#features"><i class="fas fa-chevron-right"></i> Features</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Pricing</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Case Studies</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Updates</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Company</h3>
+                    <ul>
+                        <li><a href="about.html" class="active"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Careers</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Press</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-links">
+                    <h3>Support</h3>
+                    <ul>
+                        <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> Help Center</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> API Docs</a></li>
+                        <li><a href="#"><i class="fas fa-chevron-right"></i> System Status</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2020-2026 Car Service Management System. All rights reserved.</p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // Mobile menu toggle
+        function toggleMobileMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+
+        // DOM Elements
+        const contactForm = document.getElementById('contact-form');
+        const userNameInput = document.getElementById('user-name');
+        const userEmailInput = document.getElementById('user-email');
+        const userPhoneInput = document.getElementById('user-phone');
+        const problemDescription = document.getElementById('problem-description');
+        const charCount = document.getElementById('char-count');
+        const submitBtn = document.getElementById('submit-btn');
+        const problemOptions = document.querySelectorAll('.problem-option');
+
+        // Contact database - now using API
+        let contactMessages = [];
+
+        // Get session token from sessionStorage
+        function getSessionToken() {
+            return sessionStorage.getItem('vs_session_token');
+        }
+
+        // Initialize form
+        function initializeForm() {
+            setupFormValidation();
+            setupAnimations();
+        }
+
+        // Setup animations
+        function setupAnimations() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-in, .slide-in-left').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // Load user data if logged in
+        function loadUserData() {
+            const currentUser = JSON.parse(sessionStorage.getItem('vs_current_user'));
+            if (currentUser) {
+                userNameInput.value = currentUser.name;
+                userEmailInput.value = currentUser.email;
+                
+                // Mark fields as pre-filled
+                userNameInput.classList.add('success');
+                userEmailInput.classList.add('success');
+            }
+        }
+
+        // Setup form validation
+        function setupFormValidation() {
+            // Character count for description
+            problemDescription.addEventListener('input', function() {
+                const length = this.value.length;
+                charCount.textContent = `${length}/1000 characters`;
+                
+                if (length < 20) {
+                    this.classList.add('error');
+                    this.classList.remove('success');
+                    document.getElementById('description-feedback').className = 'form-feedback error';
+                    document.getElementById('description-feedback').innerHTML = 
+                        '<i class="fas fa-exclamation-circle"></i> Description must be at least 20 characters';
+                } else if (length > 1000) {
+                    this.classList.add('error');
+                    this.classList.remove('success');
+                    document.getElementById('description-feedback').className = 'form-feedback error';
+                    document.getElementById('description-feedback').innerHTML = 
+                        '<i class="fas fa-exclamation-circle"></i> Description cannot exceed 1000 characters';
+                } else {
+                    this.classList.add('success');
+                    this.classList.remove('error');
+                    document.getElementById('description-feedback').className = 'form-feedback';
+                    document.getElementById('description-feedback').textContent = '';
+                }
+                
+                updateSubmitButton();
+            });
+
+            // Name validation
+            userNameInput.addEventListener('input', function() {
+                validateName(this.value.trim());
+                updateSubmitButton();
+            });
+
+            // Email validation
+            userEmailInput.addEventListener('input', function() {
+                validateEmail(this.value.trim());
+                updateSubmitButton();
+            });
+
+            // Phone validation
+            userPhoneInput.addEventListener('input', function() {
+                // Allow only numbers
+                this.value = this.value.replace(/\D/g, '');
+                
+                // Limit to 10 digits
+                if (this.value.length > 10) {
+                    this.value = this.value.slice(0, 10);
+                }
+                
+                validatePhone(this.value);
+                updateSubmitButton();
+            });
+
+            // Problem option selection
+            problemOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    problemOptions.forEach(opt => opt.classList.remove('selected'));
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('selected');
+                    
+                    // Check the radio input
+                    const radio = this.querySelector('input[type="radio"]');
+                    radio.checked = true;
+                    
+                    updateSubmitButton();
+                });
+            });
+        }
+
+        // Validation functions
+        function validateName(name) {
+            const feedback = document.getElementById('name-feedback');
+            
+            if (!name) {
+                userNameInput.classList.remove('success', 'error');
+                feedback.className = 'form-feedback';
+                feedback.textContent = '';
+                return false;
+            }
+
+            if (name.length < 2) {
+                userNameInput.classList.add('error');
+                userNameInput.classList.remove('success');
+                feedback.className = 'form-feedback error';
+                feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Name must be at least 2 characters';
+                return false;
+            } else {
+                userNameInput.classList.add('success');
+                userNameInput.classList.remove('error');
+                feedback.className = 'form-feedback';
+                feedback.textContent = '';
+                return true;
+            }
+        }
+
+        function validateEmail(email) {
+            const feedback = document.getElementById('email-feedback');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (!email) {
+                userEmailInput.classList.remove('success', 'error');
+                feedback.className = 'form-feedback';
+                feedback.textContent = '';
+                return false;
+            }
+
+            if (!emailRegex.test(email)) {
+                userEmailInput.classList.add('error');
+                userEmailInput.classList.remove('success');
+                feedback.className = 'form-feedback error';
+                feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Please enter a valid email address';
+                return false;
+            } else {
+                userEmailInput.classList.add('success');
+                userEmailInput.classList.remove('error');
+                feedback.className = 'form-feedback';
+                feedback.textContent = '';
+                return true;
+            }
+        }
+
+        function validatePhone(phone) {
+            const feedback = document.getElementById('phone-feedback');
+            const phoneRegex = /^\d{10}$/;
+            
+            if (!phone) {
+                userPhoneInput.classList.remove('success', 'error');
+                feedback.className = 'form-feedback';
+                feedback.textContent = '';
+                return false;
+            }
+
+            if (!phoneRegex.test(phone)) {
+                userPhoneInput.classList.add('error');
+                userPhoneInput.classList.remove('success');
+                feedback.className = 'form-feedback error';
+                feedback.innerHTML = '<i class="fas fa-exclamation-circle"></i> Phone number must be exactly 10 digits';
+                return false;
+            } else {
+                userPhoneInput.classList.add('success');
+                userPhoneInput.classList.remove('error');
+                feedback.className = 'form-feedback';
+                feedback.textContent = '';
+                return true;
+            }
+        }
+
+        // Update submit button state
+        function updateSubmitButton() {
+            const nameValid = validateName(userNameInput.value.trim());
+            const emailValid = validateEmail(userEmailInput.value.trim());
+            const phoneValid = validatePhone(userPhoneInput.value);
+            const descriptionValid = problemDescription.value.length >= 20 && problemDescription.value.length <= 1000;
+            const problemTypeSelected = document.querySelector('input[name="problem-type"]:checked') !== null;
+
+            if (nameValid && emailValid && phoneValid && descriptionValid && problemTypeSelected) {
+                submitBtn.disabled = false;
+            } else {
+                submitBtn.disabled = true;
+            }
+        }
+        // Handle form submission
+        contactForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Get form values
+            const name = userNameInput.value.trim();
+            const email = userEmailInput.value.trim();
+            const phone = userPhoneInput.value;
+            const problemType = document.querySelector('input[name="problem-type"]:checked').value;
+            const description = problemDescription.value.trim();
+            
+            const newMessage = {
+                name: name,
+                email: email,
+                phone: phone,
+                problemType: problemType,
+                description: description,
+                status: 'new'
+            };
+
+            // Send to API
+            try {
+                const token = getSessionToken();
+                const headers = { 'Content-Type': 'application/json' };
+                if (token) headers['x-session-token'] = token;
+                
+                const response = await fetch('/api/contacts', {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(newMessage)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to send message');
+                }
+
+                // Show success message
+                showMessage('Your message has been sent to the managing team! We will respond within 24 hours.', 'success');
+
+                // Reset form (keep pre-filled user data)
+                contactForm.reset();
+                
+                // Reset UI states
+                problemOptions.forEach(opt => opt.classList.remove('selected'));
+                charCount.textContent = '0/1000 characters';
+                
+                
+                // Reset other fields
+                [problemDescription, userPhoneInput].forEach(input => {
+                    input.classList.remove('success', 'error');
+                });
+                
+                // Reset feedback messages
+                ['name-feedback', 'email-feedback', 'phone-feedback', 'description-feedback'].forEach(id => {
+                    const feedback = document.getElementById(id);
+                    if (feedback) {
+                        feedback.className = 'form-feedback';
+                        feedback.textContent = '';
+                    }
+                });
+                
+                submitBtn.disabled = true;
+            } catch (error) {
+                showMessage('Error sending message: ' + error.message, 'error');
+            }
+        });
+
+
+        // Show message function
+        function showMessage(message, type) {
+            // Remove any existing message
+            const existingMessage = document.querySelector('.message-box');
+            if (existingMessage) {
+                existingMessage.remove();
+            }
+
+            // Create message element
+            const messageBox = document.createElement('div');
+            messageBox.className = `message-box ${type}`;
+            messageBox.innerHTML = `
+                <p>${message}</p>
+                <button class="message-close">&times;</button>
+            `;
+
+            // Add close functionality
+            const closeBtn = messageBox.querySelector('.message-close');
+            closeBtn.addEventListener('click', () => {
+                messageBox.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => messageBox.remove(), 300);
+            });
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                if (messageBox.parentNode) {
+                    messageBox.style.animation = 'slideOut 0.3s ease';
+                    setTimeout(() => messageBox.remove(), 300);
+                }
+            }, 5000);
+
+            // Add to DOM
+            document.body.appendChild(messageBox);
+        }
+        // Add scroll effect to header
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.backdropFilter = 'blur(20px)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.backdropFilter = 'blur(10px)';
+            }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;               
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Close mobile menu if open
+                    const navLinks = document.getElementById('navLinks');
+                    navLinks.classList.remove('active');
+                }
+            });
+        });
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeForm();
+        });
+        /* Theme Toggle Handler */
+        function initThemeToggle() {
+            const toggleBtn = document.getElementById('theme-toggle');
+            const html = document.documentElement;    
+            // Check sessionStorage for saved preference
+            const savedTheme = sessionStorage.getItem('theme-preference');
+            if (savedTheme === 'dark') {
+                html.classList.add('dark-mode');
+                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
+            }
+            
+            // Toggle button click handler
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', () => {
+                    html.classList.toggle('dark-mode');
+                    const isDark = html.classList.contains('dark-mode');
+                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
+                    sessionStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                });
+            }
+        }
+        
+        // Initialize theme toggle when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initThemeToggle);
+        } else {
+            initThemeToggle();
+        }
+    </script>
+</body>
+</html>
+
