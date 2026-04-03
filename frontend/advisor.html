@@ -1017,6 +1017,14 @@
             color: white;
             font-weight: 600;
             font-size: 1.1rem;
+            overflow: hidden;
+        }
+
+        .technician-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .technician-info h4 {
@@ -2640,6 +2648,7 @@
                     phone: u.phone || 'N/A',
                     specialization: u.specialization || 'General Service',
                     status: u.status || 'active',
+                    avatar: u.avatar || u.image || u.photo || '',
                     createdAt: u.createdAt || new Date().toISOString()
                 }));
 
@@ -2789,6 +2798,7 @@
                             specialization: tech.specialization || "General Technician",
                             email: tech.email || `${safeName.toLowerCase().replace(/\s+/g, '.')}@vsms.com`,
                             phone: tech.phone || "N/A",
+                            avatar: tech.avatar || tech.avatarUrl || tech.photo || null,
                             avatarText: avatarText,
                             workload: workload,
                             // Preserve persisted account status; if absent treat as active
@@ -2912,7 +2922,7 @@
                     techCard.setAttribute('data-id', technician.id);
 
                     techCard.innerHTML = `
-                        <div class="technician-avatar">${technician.avatarText}</div>
+                        <div class="technician-avatar">${technician.avatar ? `<img src="${technician.avatar}" alt="${technician.name.replace(/"/g,'&quot;')}" onerror="this.style.display='none'; this.parentNode.textContent='${technician.avatarText}'" />` : technician.avatarText}</div>
                         <div class="technician-info">
                             <h4>${technician.name}</h4>
                             <p>${technician.specialization}</p>

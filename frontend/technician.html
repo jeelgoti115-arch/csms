@@ -608,6 +608,14 @@
             color: white;
             font-weight: 600;
             font-size: 1.1rem;
+            overflow: hidden;
+        }
+
+        .advisor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .advisor-info h4 {
@@ -899,6 +907,14 @@
             font-weight: 700;
             font-size: 1.1rem;
             flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .qc-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .qc-info h4 {
@@ -2450,6 +2466,17 @@
             return normalizeJobStatus(status) === 'completed';
         }
 
+        function getActiveVehiclesForTechnician() {
+            const inProgressJobs = assignedJobs.filter(job => isJobStatusInProgress(job.status));
+            return Array.from(new Set(inProgressJobs.map(j => String(j.vehicleId))));
+        }
+
+        function canStartOrResumeForVehicle(vehicleId) {
+            const activeVehicleIds = getActiveVehiclesForTechnician();
+            if (activeVehicleIds.length === 0) return true;
+            return activeVehicleIds.length === 1 && activeVehicleIds[0] === String(vehicleId);
+        }
+
         function findVehicleById(vehicleId) {
             const vehicles = getStoredVehicles();
             return vehicles.find(v => String(v.id || v._id) === String(vehicleId));
@@ -2531,7 +2558,8 @@
                 name: a.name || 'Service Advisor',
                 role: 'Service Advisor',
                 email: a.email || 'advisor@vsms.com',
-                avatar: (a.name || 'SA').split(' ').map(n => n[0]).join('').toUpperCase() || 'SA',
+                avatar: a.avatar || a.avatarUrl || a.photo || null,
+                avatarText: (a.name || 'SA').split(' ').map(n => n[0]).join('').toUpperCase() || 'SA',
                 isActive: true
             }));
 
@@ -2544,7 +2572,12 @@
                 const card = document.createElement('div');
                 card.className = `advisor-card ${advisor.isActive ? 'active' : ''}`;
                 card.setAttribute('data-id', advisor.id);
-                card.innerHTML = `<div class="advisor-avatar" style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));">${advisor.avatar}</div>
+
+                const avatarContent = advisor.avatar
+                    ? `<img src="${advisor.avatar}" alt="${advisor.name.replace(/"/g,'&quot;')}" onerror="this.style.display='none'; this.parentNode.textContent='${advisor.avatarText}'" />`
+                    : advisor.avatarText;
+
+                card.innerHTML = `<div class="advisor-avatar" style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));">${avatarContent}</div>
                     <div class="advisor-info"><h4>${advisor.name}</h4><p>${advisor.role}</p><div class="advisor-status"><span class="status-dot online"></span><span>Online</span></div></div>`;
                 card.addEventListener('click', () => selectAdvisor(advisor.id));
                 advisorList.appendChild(card);
@@ -2747,9 +2780,11 @@
 
                 vehicleJobs.forEach(job => {
                     let statusText = "Pending", statusBg = "status-pending", statusIcon = "fas fa-hourglass-half", actionButton = '';
+                    const canStartThisVehicle = canStartOrResumeForVehicle(job.vehicleId);
+
                     if (!job.status || normalizeJobStatus(job.status) === 'pending') {
                         statusText = "Pending"; statusBg = "status-pending"; statusIcon = "fas fa-hourglass-half";
-                        actionButton = `<button class="btn btn-primary btn-start-job" data-id="${job.id}" data-vehicle-id="${job.vehicleId}"><i class="fas fa-play-circle"></i> Start Task</button>`;
+                        actionButton = `<button class="btn btn-primary btn-start-job" data-id="${job.id}" data-vehicle-id="${job.vehicleId}" ${canStartThisVehicle ? '' : 'disabled title="Cannot start tasks for different vehicle while another is in progress"'}><i class="fas fa-play-circle"></i> Start Task</button>`;
                     } else if (isJobStatusInProgress(job.status)) {
                         statusText = "In Progress"; statusBg = "status-in-progress"; statusIcon = "fas fa-spinner fa-spin";
                         actionButton = `
@@ -2758,7 +2793,7 @@
                         `;
                     } else if (isJobStatusPaused(job.status)) {
                         statusText = "Paused"; statusBg = "status-paused"; statusIcon = "fas fa-pause-circle";
-                        actionButton = `<button class="btn btn-primary btn-resume-job" data-id="${job.id}" data-vehicle-id="${job.vehicleId}"><i class="fas fa-play"></i> Resume</button>`;
+                        actionButton = `<button class="btn btn-primary btn-resume-job" data-id="${job.id}" data-vehicle-id="${job.vehicleId}" ${canStartThisVehicle ? '' : 'disabled title="Cannot resume tasks for different vehicle while another is in progress"'}><i class="fas fa-play"></i> Resume</button>`;
                     } else if (normalizeJobStatus(job.status) === 'completed') {
                         statusText = "Completed"; statusBg = "status-completed"; statusIcon = "fas fa-check-circle";
                         actionButton = `<button class="btn btn-outline" style="cursor: default; opacity: 0.7;" disabled><i class="fas fa-check"></i> Completed (${job.totalServiceTime ? job.totalServiceTime.toFixed(1) + ' hrs' : ''})</button>`;
@@ -2829,6 +2864,11 @@
         }
 
         async function startJob(jobId, vehicleId, btn) {
+            if (!canStartOrResumeForVehicle(vehicleId)) {
+                showNotification('Cannot start a job on this vehicle while another vehicle has in-progress work. Finish or pause the other vehicle first.', 'error');
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-play-circle"></i> Start Task'; }
+                return;
+            }
             const vehicles = getStoredVehicles();
             const vehicle = vehicles.find(v=>String(v.id||v._id)===String(vehicleId));
             if (!vehicle || !vehicle.jobs) { showNotification('Vehicle or jobs not found!','error'); if(btn) btn.disabled=false; return; }
@@ -2922,6 +2962,11 @@
         }
 
         async function resumeJob(jobId, vehicleId, btn) {
+            if (!canStartOrResumeForVehicle(vehicleId)) {
+                showNotification('Cannot resume a job on this vehicle while another vehicle has in-progress work. Finish or pause the other vehicle first.', 'error');
+                if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-play"></i> Resume'; }
+                return;
+            }
             const vehicles = getStoredVehicles();
             const vehicle = vehicles.find(v=>String(v.id||v._id)===String(vehicleId));
             if (!vehicle || !vehicle.jobs) { showNotification('Vehicle or jobs not found!','error'); if(btn) btn.disabled=false; return; }
@@ -2974,18 +3019,38 @@
             }
         }
 
+        function isSameDate(date1, date2) {
+            const d1 = new Date(date1);
+            const d2 = new Date(date2);
+            return d1.getFullYear() === d2.getFullYear() && d1.getMonth() === d2.getMonth() && d1.getDate() === d2.getDate();
+        }
+
         function getTodayCompletedCount() {
             const techId = currentUser?.id || 'anon';
             const today = getToday();
             const byDateKey = `vsms_completed_by_date_${techId}`;
             const completedByDate = JSON.parse(sessionStorage.getItem(byDateKey) || '{}');
-            return (completedByDate[today] || []).length;
+            const storedCount = (completedByDate[today] || []).length;
+
+            if (storedCount > 0) return storedCount;
+
+            // Fallback: count tasks completed today based on loaded assigned jobs for robustness
+            return assignedJobs.filter(job => normalizeJobStatus(job.status) === 'completed' && job.completionTime && isSameDate(job.completionTime, today)).length;
         }
 
         function getAllTimeCompletedCount() {
             const techId = currentUser?.id || 'anon';
             const allTimeKey = `vsms_alltime_completed_${techId}`;
-            return parseInt(sessionStorage.getItem(allTimeKey) || '0');
+            let allTime = parseInt(sessionStorage.getItem(allTimeKey) || '0');
+            if (isNaN(allTime) || allTime < 0) allTime = 0;
+
+            // Fallback: if persistent key is zero but assignedJobs includes completed tasks, use that value.
+            const completedInCache = assignedJobs.filter(job => normalizeJobStatus(job.status) === 'completed').length;
+            if (allTime === 0 && completedInCache > 0) {
+                allTime = completedInCache;
+            }
+
+            return allTime;
         }
 
         function updateDashboardStats() {
@@ -3039,6 +3104,7 @@
                 name: q.name || 'Quality Controller',
                 email: q.email || `qc${i}@vsms.com`,
                 specialization: q.specialization || 'Quality Assurance',
+                avatar: q.avatar || q.avatarUrl || q.photo || null,
                 avatarText: (q.name||'QC').split(' ').filter(Boolean).map(n=>n[0]).join('').toUpperCase()||'QC',
                 status: q.status || 'active'
             }));
@@ -3077,7 +3143,10 @@
                 const card = document.createElement('div');
                 card.className = `qc-card ${String(selectedQcId)===String(qc.id)?'selected':''} ${qc.status==='inactive' ? 'inactive' : ''}`;
                 card.setAttribute('data-qc-id', qc.id);
-                card.innerHTML = `<div class="qc-avatar">${qc.avatarText}</div><div class="qc-info"><h4>${qc.name}</h4><p>${qc.specialization}</p><p style="margin-top:0.35rem;"><i class="fas fa-envelope" style="color:var(--text-muted);"></i> ${qc.email}</p></div>`;
+                const qcAvatarContent = qc.avatar
+                    ? `<img src="${qc.avatar}" alt="${qc.name.replace(/"/g,'&quot;')}" onerror="this.style.display='none'; this.parentNode.textContent='${qc.avatarText}'" />`
+                    : qc.avatarText;
+                card.innerHTML = `<div class="qc-avatar">${qcAvatarContent}</div><div class="qc-info"><h4>${qc.name}</h4><p>${qc.specialization}</p><p style="margin-top:0.35rem;"><i class="fas fa-envelope" style="color:var(--text-muted);"></i> ${qc.email}</p></div>`;
                 // Only allow selection if QC account is active
                 if (qc.status !== 'inactive') {
                     card.addEventListener('click',()=>selectQualityController(qc.id));

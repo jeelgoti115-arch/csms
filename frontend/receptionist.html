@@ -431,6 +431,14 @@
             color: white;
             font-weight: 600;
             font-size: 1.1rem;
+            overflow: hidden;
+        }
+
+        .advisor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
         }
 
         .advisor-details h4 {
@@ -2082,6 +2090,7 @@
                     phone: u.phone || 'N/A',
                     specialization: u.specialization || 'General Service',
                     status: u.status || 'active',
+                    avatar: u.avatar || u.image || u.photo || '',
                     createdAt: u.createdAt || new Date().toISOString()
                 }));
 
@@ -2249,6 +2258,14 @@
         let selectedVehicleForAssignment = null;
         let selectedAdvisorForAssignment = null;
 
+        function renderAvatarHTML(user, fallbackText) {
+            const avatarUrl = user.avatar || user.avatarUrl || user.photo || '';
+            if (avatarUrl) {
+                return `<img src="${avatarUrl}" alt="${(user.name||'Avatar').replace(/"/g, '&quot;')}" onerror="this.style.display='none'; this.parentNode.innerHTML='${String(fallbackText).replace(/'/g, "\\'")}'" />`;
+            }
+            return `<span>${fallbackText}</span>`;
+        }
+
         // ===== GET SERVICE ADVISORS =====
         function getServiceAdvisors() {
             const advisors = usersDatabase.filter(user => user.role === 'advisor');
@@ -2263,7 +2280,9 @@
                 assignedVehicles: advisor.assignedVehicles || 0,
                 completedServices: advisor.completedServices || 0,
                 createdAt: advisor.createdAt || new Date().toISOString(),
-                status: advisor.status || 'active'
+                status: advisor.status || 'active',
+                avatar: advisor.avatar || advisor.avatarUrl || advisor.photo || null,
+                avatarText: (advisor.name || 'AD').split(' ').filter(Boolean).map(n => n[0]).join('').substring(0,2).toUpperCase() || 'AD'
             }));
         }
 
@@ -2342,11 +2361,16 @@
                     year: 'numeric'
                 });
                 
+                const advisorInitials = (advisor.name || 'AD').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+                const advisorAvatarHtml = advisor.avatar
+                    ? `<img src="${advisor.avatar}" alt="${advisor.name.replace(/"/g,'&quot;')}" onerror="this.style.display='none'; this.parentNode.textContent='${advisorInitials}'" />`
+                    : advisorInitials;
+
                 return `
                     <div class="advisor-card-selection ${advisor.status === 'inactive' ? 'inactive' : ''}" data-advisor-id="${advisor.id}" id="advisor-card-${advisor.id}">
                         <div class="advisor-info">
                             <div class="advisor-avatar">
-                                ${advisor.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                                ${advisorAvatarHtml}
                             </div>
                             <div class="advisor-details">
                                 <h4>${advisor.name}</h4>
@@ -2604,7 +2628,7 @@
                          ${onclickAttr}>
                         <div class="advisor-info">
                             <div class="advisor-avatar">
-                                ${advisor.name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                                ${advisor.avatar ? `<img src="${advisor.avatar}" alt="${advisor.name.replace(/"/g,'&quot;')}" onerror="this.style.display='none'; this.parentNode.textContent='${advisor.avatarText}'" />` : `<span>${advisor.avatarText}</span>`}
                             </div>
                             <div class="advisor-details">
                                 <h4>${advisor.name}</h4>

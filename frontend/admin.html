@@ -2968,6 +2968,7 @@
                         <thead>
                             <tr>
                                 <th>User ID</th>
+                                <th>Avatar</th>
                                 <th>Name</th>
                                 <th>Email</th>
                                 <th>Role</th>
@@ -3265,7 +3266,11 @@
 
         function persistUsers() {
             try {
-                const safeUsers = usersDatabase.map(({ avatar, image, ...user }) => user);
+                // Preserve avatar field so it is available on other dashboard pages
+                const safeUsers = usersDatabase.map(({ image, ...user }) => ({
+                    ...user,
+                    avatar: user.avatar || user.image || ''
+                }));
                 sessionStorage.setItem(USERS_KEY, JSON.stringify(safeUsers));
             } catch (err) {
                 console.warn('Could not persist users to sessionStorage:', err);
@@ -4922,8 +4927,12 @@ const avatarSource = user.avatar || '';
                 const statusText = user.status === 'active' ? 'Active' : 'Inactive';
 
                 const row = document.createElement('tr');
+                const initials = (user.name || '').split(' ').map(part => part[0]).join('').toUpperCase().substring(0,2) || 'NA';
+                const avatarContent = user.avatar ? `<img src="${user.avatar}" alt="${user.name || 'Avatar'}" onerror="this.style.display='none'; this.parentNode.textContent='${initials}'" />` : initials;
+
                 row.innerHTML = `
                     <td><strong>#${user.id}</strong></td>
+                    <td><div class="user-avatar" style="background: var(--accent-primary);">${avatarContent}</div></td>
                     <td>${user.name}</td>
                     <td>${user.email}</td>
                     <td><span class="status-badge active" style="background: #e0e7ff; color: #1e40af;">${getRoleName(user.role)}</span></td>
