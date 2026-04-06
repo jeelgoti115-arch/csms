@@ -690,6 +690,7 @@
             align-items: center;
             justify-content: center;
             padding: 20px;
+            overflow-y: auto;
         }
 
         .modal.show {
@@ -704,9 +705,15 @@
             width: 100%;
             box-shadow: 0 20px 50px var(--shadow-color);
             animation: modalIn 0.3s ease;
-            max-height: 90vh;
-            overflow-y: auto;
+            max-height: calc(100vh - 40px);
+            overflow: hidden;
             border: 1px solid var(--border-color);
+        }
+
+        .modal-body {
+            overflow-y: auto;
+            max-height: calc(100vh - 300px);
+            padding-right: 0.25rem;
         }
 
         @keyframes modalIn {
