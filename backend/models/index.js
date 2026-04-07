@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const path = require('path');
 require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
 
-const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/jeel';
+const mongoURL = process.env.MONGO_URL;
 
 const db = {};
 
