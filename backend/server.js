@@ -201,10 +201,20 @@ app.post('/api/users', authMiddleware, upload.single('avatar'), async (req, res)
 
 app.put('/api/users/:id', authMiddleware, async (req, res) => {
   try {
-    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin only' });
-
     const id = req.params.id;
     const changes = req.body;
+
+    // Allow users to update their own profile, or allow admins to update any user
+    if (req.user._id.toString() !== id && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Can only update your own profile' });
+    }
+
+    // Don't allow changing email or role unless admin
+    if (req.user.role !== 'admin') {
+      delete changes.email;
+      delete changes.role;
+      delete changes.status;
+    }
 
     if (changes.email) {
       const existing = await db.User.findOne({ email: changes.email, _id: { $ne: id } });
@@ -216,6 +226,28 @@ app.put('/api/users/:id', authMiddleware, async (req, res) => {
     }
 
     const user = await db.User.findByIdAndUpdate(id, changes, { new: true }).select('-password');
+    if (!user) return res.status(404).json({ error: 'User not found' });
+
+    res.json(user);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+});
+
+// Avatar upload endpoint for profile
+app.post('/api/users/:id/avatar', authMiddleware, upload.single('avatar'), async (req, res) => {
+  try {
+    const id = req.params.id;
+
+    // Allow users to upload their own avatar, or allow admins to upload for any user
+    if (req.user._id.toString() !== id && req.user.role !== 'admin') {
+      return res.status(403).json({ error: 'Can only upload your own avatar' });
+    }
+
+    if (!req.file) return res.status(400).json({ error: 'No file uploaded' });
+
+    const avatarPath = `/uploads/avatars/${req.file.filename}`;
+    const user = await db.User.findByIdAndUpdate(id, { avatar: avatarPath }, { new: true }).select('-password');
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     res.json(user);

@@ -187,6 +187,205 @@
     setTimeout(()=>location.href='index.html',400)
   }
 
+  // Profile Management Functions
+  async function updateUserProfile(userId, profileData) {
+    try {
+      const res = await apiCall(`/api/users/${userId}`, {
+        method: 'PUT',
+        body: JSON.stringify(profileData)
+      });
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Failed to update profile');
+      }
+      const updatedUser = await res.json();
+      setCurrent(updatedUser);
+      return { ok: true, user: updatedUser };
+    } catch (e) {
+      return { ok: false, msg: e.message };
+    }
+  }
+
+  async function uploadAvatar(userId, file) {
+    try {
+      const formData = new FormData();
+      formData.append('avatar', file);
+      
+      const token = getToken();
+      const headers = {};
+      if (token) headers['x-session-token'] = token;
+      
+      const res = await fetch(`/api/users/${userId}/avatar`, {
+        method: 'POST',
+        headers,
+        body: formData
+      });
+      
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.error || 'Failed to upload avatar');
+      }
+      const updatedUser = await res.json();
+      setCurrent(updatedUser);
+      return { ok: true, user: updatedUser };
+    } catch (e) {
+      return { ok: false, msg: e.message };
+    }
+  }
+
+  // Initialize Profile Modal/Section
+  function initProfileModal() {
+    const userInfo = el('.user-info');
+    const profileSection = el('#profile-section');
+    const mainContent = el('#dashboard-content') || el('#main-content') || el('[role="main"]');
+    const closeProfileBtn = el('#profile-close-btn');
+    const cancelProfileBtn = el('#profile-cancel-btn');
+    
+    if (!userInfo) return;
+
+    // Toggle profile section on user-info click
+    userInfo.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const isOpen = profileSection && profileSection.style.display !== 'none';
+      if (isOpen) {
+        if (profileSection) profileSection.style.display = 'none';
+        if (mainContent) mainContent.style.display = 'block';
+      } else {
+        loadProfileData();
+        if (profileSection) profileSection.style.display = 'block';
+        if (mainContent) mainContent.style.display = 'none';
+      }
+    });
+
+    // Close profile section
+    if (closeProfileBtn) {
+      closeProfileBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (profileSection) profileSection.style.display = 'none';
+        if (mainContent) mainContent.style.display = 'block';
+      });
+    }
+
+    // Cancel profile section
+    if (cancelProfileBtn) {
+      cancelProfileBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        if (profileSection) profileSection.style.display = 'none';
+        if (mainContent) mainContent.style.display = 'block';
+      });
+    }
+
+    // Setup avatar upload
+    const avatarFile = el('#profile-avatar-file');
+    const avatarPreview = el('#profile-avatar-preview');
+    if (avatarFile) {
+      avatarFile.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        if (!file.type.startsWith('image/')) {
+          notify('Please select an image file', 'error');
+          return;
+        }
+
+        const user = currentUser();
+        if (!user) return;
+
+        const res = await uploadAvatar(user._id, file);
+        if (res.ok) {
+          if (avatarPreview) {
+            avatarPreview.src = res.user.avatar || 'images/default-avatar.png';
+          }
+          notify('Avatar updated successfully', 'success');
+        } else {
+          notify(res.msg, 'error');
+        }
+      });
+    }
+
+    // Setup profile form submission
+    const profileForm = el('#profile-form');
+    if (profileForm) {
+      profileForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const user = currentUser();
+        if (!user) return;
+
+        const name = el('#profile-name')?.value || '';
+        const email = el('#profile-email')?.value || '';
+        const phone = el('#profile-phone')?.value || '';
+        const specialization = el('#profile-specialization')?.value || '';
+
+        if (!name || !email || !phone) {
+          notify('Please fill in all required fields', 'error');
+          return;
+        }
+
+        const updateData = {
+          name,
+          email,
+          phone
+        };
+
+        // Only include specialization if it's a technician
+        if (user.role === 'technician' && specialization) {
+          updateData.specialization = specialization;
+        }
+
+        const res = await updateUserProfile(user._id, updateData);
+
+        if (res.ok) {
+          notify('Profile updated successfully', 'success');
+          setTimeout(() => {
+            location.reload();
+          }, 1000);
+        } else {
+          notify(res.msg, 'error');
+        }
+      });
+    }
+  }
+
+  function loadProfileData() {
+    const user = currentUser();
+    if (!user) return;
+
+    // Populate form fields with actual database fields
+    const nameEl = el('#profile-name');
+    const emailEl = el('#profile-email');
+    const phoneEl = el('#profile-phone');
+    const specializationEl = el('#profile-specialization');
+    const avatarImg = el('#profile-avatar-preview');
+    const createdDate = el('#profile-created-date');
+    const userNameDisplay = el('#profile-user-name');
+    const userRoleDisplay = el('#profile-user-role');
+    const userEmailDisplay = el('#profile-user-email');
+
+    if (nameEl) nameEl.value = user.name || '';
+    if (emailEl) emailEl.value = user.email || '';
+    if (phoneEl) phoneEl.value = user.phone || '';
+    if (specializationEl) {
+      specializationEl.value = user.specialization || '';
+      specializationEl.parentElement.style.display = user.role === 'technician' ? 'flex' : 'none';
+    }
+    if (avatarImg) avatarImg.src = user.avatar || 'images/default-avatar.png';
+    if (userNameDisplay) userNameDisplay.textContent = user.name || 'User';
+    if (userRoleDisplay) userRoleDisplay.textContent = (user.role || '').toUpperCase();
+    if (userEmailDisplay) userEmailDisplay.textContent = user.email || 'email@example.com';
+    
+    if (createdDate && user.createdAt) {
+      const date = new Date(user.createdAt).toLocaleDateString();
+      createdDate.textContent = `Account created: ${date}`;
+    }
+  }
+
+  // Initialize profile modal when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    initProfileModal();
+  });
+
   function renderIndex(){
     const f=el('#startForm');
     if(!f) return
