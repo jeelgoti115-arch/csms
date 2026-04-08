@@ -79,7 +79,7 @@ async function authMiddleware(req, res, next) {
   
   try {
     const session = await db.Session.findOne({ token, expiresAt: { $gt: new Date() } }).populate('userId');
-    if (!session) return res.status(401).json({ error: 'Invalid or expired token' });
+    if (!session) return res.status(401).json({ error: 'Session has been Expired! Please login again.' });
     req.user = session.userId;
     req.token = token;
     next();
@@ -277,7 +277,7 @@ app.post('/api/login', async (req, res) => {
     const u = await db.User.findOne({ email });
     if (!u || u.password !== password) {
       console.warn('Login attempt failed for', email);
-      return res.status(401).json({ error: 'invalid' });
+      return res.status(401).json({ error: 'Invalid email or password' });
     }
 
     if (u.status === 'inactive') {
