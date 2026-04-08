@@ -130,8 +130,8 @@
       navAuth.href = 'logreg.html'
     }
     // show role-specific links
-    const nav = document.querySelector('nav')
-    if(nav){
+    const nav = document.querySelector('header nav')
+    if(nav && !nav.querySelector('.user-info') && !nav.querySelector('.logout-btn')){
       // remove any existing role links
       elAll('.role-link').forEach(n=>n.remove())
       if(cur){
