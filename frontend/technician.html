@@ -3160,7 +3160,14 @@
                 status: q.status || 'active'
             }));
             if (qualityControllers.length === 0) {
-                qualityControllers = [{ id:4, name:'Sarah QC', email:'qc@vsms.com', specialization:'Senior Quality Controller', avatarText:'SQ', status: 'active' }];
+                qualityControllers.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                    <i class="fas fa-user-cog" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                    <h4 style="color: var(--text-secondary); margin-bottom: 0.5rem;">No QCs Available</h4>
+                    <p style="font-size: 0.9rem;">No contoller have registered yet.</p>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">Ask quality controllers to register through the login page.</p>
+                </div>
+            `;
             }
             return qualityControllers;
         }
