@@ -2279,6 +2279,21 @@
             </div>
         </div>
 
+        <!-- Custom Confirm Modal -->
+        <div id="customConfirmModal" class="modal" style="z-index: 3000;">
+            <div class="modal-content" style="max-width: 400px; text-align: center; padding: 2rem;">
+                <div style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem;">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h3 style="margin-bottom: 1rem; color: var(--text-primary);">Confirm Action</h3>
+                <p id="customConfirmMessage" style="color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.5;"></p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button id="customConfirmCancel" class="btn btn-outline" style="flex: 1;">Cancel</button>
+                    <button id="customConfirmOk" class="btn btn-primary" style="flex: 1;">OK</button>
+                </div>
+            </div>
+        </div>
+
         <div class="footer">
             <p>&copy; 2020-2026 Car Service Management System. All rights reserved.</p>
         </div>
@@ -3221,13 +3236,43 @@
             }
         }
         function selectQualityController(qcId) { selectedQcId = qcId; document.querySelectorAll('#qc-list .qc-card').forEach(c=>c.classList.remove('selected')); document.querySelector(`#qc-list .qc-card[data-qc-id="${qcId}"]`)?.classList.add('selected'); document.getElementById('qc-assign-btn').disabled = false; }
+        function showCustomConfirm(message) {
+            return new Promise((resolve) => {
+                const modal = document.getElementById('customConfirmModal');
+                document.getElementById('customConfirmMessage').textContent = message;
+                modal.classList.add('show');
+                
+                const btnOk = document.getElementById('customConfirmOk');
+                const btnCancel = document.getElementById('customConfirmCancel');
+                
+                // clone to remove previous listeners
+                const newBtnOk = btnOk.cloneNode(true);
+                const newBtnCancel = btnCancel.cloneNode(true);
+                btnOk.parentNode.replaceChild(newBtnOk, btnOk);
+                btnCancel.parentNode.replaceChild(newBtnCancel, btnCancel);
+                
+                newBtnOk.onclick = () => {
+                    modal.classList.remove('show');
+                    resolve(true);
+                };
+                
+                newBtnCancel.onclick = () => {
+                    modal.classList.remove('show');
+                    resolve(false);
+                };
+            });
+        }
+
         async function confirmSendToQC() {
             if(!qcVehicleId) { showNotification('No vehicle selected.','error'); return; }
             if(!selectedQcId) { showNotification('Please select a Quality Controller.','error'); return; }
             const vehicles = getStoredVehicles();
             const vehicle = vehicles.find(v=>String(v.id||v._id)===String(qcVehicleId));
             if(!vehicle) { showNotification('Vehicle not found!','error'); return; }
-            if(!confirm(`Assign ${vehicle.vehicleNumber} to selected QC and send to QC?`)) return;
+            
+            const plate = vehicle.vehicleNumber || vehicle.plate || 'this vehicle';
+            const isConfirmed = await showCustomConfirm(`Assign ${plate} to selected QC and send to QC?`);
+            if(!isConfirmed) return;
             const qc = qualityControllers.find(q=>String(q.id)===String(selectedQcId));
             // Defense: ensure QC account is active
             if (qc && qc.status === 'inactive') { showNotification('Selected QC account is deactivated and cannot be assigned.', 'error'); return; }

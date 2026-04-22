@@ -2662,7 +2662,7 @@
         }
 
         // ===== DATABASE =====
-        const API_BASE_URL = 'https://csms-bu25.onrender.com';
+        const API_BASE_URL = '/api';
         let vehiclesDatabase = [];
         let usersDatabase = [];
         let technicians = [];
@@ -3197,6 +3197,10 @@
                     assignedVehicles = assignedVehicles.filter(v => 
                         v.serviceStatus === "awaiting-qc" || v.serviceStatus === "in-qc"
                     );
+                } else if (activeTab === 'pending') {
+                    assignedVehicles = assignedVehicles.filter(v => 
+                        v.serviceStatus === "pending" || v.serviceStatus === "assigned"
+                    );
                 } else {
                     assignedVehicles = assignedVehicles.filter(v => v.serviceStatus === activeTab);
                 }
@@ -3204,6 +3208,7 @@
             
             // Sort by status and entry time
             const statusOrder = { 
+                "assigned": 1,
                 "pending": 1, 
                 "in-progress": 2, 
                 "awaiting-qc": 3, 
@@ -3214,7 +3219,9 @@
             };
             
             assignedVehicles.sort((a, b) => {
-                const statusDiff = statusOrder[a.serviceStatus] - statusOrder[b.serviceStatus];
+                const aStatus = statusOrder[a.serviceStatus] || 99;
+                const bStatus = statusOrder[b.serviceStatus] || 99;
+                const statusDiff = aStatus - bStatus;
                 if (statusDiff !== 0) return statusDiff;
                 return new Date(b.entryTime) - new Date(a.entryTime);
             });
