@@ -4,11 +4,23 @@ const fs = require('fs');
 const cors = require('cors');
 const crypto = require('crypto');
 const multer = require('multer');
+const nodemailer = require('nodemailer');
 require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 
 const db = require('./models');
 
 const app = express();
+
+// Force nodemon restart
+
+// Nodemailer setup
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASS
+  }
+});
 
 // Ensure at least one admin exists for first-time setup
 (async function ensureAdminUser() {
@@ -194,6 +206,39 @@ app.post('/api/users', authMiddleware, upload.single('avatar'), async (req, res)
       createdAt: user.createdAt,
       updatedAt: user.updatedAt
     });
+
+    // Send email with credentials
+    if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: 'Your Account Credentials - Car Service Management System',
+        html: `
+          <h3>Welcome to the Car Service Management System</h3>
+          <p>Hello ${name},</p>
+          <p>Your account has been created successfully. Below are your login credentials:</p>
+          <ul>
+            <li><strong>Email (ID):</strong> ${email}</li>
+            <li><strong>Password:</strong> ${password}</li>
+            <li><strong>Role:</strong> ${role}</li>
+          </ul>
+          <p>Please log in and change your password if needed.</p>
+          <br>
+          <p>Best regards,<br>CSMS Admin</p>
+        `
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error('Error sending credentials email:', error);
+        } else {
+          console.log('Credentials email sent:', info.response);
+        }
+      });
+    } else {
+      console.warn('EMAIL_USER or EMAIL_PASS not set in .env. Credentials email skipped.');
+    }
+    
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
