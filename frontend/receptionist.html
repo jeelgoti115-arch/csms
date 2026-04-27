@@ -2678,7 +2678,7 @@
     <script>
       // ===== AUTHENTICATION =====
       function checkAuthentication() {
-        const user = JSON.parse(sessionStorage.getItem("vsms_current_user"));
+        const user = JSON.parse(localStorage.getItem("vsms_current_user"));
         if (!user || user.role !== "receptionist") {
           document.getElementById("dashboard-content").style.display = "none";
           document.getElementById("access-denied").style.display = "block";
@@ -2714,8 +2714,8 @@
 
       function getSessionToken() {
         return (
-          sessionStorage.getItem("vsms_session_token") ||
-          sessionStorage.getItem("vsms_token")
+          localStorage.getItem("vsms_session_token") ||
+          localStorage.getItem("vsms_token")
         );
       }
 
@@ -2820,7 +2820,7 @@
         } catch (error) {
           console.warn("Vehicle API load failed:", error);
           vehiclesDatabase =
-            JSON.parse(sessionStorage.getItem("vsms_vehicles")) || [];
+            JSON.parse(localStorage.getItem("vsms_vehicles")) || [];
           normalizeVehicles();
           return false;
         }
@@ -3640,7 +3640,7 @@
         };
 
         usersDatabase.push(newAdvisor);
-        sessionStorage.setItem("vsms_users", JSON.stringify(usersDatabase));
+        localStorage.setItem("vsms_users", JSON.stringify(usersDatabase));
 
         showMessage(
           `Advisor ${name} created successfully! Default password: advisor123`,
@@ -3676,7 +3676,7 @@
       }
 
       function logout() {
-        sessionStorage.removeItem("vsms_current_user");
+        localStorage.removeItem("vsms_current_user");
         window.location.href = "logreg.html";
       }
 
@@ -3685,17 +3685,17 @@
           if (e.key === "vsms_vehicles") {
             console.log("Vehicles updated from another tab/window");
             vehiclesDatabase =
-              JSON.parse(sessionStorage.getItem("vsms_vehicles")) || [];
+              JSON.parse(localStorage.getItem("vsms_vehicles")) || [];
             normalizeVehicles();
             usersDatabase =
-              JSON.parse(sessionStorage.getItem("vsms_users")) || [];
+              JSON.parse(localStorage.getItem("vsms_users")) || [];
             updateStatistics();
             filterVehicles();
             loadServiceAdvisors();
           }
           if (e.key === "vsms_users") {
             usersDatabase =
-              JSON.parse(sessionStorage.getItem("vsms_users")) || [];
+              JSON.parse(localStorage.getItem("vsms_users")) || [];
             loadServiceAdvisors();
             filterVehicles();
           }
@@ -3707,7 +3707,7 @@
         const toggleBtn = document.getElementById("theme-toggle");
         const html = document.documentElement;
 
-        const savedTheme = sessionStorage.getItem("theme-preference");
+        const savedTheme = localStorage.getItem("theme-preference");
         if (savedTheme === "dark") {
           html.classList.add("dark-mode");
           if (toggleBtn)
@@ -3722,7 +3722,7 @@
             toggleBtn.innerHTML = isDark
               ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>'
               : '<i class="fa-solid fa-sun" style="color: rgb(30 41 59);"></i>';
-            sessionStorage.setItem(
+            localStorage.setItem(
               "theme-preference",
               isDark ? "dark" : "light",
             );

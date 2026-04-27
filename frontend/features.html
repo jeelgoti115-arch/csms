@@ -872,8 +872,8 @@
             const toggleBtn = document.getElementById('theme-toggle');
             const html = document.documentElement;
             
-            // Check sessionStorage for saved preference
-            const savedTheme = sessionStorage.getItem('theme-preference');
+            // Check localStorage for saved preference
+            const savedTheme = localStorage.getItem('theme-preference');
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
                 if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
@@ -885,7 +885,7 @@
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
                     toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
-                    sessionStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
                 });
             }
         }

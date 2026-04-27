@@ -2399,7 +2399,7 @@
 
         // ===== INIT =====
         document.addEventListener('DOMContentLoaded', function() {
-            const storedUser = sessionStorage.getItem('vsms_current_user');
+            const storedUser = localStorage.getItem('vsms_current_user');
             if (!storedUser) { window.location.href = 'logreg.html'; return; }
             try {
                 currentUser = JSON.parse(storedUser);
@@ -2420,7 +2420,7 @@
             }
             if (currentUser.email) document.getElementById('user-role').textContent = `Technician • ${currentUser.email.split('@')[0]}`;
             document.getElementById('logout-btn').addEventListener('click', function() {
-                sessionStorage.removeItem('vsms_current_user');
+                localStorage.removeItem('vsms_current_user');
                 window.location.href = 'logreg.html';
             });
             document.getElementById('send-message-btn').addEventListener('click', sendMessage);
@@ -2491,27 +2491,27 @@
         function initThemeToggle() {
             const toggleBtn = document.getElementById('theme-toggle');
             const html = document.documentElement;
-            const savedTheme = sessionStorage.getItem('vsms-theme-preference');
+            const savedTheme = localStorage.getItem('vsms-theme-preference');
             if (savedTheme === 'dark') { html.classList.add('dark-mode'); if(toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>'; }
             if (toggleBtn) {
                 toggleBtn.addEventListener('click', () => {
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
                     toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
-                    sessionStorage.setItem('vsms-theme-preference', isDark ? 'dark' : 'light');
+                    localStorage.setItem('vsms-theme-preference', isDark ? 'dark' : 'light');
                 });
             }
         }
 
         function getSessionToken() {
-            return sessionStorage.getItem('vsms_session_token') || sessionStorage.getItem('vs_session_token');
+            return localStorage.getItem('vsms_session_token') || localStorage.getItem('vs_session_token');
         }
 
         function getStoredVehicles() {
             if (Array.isArray(vehiclesDatabase) && vehiclesDatabase.length) {
                 return vehiclesDatabase;
             }
-            return JSON.parse(sessionStorage.getItem('vsms_vehicles')) || [];
+            return JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
         }
 
         function normalizeJobStatus(status) {
@@ -2578,7 +2578,7 @@
             if (idx !== -1) {
                 vehicles[idx] = { ...vehicles[idx], ...changes };
                 if (!Array.isArray(vehiclesDatabase) || !vehiclesDatabase.length) {
-                    sessionStorage.setItem('vsms_vehicles', JSON.stringify(vehicles));
+                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehicles));
                 } else {
                     vehiclesDatabase[idx] = vehicles[idx];
                 }
@@ -2606,17 +2606,17 @@
                     if (res.ok) {
                         users = await res.json();
                     } else {
-                        console.warn('Users API returned', res.status, 'falling back to sessionStorage');
+                        console.warn('Users API returned', res.status, 'falling back to localStorage');
                     }
                 } catch (error) {
-                    console.warn('Failed to fetch users from API, falling back to sessionStorage.', error);
+                    console.warn('Failed to fetch users from API, falling back to localStorage.', error);
                 }
             } else {
-                console.warn('No session token available for users API fetch. Falling back to sessionStorage.');
+                console.warn('No session token available for users API fetch. Falling back to localStorage.');
             }
 
             if (!Array.isArray(users) || users.length === 0) {
-                users = JSON.parse(sessionStorage.getItem('vsms_users')) || [];
+                users = JSON.parse(localStorage.getItem('vsms_users')) || [];
             }
 
             serviceAdvisors = users.filter(u => u.role && u.role.toLowerCase() === 'advisor').map((a, i) => ({
@@ -2630,7 +2630,7 @@
             }));
 
             if (serviceAdvisors.length === 0) serviceAdvisors = [{ id: 2, name: 'John Advisor', role: 'Service Advisor', email: 'advisor@vsms.com', avatar: 'JA', isActive: true }];
-            const storedMessages = JSON.parse(sessionStorage.getItem('vsms_messages')) || {};
+            const storedMessages = JSON.parse(localStorage.getItem('vsms_messages')) || {};
             serviceAdvisors.forEach(adv => { const aid = String(adv.id); messages[aid] = storedMessages[aid] || []; });
             const advisorList = document.getElementById('advisor-list');
             advisorList.innerHTML = '';
@@ -2665,17 +2665,17 @@
                     if (res.ok) {
                         vehicles = await res.json();
                     } else {
-                        console.warn('Vehicles API returned', res.status, 'falling back to sessionStorage');
+                        console.warn('Vehicles API returned', res.status, 'falling back to localStorage');
                     }
                 } catch (error) {
-                    console.warn('Failed to fetch vehicles from API, falling back to sessionStorage.', error);
+                    console.warn('Failed to fetch vehicles from API, falling back to localStorage.', error);
                 }
             } else {
-                console.warn('No session token available for vehicles API fetch. Falling back to sessionStorage.');
+                console.warn('No session token available for vehicles API fetch. Falling back to localStorage.');
             }
 
             if (!Array.isArray(vehicles) || vehicles.length === 0) {
-                vehicles = JSON.parse(sessionStorage.getItem('vsms_vehicles')) || [];
+                vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
             }
 
             vehiclesDatabase = vehicles;
@@ -2719,16 +2719,16 @@
         }
 
         function initializeDatabases() {
-            if (!sessionStorage.getItem('vsms_users')) {
-                sessionStorage.setItem('vsms_users', JSON.stringify([
+            if (!localStorage.getItem('vsms_users')) {
+                localStorage.setItem('vsms_users', JSON.stringify([
                     { id: 1, name: 'Admin User', email: 'admin@vsms.com', password: 'admin123', role: 'admin' },
                     { id: 2, name: 'John Advisor', email: 'advisor@vsms.com', password: 'advisor123', role: 'advisor' },
                     { id: 3, name: 'Mike Technician', email: 'tech@vsms.com', password: 'tech123', role: 'technician' },
                     { id: 4, name: 'Sarah QC', email: 'qc@vsms.com', password: 'qc123', role: 'qc' }
                 ]));
             }
-            if (!sessionStorage.getItem('vsms_vehicles')) {
-                sessionStorage.setItem('vsms_vehicles', JSON.stringify([
+            if (!localStorage.getItem('vsms_vehicles')) {
+                localStorage.setItem('vsms_vehicles', JSON.stringify([
                     { id: 1, vehicleNumber: 'ABC123', carName: 'Toyota', vehicleModel: 'Camry 2020', color: 'Silver', year: 2020, ownerEmail: 'owner1@email.com', mobileNumber: '555-0101', assignedAdvisor: 'John Advisor', serviceStatus: 'pending', jobs: [
                         { id: 'job1', serviceName: 'Oil Change', type: 'Maintenance', status: 'pending', estimatedHours: 1, estimatedCost: 50, description: 'Regular oil change service', assignedDate: new Date().toISOString(), technicianId: 3, technician: 'Mike Technician', priority: 'normal' },
                         { id: 'job2', serviceName: 'Brake Inspection', type: 'Inspection', status: 'pending', estimatedHours: 1.5, estimatedCost: 80, description: 'Check brake pads and rotors', assignedDate: new Date().toISOString(), technicianId: 3, technician: 'Mike Technician', priority: 'high' }
@@ -2738,7 +2738,7 @@
                     ]}
                 ]));
             }
-            if (!sessionStorage.getItem('vsms_messages')) sessionStorage.setItem('vsms_messages', JSON.stringify({}));
+            if (!localStorage.getItem('vsms_messages')) localStorage.setItem('vsms_messages', JSON.stringify({}));
         }
 
         function selectAdvisor(advisorId) {
@@ -2777,16 +2777,16 @@
             const advisorId = String(currentAdvisor.id);
             if (!messages[advisorId]) messages[advisorId] = [];
             messages[advisorId].push(msg);
-            const stored = JSON.parse(sessionStorage.getItem('vsms_messages')) || {};
+            const stored = JSON.parse(localStorage.getItem('vsms_messages')) || {};
             stored[advisorId] = messages[advisorId];
-            sessionStorage.setItem('vsms_messages', JSON.stringify(stored));
+            localStorage.setItem('vsms_messages', JSON.stringify(stored));
             input.value = '';
             loadMessages(advisorId);
             setTimeout(() => {
                 const reply = { id: Date.now(), text: `Thanks for your message. I'll check on this.`, timestamp: new Date().toISOString(), type: 'received', sender: currentAdvisor.name, from: currentAdvisor.id };
                 messages[advisorId].push(reply);
                 stored[advisorId] = messages[advisorId];
-                sessionStorage.setItem('vsms_messages', JSON.stringify(stored));
+                localStorage.setItem('vsms_messages', JSON.stringify(stored));
                 loadMessages(advisorId);
             }, 2000);
         }
@@ -2814,7 +2814,7 @@
             noJobsMsg.style.display = 'none';
             container.innerHTML = '';
 
-            const vehicles = Array.isArray(vehiclesDatabase) && vehiclesDatabase.length ? vehiclesDatabase : (JSON.parse(sessionStorage.getItem('vsms_vehicles')) || []);
+            const vehicles = Array.isArray(vehiclesDatabase) && vehiclesDatabase.length ? vehiclesDatabase : (JSON.parse(localStorage.getItem('vsms_vehicles')) || []);
             const jobsByVehicle = {};
             assignedJobs.forEach(j => { if (!jobsByVehicle[j.vehicleId]) jobsByVehicle[j.vehicleId] = []; jobsByVehicle[j.vehicleId].push(j); });
 
@@ -2951,7 +2951,7 @@
                 const advisor = serviceAdvisors.find(a=>String(a.id)===String(vehicle.assignedAdvisor) || a.name === vehicle.assignedAdvisor);
                 if (advisor) {
                     const aid = String(advisor.id); if(!messages[aid]) messages[aid]=[]; messages[aid].push(note);
-                    const stored = JSON.parse(sessionStorage.getItem('vsms_messages'))||{}; stored[aid] = messages[aid]; sessionStorage.setItem('vsms_messages',JSON.stringify(stored));
+                    const stored = JSON.parse(localStorage.getItem('vsms_messages'))||{}; stored[aid] = messages[aid]; localStorage.setItem('vsms_messages',JSON.stringify(stored));
                 }
             }
             setTimeout(() => { loadAssignedJobs(); if(btn) btn.disabled = false; }, 300);
@@ -2992,7 +2992,7 @@
                 const advisor = serviceAdvisors.find(a=>String(a.id)===String(vehicle.assignedAdvisor) || a.name === vehicle.assignedAdvisor);
                 if (advisor) {
                     const aid = String(advisor.id); if(!messages[aid]) messages[aid]=[]; messages[aid].push(notificationMsg);
-                    const stored = JSON.parse(sessionStorage.getItem('vsms_messages'))||{}; stored[aid] = messages[aid]; sessionStorage.setItem('vsms_messages', JSON.stringify(stored));
+                    const stored = JSON.parse(localStorage.getItem('vsms_messages'))||{}; stored[aid] = messages[aid]; localStorage.setItem('vsms_messages', JSON.stringify(stored));
                 }
             }
             setTimeout(() => { loadAssignedJobs(); if(btn) btn.disabled = false; }, 300);
@@ -3020,7 +3020,7 @@
                 const advisor = serviceAdvisors.find(a=>String(a.id)===String(vehicle.assignedAdvisor) || a.name === vehicle.assignedAdvisor);
                 if (advisor) {
                     const aid = String(advisor.id); if(!messages[aid]) messages[aid]=[]; messages[aid].push(note);
-                    const stored = JSON.parse(sessionStorage.getItem('vsms_messages'))||{}; stored[aid] = messages[aid]; sessionStorage.setItem('vsms_messages',JSON.stringify(stored));
+                    const stored = JSON.parse(localStorage.getItem('vsms_messages'))||{}; stored[aid] = messages[aid]; localStorage.setItem('vsms_messages',JSON.stringify(stored));
                 }
             }
             setTimeout(() => { loadAssignedJobs(); if(btn) btn.disabled = false; }, 300);
@@ -3047,7 +3047,7 @@
                 const advisor = serviceAdvisors.find(a=>String(a.id)===String(vehicle.assignedAdvisor) || a.name === vehicle.assignedAdvisor);
                 if (advisor) {
                     const aid = String(advisor.id); if(!messages[aid]) messages[aid]=[]; messages[aid].push(note);
-                    const stored = JSON.parse(sessionStorage.getItem('vsms_messages'))||{}; stored[aid] = messages[aid]; sessionStorage.setItem('vsms_messages',JSON.stringify(stored));
+                    const stored = JSON.parse(localStorage.getItem('vsms_messages'))||{}; stored[aid] = messages[aid]; localStorage.setItem('vsms_messages',JSON.stringify(stored));
                 }
             }
             setTimeout(() => { loadAssignedJobs(); if(btn) btn.disabled = false; }, 300);
@@ -3060,8 +3060,8 @@
             const techId = currentUser?.id || 'anon';
             const allTimeKey = `vsms_alltime_completed_${techId}`;
             const byDateKey = `vsms_completed_by_date_${techId}`;
-            if (!sessionStorage.getItem(allTimeKey)) sessionStorage.setItem(allTimeKey, '0');
-            if (!sessionStorage.getItem(byDateKey)) sessionStorage.setItem(byDateKey, JSON.stringify({}));
+            if (!localStorage.getItem(allTimeKey)) localStorage.setItem(allTimeKey, '0');
+            if (!localStorage.getItem(byDateKey)) localStorage.setItem(byDateKey, JSON.stringify({}));
         }
 
         function getToday() {
@@ -3074,14 +3074,14 @@
             const today = getToday();
             const byDateKey = `vsms_completed_by_date_${techId}`;
             const allTimeKey = `vsms_alltime_completed_${techId}`;
-            const completedByDate = JSON.parse(sessionStorage.getItem(byDateKey) || '{}');
+            const completedByDate = JSON.parse(localStorage.getItem(byDateKey) || '{}');
             if (!completedByDate[today]) completedByDate[today] = [];
             // Use jobId to avoid duplicate counting for same technician
             if (!completedByDate[today].includes(jobId)) {
                 completedByDate[today].push(jobId);
-                sessionStorage.setItem(byDateKey, JSON.stringify(completedByDate));
-                const allTime = parseInt(sessionStorage.getItem(allTimeKey) || '0');
-                sessionStorage.setItem(allTimeKey, String(allTime + 1));
+                localStorage.setItem(byDateKey, JSON.stringify(completedByDate));
+                const allTime = parseInt(localStorage.getItem(allTimeKey) || '0');
+                localStorage.setItem(allTimeKey, String(allTime + 1));
             }
         }
 
@@ -3095,7 +3095,7 @@
             const techId = currentUser?.id || 'anon';
             const today = getToday();
             const byDateKey = `vsms_completed_by_date_${techId}`;
-            const completedByDate = JSON.parse(sessionStorage.getItem(byDateKey) || '{}');
+            const completedByDate = JSON.parse(localStorage.getItem(byDateKey) || '{}');
             const storedCount = (completedByDate[today] || []).length;
 
             if (storedCount > 0) return storedCount;
@@ -3107,7 +3107,7 @@
         function getAllTimeCompletedCount() {
             const techId = currentUser?.id || 'anon';
             const allTimeKey = `vsms_alltime_completed_${techId}`;
-            let allTime = parseInt(sessionStorage.getItem(allTimeKey) || '0');
+            let allTime = parseInt(localStorage.getItem(allTimeKey) || '0');
             if (isNaN(allTime) || allTime < 0) allTime = 0;
 
             // Fallback: if persistent key is zero but assignedJobs includes completed tasks, use that value.
@@ -3120,7 +3120,7 @@
         }
 
         function updateDashboardStats() {
-            const vehicles = JSON.parse(sessionStorage.getItem('vsms_vehicles')) || [];
+            const vehicles = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
             const currentTechId = currentUser?.id;
             const currentTechName = currentUser?.name;
             
@@ -3146,17 +3146,17 @@
                     if (res.ok) {
                         users = await res.json();
                     } else {
-                        console.warn('Users API returned', res.status, 'falling back to sessionStorage');
+                        console.warn('Users API returned', res.status, 'falling back to localStorage');
                     }
                 } catch (err) {
-                    console.warn('Failed to fetch users from API, falling back to sessionStorage.', err);
+                    console.warn('Failed to fetch users from API, falling back to localStorage.', err);
                 }
             }
             if (!Array.isArray(users) || users.length === 0) {
                 try {
-                    users = JSON.parse(sessionStorage.getItem('vsms_users')) || [];
+                    users = JSON.parse(localStorage.getItem('vsms_users')) || [];
                 } catch (err) {
-                    console.warn('Unable to parse vsms_users from sessionStorage:', err);
+                    console.warn('Unable to parse vsms_users from localStorage:', err);
                     users = [];
                 }
             }
@@ -3293,7 +3293,7 @@
                 const advisor = serviceAdvisors.find(a=>a.name===vehicle.assignedAdvisor);
                 if(advisor) {
                     const aid = String(advisor.id); if(!messages[aid]) messages[aid]=[]; messages[aid].push(notif);
-                    const stored = JSON.parse(sessionStorage.getItem('vsms_messages'))||{}; stored[aid]=messages[aid]; sessionStorage.setItem('vsms_messages', JSON.stringify(stored));
+                    const stored = JSON.parse(localStorage.getItem('vsms_messages'))||{}; stored[aid]=messages[aid]; localStorage.setItem('vsms_messages', JSON.stringify(stored));
                 }
             }
             closeQcAssignModal(); loadAssignedJobs(); showNotification(`✅ ${vehicle.vehicleNumber} assigned and sent to QC. Total service time: ${vehicle.totalServiceTime?vehicle.totalServiceTime.toFixed(1):'0'} hrs`, 'success');

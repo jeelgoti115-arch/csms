@@ -2974,8 +2974,8 @@
 
       function getSessionToken() {
         return (
-          sessionStorage.getItem("vsms_session_token") ||
-          sessionStorage.getItem("vs_session_token")
+          localStorage.getItem("vsms_session_token") ||
+          localStorage.getItem("vs_session_token")
         );
       }
 
@@ -3253,7 +3253,7 @@
         const html = document.documentElement;
 
         // Check for saved theme preference
-        const savedTheme = sessionStorage.getItem("theme-preference");
+        const savedTheme = localStorage.getItem("theme-preference");
         if (savedTheme === "dark") {
           html.classList.add("dark-mode");
           if (toggleBtn)
@@ -3273,7 +3273,7 @@
             toggleBtn.innerHTML = isDark
               ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>'
               : '<i class="fas fa-sun"></i>';
-            sessionStorage.setItem(
+            localStorage.setItem(
               "theme-preference",
               isDark ? "dark" : "light",
             );
@@ -4437,10 +4437,10 @@
       }
 
       function logout() {
-        sessionStorage.removeItem("vsms_current_user");
-        sessionStorage.removeItem("vsms_session_token");
-        sessionStorage.removeItem("vs_current_user");
-        sessionStorage.removeItem("vs_session_token");
+        localStorage.removeItem("vsms_current_user");
+        localStorage.removeItem("vsms_session_token");
+        localStorage.removeItem("vs_current_user");
+        localStorage.removeItem("vs_session_token");
         window.location.href = "logreg.html";
       }
 

@@ -3309,7 +3309,7 @@
         });
 
         // ===== AUTHENTICATION =====
-        const admin = JSON.parse(sessionStorage.getItem('vs_current_user') || sessionStorage.getItem('vsms_current_user'));
+        const admin = JSON.parse(localStorage.getItem('vs_current_user') || localStorage.getItem('vsms_current_user'));
         if (!admin || admin.role !== 'admin') {
             document.getElementById('dashboard-content').style.display = 'none';
             document.getElementById('access-denied').style.display = 'block';
@@ -3355,8 +3355,8 @@
         let contactsPerPage = 10;
 
         function getSessionToken() {
-            return sessionStorage.getItem('vs_session_token') ||
-                   sessionStorage.getItem('vsms_session_token');
+            return localStorage.getItem('vs_session_token') ||
+                   localStorage.getItem('vsms_session_token');
         }
 
         function readFileAsDataURL(file) {
@@ -3375,9 +3375,9 @@
                     ...user,
                     avatar: user.avatar || user.image || ''
                 }));
-                sessionStorage.setItem(USERS_KEY, JSON.stringify(safeUsers));
+                localStorage.setItem(USERS_KEY, JSON.stringify(safeUsers));
             } catch (err) {
-                console.warn('Could not persist users to sessionStorage:', err);
+                console.warn('Could not persist users to localStorage:', err);
             }
         }
 
@@ -3536,7 +3536,7 @@
             }
 
             activateSidebarLink(sectionKey);
-            sessionStorage.setItem('admin-current-section', sectionKey);
+            localStorage.setItem('admin-current-section', sectionKey);
         }
 
         async function refreshUsers() {
@@ -3804,7 +3804,7 @@
 
                 // Auto-migrate local vehicles if cloud has none and local has some
                 if (vehiclesDatabase.length === 0) {
-                    const localVehicles = JSON.parse(sessionStorage.getItem(VEHICLES_KEY)) || [];
+                    const localVehicles = JSON.parse(localStorage.getItem(VEHICLES_KEY)) || [];
                     if (localVehicles.length > 0 && retryOnMigrate) {
                         await migrateLocalVehicles(localVehicles);
                         return await refreshVehicles(false);
@@ -3817,7 +3817,7 @@
                 console.error('Error loading vehicles from server:', error);
                 showMessage(`Could not sync vehicles from server: ${error.message}`, 'error');
 
-                // Do not fall back to sessionStorage for vehicles; keep API as source of truth only
+                // Do not fall back to localStorage for vehicles; keep API as source of truth only
                 vehiclesDatabase = [];
                 loadVehicles();
                 updateStatistics();
@@ -3840,7 +3840,7 @@
 
                 if (response.ok) {
                     console.log('Local vehicles migrated to server');
-                    sessionStorage.removeItem(VEHICLES_KEY);
+                    localStorage.removeItem(VEHICLES_KEY);
                 } else {
                     const err = await response.json().catch(() => ({}));
                     console.warn('Migration failed:', err.error || response.statusText);
@@ -6267,7 +6267,7 @@ const avatarSource = user.avatar || '';
             }
 
             // Remove only the current session marker and redirect to login
-            sessionStorage.removeItem('vsms_current_user');
+            localStorage.removeItem('vsms_current_user');
             window.location.href = 'logreg.html';
         }
 
@@ -6284,8 +6284,8 @@ const avatarSource = user.avatar || '';
             const toggleBtn = document.getElementById('theme-toggle');
             const html = document.documentElement;
             
-            // Check sessionStorage for saved preference
-            const savedTheme = sessionStorage.getItem('theme-preference');
+            // Check localStorage for saved preference
+            const savedTheme = localStorage.getItem('theme-preference');
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
                 if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
@@ -6298,7 +6298,7 @@ const avatarSource = user.avatar || '';
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
                     toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
-                    sessionStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
                 });
             }
         }
@@ -6337,7 +6337,7 @@ const avatarSource = user.avatar || '';
         }
 
         function getInitialSection() {
-            const savedSection = sessionStorage.getItem('admin-current-section');
+            const savedSection = localStorage.getItem('admin-current-section');
             const validSections = ['dashboard', 'users', 'vehicles', 'services', 'analytics', 'contacts'];
             return validSections.includes(savedSection) ? savedSection : 'dashboard';
         }
@@ -6354,8 +6354,8 @@ const avatarSource = user.avatar || '';
         // ==================== FINANCIAL CHART FUNCTIONALITY ====================
         // Chart instance and state
         let chartInstance = null;
-        let currentView = sessionStorage.getItem('chartView') || 'day'; // Persist view preference
-        let currentChartType = sessionStorage.getItem('chartType') || 'bar'; // Persist chart type preference
+        let currentView = localStorage.getItem('chartView') || 'day'; // Persist view preference
+        let currentChartType = localStorage.getItem('chartType') || 'bar'; // Persist chart type preference
 
         // Initialize chart controls and event listeners
         document.addEventListener('DOMContentLoaded', function() {
@@ -6408,7 +6408,7 @@ const avatarSource = user.avatar || '';
                     this.classList.add('active');
                     btnMonth.classList.remove('active');
                     currentView = 'day';
-                    sessionStorage.setItem('chartView', 'day'); // Save preference
+                    localStorage.setItem('chartView', 'day'); // Save preference
                     refreshChartData();
                 });
             }
@@ -6418,7 +6418,7 @@ const avatarSource = user.avatar || '';
                     this.classList.add('active');
                     btnDay.classList.remove('active');
                     currentView = 'month';
-                    sessionStorage.setItem('chartView', 'month'); // Save preference
+                    localStorage.setItem('chartView', 'month'); // Save preference
                     refreshChartData();
                 });
             }
@@ -6428,7 +6428,7 @@ const avatarSource = user.avatar || '';
                     this.classList.add('active');
                     btnArea.classList.remove('active');
                     currentChartType = 'bar';
-                    sessionStorage.setItem('chartType', 'bar'); // Save preference
+                    localStorage.setItem('chartType', 'bar'); // Save preference
                     renderChart(); // Re-render with new type
                 });
             }
@@ -6438,7 +6438,7 @@ const avatarSource = user.avatar || '';
                     this.classList.add('active');
                     btnBar.classList.remove('active');
                     currentChartType = 'area';
-                    sessionStorage.setItem('chartType', 'area'); // Save preference
+                    localStorage.setItem('chartType', 'area'); // Save preference
                     renderChart(); // Re-render with new type
                 });
             }

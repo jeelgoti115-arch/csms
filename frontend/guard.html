@@ -1752,14 +1752,14 @@
 
         // ===== AUTHENTICATION FUNCTIONS =====
         function getSessionToken() {
-            return sessionStorage.getItem('vsms_session_token') || sessionStorage.getItem('vsms_token');
+            return localStorage.getItem('vsms_session_token') || localStorage.getItem('vsms_token');
         }
 
         async function checkAuthentication() {
             try {
-                // First check if there's a token in sessionStorage
+                // First check if there's a token in localStorage
                 const token = getSessionToken();
-                const localUserRaw = sessionStorage.getItem('vsms_current_user');
+                const localUserRaw = localStorage.getItem('vsms_current_user');
                 
                 console.log('Authentication check:', { token: !!token, localUser: !!localUserRaw });
                 
@@ -1801,8 +1801,8 @@
                             
                             if (serverUser && serverUser.role === 'guard') {
                                 currentUser = serverUser;
-                                // Save to sessionStorage for future use
-                                sessionStorage.setItem('vsms_current_user', JSON.stringify(serverUser));
+                                // Save to localStorage for future use
+                                localStorage.setItem('vsms_current_user', JSON.stringify(serverUser));
                                 console.log('Server guard user authenticated:', currentUser);
                                 showDashboard();
                                 return currentUser;
@@ -1964,7 +1964,7 @@
                 });
                 if (response.ok) {
                     console.log('Local vehicles migrated to server');
-                    sessionStorage.removeItem('vsms_vehicles');
+                    localStorage.removeItem('vsms_vehicles');
                 }
             } catch (error) {
                 console.warn('Migration request error:', error.message);
@@ -1992,7 +1992,7 @@
                 const matchesGuardName = currentUser.name && vehicle.createdBy && vehicle.createdBy.toString().toLowerCase() === currentUser.name.toString().toLowerCase();
                 return matchesGuardId || matchesGuardEmail || matchesGuardName;
             }).map(vehicle => {
-                // Ensure fields work for both old sessionStorage and DB vehicles
+                // Ensure fields work for both old localStorage and DB vehicles
                 return {
                     id: vehicle.id || Date.now(),
                     vehicleNumber: vehicle.vehicleNumber || vehicle.plate || 'N/A',
@@ -2215,7 +2215,7 @@
 
         async function logout() {
             try {
-                const token = sessionStorage.getItem('vsms_token');
+                const token = localStorage.getItem('vsms_token');
                 if (token) {
                     await fetch(`${API_BASE_URL}/auth/logout`, {
                         method: 'POST',
@@ -2228,8 +2228,8 @@
                 console.error('Logout error:', error);
             }
             
-            sessionStorage.removeItem('vsms_token');
-            sessionStorage.removeItem('vsms_current_user');
+            localStorage.removeItem('vsms_token');
+            localStorage.removeItem('vsms_current_user');
             // Don't remove vehicles on logout
             window.location.href = 'logreg.html';
         }
@@ -2239,7 +2239,7 @@
             const toggleBtn = document.getElementById('theme-toggle');
             const html = document.documentElement;
             
-            const savedTheme = sessionStorage.getItem('theme-preference');
+            const savedTheme = localStorage.getItem('theme-preference');
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
                 if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
@@ -2250,7 +2250,7 @@
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
                     toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fa-solid fa-sun" style="rgb(30 41 59)"></i>';
-                    sessionStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
+                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
                 });
             }
         }

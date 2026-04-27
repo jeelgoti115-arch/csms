@@ -2617,8 +2617,8 @@
             const toggleBtn = document.getElementById('theme-toggle');
             const html = document.documentElement;
             
-            // Check sessionStorage for saved preference
-            const savedTheme = sessionStorage.getItem('vsms-theme-preference');
+            // Check localStorage for saved preference
+            const savedTheme = localStorage.getItem('vsms-theme-preference');
             if (savedTheme === 'dark') {
                 html.classList.add('dark-mode');
                 if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
@@ -2630,17 +2630,17 @@
                     html.classList.toggle('dark-mode');
                     const isDark = html.classList.contains('dark-mode');
                     toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
-                    sessionStorage.setItem('vsms-theme-preference', isDark ? 'dark' : 'light');
+                    localStorage.setItem('vsms-theme-preference', isDark ? 'dark' : 'light');
                 });
             }
         }
         
         // ===== AUTHENTICATION =====
-        const user = JSON.parse(sessionStorage.getItem('vsms_current_user'));
+        const user = JSON.parse(localStorage.getItem('vsms_current_user'));
         
         // Debug logging
         console.log('=== PAGE LOAD DEBUG ===');
-        console.log('User data from sessionStorage:', user);
+        console.log('User data from localStorage:', user);
         console.log('User role:', user?.role);
         
         if(!user || user.role !== 'advisor'){
@@ -2681,20 +2681,20 @@
         let serviceDescriptions = {};
 
         function getSessionToken() {
-            return sessionStorage.getItem('vsms_session_token') || sessionStorage.getItem('vsms_token');
+            return localStorage.getItem('vsms_session_token') || localStorage.getItem('vsms_token');
         }
 
         async function saveVehicleUpdate(vehicleId, changes, note) {
             const token = getSessionToken();
             if (!token) {
-                console.warn('No session token; falling back to sessionStorage save for vehicle', vehicleId);
+                console.warn('No session token; falling back to localStorage save for vehicle', vehicleId);
                 const vehicleIndex = vehiclesDatabase.findIndex(v => v.id == vehicleId);
                 if (vehicleIndex !== -1) {
                     vehiclesDatabase[vehicleIndex] = {
                         ...vehiclesDatabase[vehicleIndex],
                         ...changes
                     };
-                    sessionStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
                     return true;
                 }
                 return false;
@@ -2722,7 +2722,7 @@
                         ...vehiclesDatabase[vehicleIndex],
                         ...updatedVehicle
                     };
-                    sessionStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
                 }
                 return true;
             } catch (error) {
@@ -2734,8 +2734,8 @@
         async function loadUsersFromAPI() {
             const token = getSessionToken();
             if (!token) {
-                console.warn('No session token available for users API fetch. Falling back to sessionStorage.');
-                usersDatabase = JSON.parse(sessionStorage.getItem('vsms_users')) || [];
+                console.warn('No session token available for users API fetch. Falling back to localStorage.');
+                usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
                 return false;
             }
 
@@ -2767,7 +2767,7 @@
                 return true;
             } catch (error) {
                 console.warn('User API load failed:', error);
-                usersDatabase = JSON.parse(sessionStorage.getItem('vsms_users')) || [];
+                usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
                 return false;
             }
         }
@@ -2775,8 +2775,8 @@
         async function loadVehiclesFromAPI() {
             const token = getSessionToken();
             if (!token) {
-                console.warn('No session token available for vehicles API fetch. Falling back to sessionStorage.');
-                vehiclesDatabase = JSON.parse(sessionStorage.getItem('vsms_vehicles')) || [];
+                console.warn('No session token available for vehicles API fetch. Falling back to localStorage.');
+                vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
                 return false;
             }
 
@@ -2826,7 +2826,7 @@
                 return true;
             } catch (error) {
                 console.warn('Vehicle API load failed:', error);
-                vehiclesDatabase = JSON.parse(sessionStorage.getItem('vsms_vehicles')) || [];
+                vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
                 return false;
             }
         }
@@ -2887,8 +2887,8 @@
         // ===== LOAD REGISTERED TECHNICIANS =====
         function loadRegisteredTechnicians() {
             try {
-                // Get all registered users from sessionStorage
-                const registeredUsers = usersDatabase.length ? usersDatabase : JSON.parse(sessionStorage.getItem('vsms_users')) || [];
+                // Get all registered users from localStorage
+                const registeredUsers = usersDatabase.length ? usersDatabase : JSON.parse(localStorage.getItem('vsms_users')) || [];
                 
                 // Filter only technicians
                 technicians = registeredUsers
@@ -2966,7 +2966,7 @@
 
         // ===== GET TECHNICIAN STATUS =====
         function getTechnicianStatus(technicianId, workload) {
-            // NOTE: This app currently only stores one `vsms_current_user` in sessionStorage,
+            // NOTE: This app currently only stores one `vsms_current_user` in localStorage,
             // so we cannot reliably know who else is "logged in".
             // For a useful UI, infer "busy" from workload and otherwise mark as available.
             if (workload && workload.inProgress > 0) return 'busy';
@@ -3173,7 +3173,7 @@
             });
             
             // Save updated statuses
-            sessionStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
             
             let assignedVehicles = vehiclesDatabase
                 .filter(v => String(v.assignedAdvisor) === String(currentAdvisorId))
@@ -3601,7 +3601,7 @@
                     vehiclesDatabase[vehicleIndex].inspectionStatus = 'completed';
                     vehiclesDatabase[vehicleIndex].serviceStatus = 'inspected';
                     vehiclesDatabase[vehicleIndex].inspectionReport = inspectionReport;
-                    sessionStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                    localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
                     showMessage("Vehicle inspection completed locally. Database update failed.", "warning");
                 }
 
@@ -3879,7 +3879,7 @@
                 vehiclesDatabase[vehicleIndex].assignedAdvisor = currentAdvisorId;
                 vehiclesDatabase[vehicleIndex].serviceStatus = 'in-progress';
                 vehiclesDatabase[vehicleIndex].jobsAssigned = true;
-                sessionStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+                localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
             }
             
             // Update technician assignments
@@ -3895,7 +3895,7 @@
         function updateTechnicianAssignments() {
             try {
                 // Get current technician assignments
-                let techAssignments = JSON.parse(sessionStorage.getItem('vsms_technician_assignments')) || [];
+                let techAssignments = JSON.parse(localStorage.getItem('vsms_technician_assignments')) || [];
                 
                 // Add new assignments
                 currentJobs.forEach(job => {
@@ -3915,7 +3915,7 @@
                     }
                 });
                 
-                sessionStorage.setItem('vsms_technician_assignments', JSON.stringify(techAssignments));
+                localStorage.setItem('vsms_technician_assignments', JSON.stringify(techAssignments));
             } catch (error) {
                 console.error("Error updating technician assignments:", error);
             }
@@ -3954,7 +3954,7 @@
                 startJobTimer(vehicleId, pendingJob.id);
             }
             
-            sessionStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
             showMessage("Service started! Timer started for first job.", "success");
             updateStatistics();
             loadAssignedVehicles();
@@ -4034,7 +4034,7 @@
                 showMessage("All jobs completed! Ready for QC.", "success");
             }
             
-            sessionStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
             
             closeModal('job-complete');
             updateStatistics();
@@ -4072,7 +4072,7 @@
             vehiclesDatabase[vehicleIndex].qcPriority = qcPriority;
             vehiclesDatabase[vehicleIndex].sentToQcTime = new Date().toISOString();
             
-            sessionStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
             showMessage("Vehicle sent to Quality Control!", "success");
             
             closeModal('qc');
@@ -4104,7 +4104,7 @@
                 vehiclesDatabase[vehicleIndex].totalServiceTime = totalActualTime;
             }
             
-            sessionStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
+            localStorage.setItem('vsms_vehicles', JSON.stringify(vehiclesDatabase));
             showMessage("Service marked as completed!", "success");
             
             updateStatistics();
@@ -4132,7 +4132,7 @@
         }
 
         function logout() {
-            sessionStorage.removeItem('vsms_current_user');
+            localStorage.removeItem('vsms_current_user');
             window.location.href = 'logreg.html';
         }
 

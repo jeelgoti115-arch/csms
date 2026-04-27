@@ -1,35 +1,35 @@
 // Cloud-based app - all form data stored in MongoDB via API
 (function(){
-  // Session token stored in sessionStorage, not sessionStorage
+  // Session token stored in localStorage, not localStorage
   const SS_TOKEN='vs_session_token';
   const SS_USER='vs_current_user';
 
-  // Get auth token from sessionStorage
+  // Get auth token from localStorage
   function getToken(){
-    const ss = sessionStorage.getItem(SS_TOKEN);
+    const ss = localStorage.getItem(SS_TOKEN);
     if(ss) return ss;
-    const legacy = sessionStorage.getItem('vsms_session_token');
+    const legacy = localStorage.getItem('vsms_session_token');
     if(legacy){
-      sessionStorage.setItem(SS_TOKEN, legacy);
+      localStorage.setItem(SS_TOKEN, legacy);
       return legacy;
     }
     return null;
   }
   function setToken(t){
-    sessionStorage.setItem(SS_TOKEN,t);
-    sessionStorage.setItem('vsms_session_token',t);
+    localStorage.setItem(SS_TOKEN,t);
+    localStorage.setItem('vsms_session_token',t);
   }
   function clearToken(){
-    sessionStorage.removeItem(SS_TOKEN);
-    sessionStorage.removeItem('vsms_session_token');
+    localStorage.removeItem(SS_TOKEN);
+    localStorage.removeItem('vsms_session_token');
   }
 
-  // Get current user from sessionStorage; fallback to legacy sessionStorage and migrate
+  // Get current user from localStorage; fallback to legacy localStorage and migrate
   function currentUser(){
-    const ss = sessionStorage.getItem(SS_USER);
+    const ss = localStorage.getItem(SS_USER);
     if(ss) return JSON.parse(ss);
 
-    const legacy = sessionStorage.getItem('vsms_current_user') || sessionStorage.getItem('vs_current');
+    const legacy = localStorage.getItem('vsms_current_user') || localStorage.getItem('vs_current');
     if(legacy){
       const parsed = JSON.parse(legacy);
       setCurrent(parsed);
@@ -40,15 +40,15 @@
   }
 
   function setCurrent(u){
-    sessionStorage.setItem(SS_USER,JSON.stringify(u));
-    sessionStorage.setItem('vsms_current_user',JSON.stringify(u));
-    sessionStorage.setItem('vs_current',JSON.stringify(u));
+    localStorage.setItem(SS_USER,JSON.stringify(u));
+    localStorage.setItem('vsms_current_user',JSON.stringify(u));
+    localStorage.setItem('vs_current',JSON.stringify(u));
   }
 
   function clearCurrent(){
-    sessionStorage.removeItem(SS_USER);
-    sessionStorage.removeItem('vsms_current_user');
-    sessionStorage.removeItem('vs_current');
+    localStorage.removeItem(SS_USER);
+    localStorage.removeItem('vsms_current_user');
+    localStorage.removeItem('vs_current');
   }
 
   // API request helper with auth token
@@ -395,7 +395,7 @@
       if(!plateEl) return notify('Missing plate field','error')
       const plate = plateEl.value.trim()
       if(!plate) return notify('Enter plate','warn')
-      sessionStorage.setItem('vs_pending_plate',plate);
+      localStorage.setItem('vs_pending_plate',plate);
       notify('Please login to record vehicle','info',1500);
       setTimeout(()=>location.href='logreg.html',600)
     }
@@ -563,12 +563,12 @@
 
     // Auto-add pending plate from index redirect
     function handlePending(){
-      const p=sessionStorage.getItem('vs_pending_plate');
+      const p=localStorage.getItem('vs_pending_plate');
       if(!p) return
       const cur=currentUser()
       if(!cur){alert('Please login to record vehicle');location.href='logreg.html';return}
       addVehicle(p,cur.name,cur.name);
-      sessionStorage.removeItem('vs_pending_plate');
+      localStorage.removeItem('vs_pending_plate');
       alert('Vehicle recorded');
       location.href='index.html'
     }
