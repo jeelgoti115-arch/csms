@@ -1669,7 +1669,7 @@
                     <form id="entry-form">
                         <div class="form-group">
                             <label for="vehicleNumber">Plate Number *</label>
-                            <input type="text" id="vehicleNumber" required placeholder="e.g., DL01AB1234" pattern="[A-Za-z0-9]{10}" title="10 character alphanumeric">
+                            <input type="text" id="vehicleNumber" required placeholder="e.g., GJ05UH5940" pattern="^(?=.*[a-zA-Z])[a-zA-Z0-9]{10}$" title="10 character alphanumeric (must contain at least one letter)">
                         </div>
 
                         <div class="form-row">
@@ -2112,9 +2112,9 @@
                 return;
             }
 
-            const plateRegex = /^[A-Za-z0-9]{10}$/;
+            const plateRegex = /^(?=.*[A-Za-z])[A-Za-z0-9]{10}$/;
             if (!plateRegex.test(plate)) {
-                showMessage('Vehicle plate must be exactly 10 alphanumeric characters!', 'error');
+                showMessage('Vehicle plate must be exactly 10 alphanumeric characters and contain at least one letter!', 'error');
                 return;
             }
 

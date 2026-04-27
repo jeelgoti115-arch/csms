@@ -1301,12 +1301,14 @@
         }
 
         .modal-content > form,
-        .modal-content > #user-detail-content {
+        .modal-content > #user-detail-content,
+        .modal-body {
             flex: 1 1 auto;
             min-height: 0;
-            max-height: calc(90vh - 5.5rem);
+            max-height: calc(90vh - 10rem);
             overflow-y: auto;
             padding-right: 0.5rem;
+            margin-bottom: 1rem;
         }
 
         .modal-content::-webkit-scrollbar {
@@ -3127,7 +3129,7 @@
                 </div>
                 <div class="form-group">
                     <label for="plate">Plate Number (10 alphanumeric chars) *</label>
-                    <input type="text" id="plate" required placeholder="10 alphanumeric characters" minlength="10" maxlength="10" pattern="[A-Za-z0-9]{10}">
+                    <input type="text" id="plate" required placeholder="e.g., GJ05UH5940" minlength="10" maxlength="10" pattern="^(?=.*[a-zA-Z])[a-zA-Z0-9]{10}$" title="10 character alphanumeric (must contain at least one letter)">
                 </div>
                 <div class="form-group">
                     <label for="vehicle-year">Year *</label>
@@ -3574,6 +3576,9 @@
                     updatedAt: u.updatedAt || ''
                 }));
 
+                // Sort by createdAt descending (newest first)
+                usersDatabase.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
                 loadUsers();
                 updateStatistics();
             } catch (error) {
@@ -3612,8 +3617,12 @@
                 servicesDatabase = apiServices.map(s => ({
                     id: s._id || s.id,
                     title: s.title || '',
-                    description: s.description || ''
+                    description: s.description || '',
+                    createdAt: s.createdAt || ''
                 }));
+
+                // Sort by createdAt descending (newest first)
+                servicesDatabase.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
                 loadServices();
             } catch (error) {
@@ -3801,6 +3810,9 @@
                     createdAt: v.createdAt || '',
                     updatedAt: v.updatedAt || ''
                 }));
+
+                // Sort by createdAt descending (newest first)
+                vehiclesDatabase.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
 
                 // Auto-migrate local vehicles if cloud has none and local has some
                 if (vehiclesDatabase.length === 0) {
@@ -5115,9 +5127,9 @@ const avatarSource = user.avatar || '';
                 return;
             }
 
-            const plateRegex = /^[A-Za-z0-9]{10}$/;
+            const plateRegex = /^(?=.*[A-Za-z])[A-Za-z0-9]{10}$/;
             if (!plateRegex.test(plate)) {
-                showMessage('Vehicle plate must be exactly 10 alphanumeric characters!', 'error');
+                showMessage('Vehicle plate must be exactly 10 alphanumeric characters and contain at least one letter!', 'error');
                 return;
             }
 
@@ -6107,6 +6119,9 @@ const avatarSource = user.avatar || '';
                 const res = await fetch('/api/contacts');
                 if (!res.ok) throw new Error('Failed to load contacts from server');
                 contactsDatabase = await res.json();
+                if (Array.isArray(contactsDatabase)) {
+                    contactsDatabase.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+                }
             } catch (error) {
                 console.error('Error loading contacts:', error);
                 container.innerHTML = '<p style="text-align:center;color:#999;padding:20px;">Could not load messages from server. Make sure backend is running.</p>';
@@ -6185,15 +6200,42 @@ const avatarSource = user.avatar || '';
                 return;
             }
 
-            let details = `\n📧 Contact Message Details\n━━━━━━━━━━━━━━━━━━━━━━━━\nName: ${msg.name || '-'}\nEmail: ${msg.email || '-'}\nPhone: ${msg.phone || '-'}\nType: ${msg.problemType || 'General'}\nDate: ${msg.createdAt ? new Date(msg.createdAt).toLocaleString() : 'N/A'}\n\nMessage:\n${msg.description || ''}\n━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+            // Populate modal fields
+            document.getElementById('contact-msg-name').textContent = msg.name || '-';
+            document.getElementById('contact-msg-email').textContent = msg.email || '-';
+            document.getElementById('contact-msg-phone').textContent = msg.phone || '-';
+            document.getElementById('contact-msg-type').textContent = msg.problemType || 'General';
+            document.getElementById('contact-msg-date').textContent = msg.createdAt ? new Date(msg.createdAt).toLocaleString() : 'N/A';
+            document.getElementById('contact-msg-description').textContent = msg.description || '';
+            
+            const responseInput = document.getElementById('contact-msg-response');
+            responseInput.value = msg.adminResponse || '';
+            
+            const adminResponseSection = document.getElementById('contact-msg-admin-response-section');
             if (msg.adminResponse) {
-                details += `\nAdmin Response (${msg.respondedAt ? new Date(msg.respondedAt).toLocaleString() : ''}):\n${msg.adminResponse}\n`;
+                adminResponseSection.style.display = 'block';
+                document.getElementById('contact-msg-admin-response-text').textContent = msg.adminResponse;
+                document.getElementById('contact-msg-responded-at').textContent = msg.respondedAt ? new Date(msg.respondedAt).toLocaleString() : '';
+            } else {
+                adminResponseSection.style.display = 'none';
             }
 
-            const response = prompt(details + '\n\nEnter your response (or cancel to skip):', msg.adminResponse || '');
-            if (response === null) return;
+            // Store msgId for submission
+            document.getElementById('contactMessageModal').setAttribute('data-msg-id', msgId);
+            
+            // Show modal
+            const modal = document.getElementById('contactMessageModal');
+            modal.classList.add('show');
+            document.body.classList.add('modal-open');
+        }
+
+        async function submitContactResponse() {
+            const modal = document.getElementById('contactMessageModal');
+            const msgId = modal.getAttribute('data-msg-id');
+            const response = document.getElementById('contact-msg-response').value;
+
             if (!response.trim()) {
-                showMessage('Response Message Send to ${msg.email}', 'error');
+                showMessage('Please enter a response message', 'error');
                 return;
             }
 
@@ -6212,7 +6254,9 @@ const avatarSource = user.avatar || '';
 
                 if (!res.ok) throw new Error('Failed to update message');
 
-                showMessage('Response Message Send to ${msg.email || '-'}', 'success');
+                const msg = contactsDatabase.find(c => (c._id || c.id) === msgId || String(c._id || c.id) === String(msgId));
+                showMessage(`Response Message Sent to ${msg.email || '-'}`, 'success');
+                closeModal('contactMessageModal');
                 await refreshContactMessages();
             } catch (error) {
                 console.error('Error updating message:', error);
@@ -6323,9 +6367,11 @@ const avatarSource = user.avatar || '';
                 const vehicleModal = document.getElementById('vehicle-modal');
                 const userModal = document.getElementById('user-modal');
                 const userDetailModal = document.getElementById('user-detail-modal');
+                const contactMessageModal = document.getElementById('contactMessageModal');
                 if (e.target === vehicleModal) closeModal('vehicle-modal');
                 if (e.target === userModal) closeModal('user-modal');
                 if (e.target === userDetailModal) closeModal('user-detail-modal');
+                if (e.target === contactMessageModal) closeModal('contactMessageModal');
             });
             
             // Initialize data
@@ -6850,6 +6896,67 @@ const avatarSource = user.avatar || '';
         }
     </script>
     <script src="js/app.js"></script>
+
+    <!-- Contact Message Modal -->
+    <div id="contactMessageModal" class="modal">
+        <div class="modal-content" style="max-width: 700px;">
+            <div class="modal-header">
+                <h2><i class="fas fa-envelope-open-text" style="color: var(--primary); margin-right: 10px;"></i> Message Details</h2>
+                <button class="close-btn" onclick="closeModal('contactMessageModal')">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="user-detail-group" style="margin-bottom: 0;">
+                        <div class="user-detail-label"><i class="fas fa-user"></i> SENDER NAME</div>
+                        <div id="contact-msg-name" class="user-detail-value"></div>
+                    </div>
+                    <div class="user-detail-group" style="margin-bottom: 0;">
+                        <div class="user-detail-label"><i class="fas fa-envelope"></i> EMAIL ADDRESS</div>
+                        <div id="contact-msg-email" class="user-detail-value"></div>
+                    </div>
+                    <div class="user-detail-group" style="margin-bottom: 0;">
+                        <div class="user-detail-label"><i class="fas fa-phone"></i> PHONE NUMBER</div>
+                        <div id="contact-msg-phone" class="user-detail-value"></div>
+                    </div>
+                    <div class="user-detail-group" style="margin-bottom: 0;">
+                        <div class="user-detail-label"><i class="fas fa-tag"></i> MESSAGE TYPE</div>
+                        <div id="contact-msg-type" class="user-detail-value" style="text-transform: capitalize;"></div>
+                    </div>
+                </div>
+
+                <div class="user-detail-group" style="margin-bottom: 1.5rem;">
+                    <div class="user-detail-label"><i class="fas fa-calendar-alt"></i> RECEIVED ON</div>
+                    <div id="contact-msg-date" class="user-detail-value"></div>
+                </div>
+
+                <div class="user-detail-group" style="margin-bottom: 1.5rem; background: #f1f5f9; border-left-color: #64748b;">
+                    <div class="user-detail-label" style="color: #475569;"><i class="fas fa-comment-alt"></i> MESSAGE CONTENT</div>
+                    <div id="contact-msg-description" class="user-detail-value" style="font-weight: 400; white-space: pre-wrap; margin-top: 5px;"></div>
+                </div>
+
+                <div id="contact-msg-admin-response-section" class="user-detail-group" style="margin-bottom: 1.5rem; background: #ecfdf5; border-left-color: #10b981;">
+                    <div class="user-detail-label" style="color: #065f46;"><i class="fas fa-reply-all"></i> PREVIOUS RESPONSE (<span id="contact-msg-responded-at"></span>)</div>
+                    <div id="contact-msg-admin-response-text" class="user-detail-value" style="font-weight: 400; white-space: pre-wrap; margin-top: 5px; color: #065f46;"></div>
+                </div>
+
+                <div class="form-group" style="margin-top: 1rem;">
+                    <label for="contact-msg-response" style="display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-pen-fancy" style="color: var(--primary);"></i> 
+                        Compose Your Response
+                    </label>
+                    <textarea id="contact-msg-response" rows="4" placeholder="Type your message to the customer here..." style="resize: vertical;"></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="closeModal('contactMessageModal')">Cancel</button>
+                <button class="btn-primary" onclick="submitContactResponse()">
+                    <i class="fas fa-paper-plane"></i> Send Response
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- Custom Confirm Modal -->
     <div id="customConfirmModal" class="modal" style="z-index: 3000;">

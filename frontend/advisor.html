@@ -2764,6 +2764,9 @@
                     createdAt: u.createdAt || new Date().toISOString()
                 }));
 
+                // Sort by createdAt DESC
+                usersDatabase.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+
                 return true;
             } catch (error) {
                 console.warn('User API load failed:', error);
@@ -2822,6 +2825,9 @@
                     qcPriority: v.qcPriority || null,
                     sentToQcTime: v.sentToQcTime || null
                 }));
+
+                // Sort by entryTime DESC
+                vehiclesDatabase.sort((a, b) => new Date(b.entryTime || 0) - new Date(a.entryTime || 0));
 
                 return true;
             } catch (error) {

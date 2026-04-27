@@ -7,8 +7,8 @@ const vehicleSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     validate: {
-      validator: value => typeof value === 'string' && value.trim().length > 0,
-      message: 'Plate is required'
+      validator: value => /^(?=.*[A-Za-z])[A-Za-z0-9]{10}$/.test(value),
+      message: 'Plate must be exactly 10 alphanumeric characters and contain at least one letter'
     }
   },
   owner: { type: String, required: true, trim: true },

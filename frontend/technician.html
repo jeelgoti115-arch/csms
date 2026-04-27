@@ -2713,6 +2713,10 @@
                     }
                 });
             });
+            
+            // Sort by assignedDate DESC
+            assignedJobs.sort((a, b) => new Date(b.assignedDate || 0) - new Date(a.assignedDate || 0));
+
             updateJobsDisplay();
             updateDashboardStats();
             updateLastUpdateTime();

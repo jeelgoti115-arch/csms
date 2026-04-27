@@ -3388,8 +3388,8 @@
             (priorityOrder[b.qcPriority] || 3);
           if (priorityDiff !== 0) return priorityDiff;
           return (
-            new Date(a.sentToQcTime || a.entryTime) -
-            new Date(b.sentToQcTime || b.entryTime)
+            new Date(b.sentToQcTime || b.entryTime || 0) -
+            new Date(a.sentToQcTime || a.entryTime || 0)
           );
         });
 
