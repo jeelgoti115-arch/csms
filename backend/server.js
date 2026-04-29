@@ -659,7 +659,55 @@ app.put('/api/contacts/:id', async (req, res) => {
     const { changes } = req.body;
     const c = await db.Contact.findById(id);
     if (!c) return res.status(404).json({ error: 'not found' });
+
     const updatedContact = await db.Contact.findByIdAndUpdate(id, Object.assign({}, changes), { new: true });
+
+    // Send email response if status is updated to 'responded'
+    if (changes.status === 'responded' && changes.adminResponse && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: updatedContact.email,
+        subject: `Response to your inquiry - Car Service Management System`,
+        html: `
+          <div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333; max-width: 600px; margin: 0 auto; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+            <div style="background: linear-gradient(135deg, #4338ca, #6366f1); padding: 20px; text-align: center; color: white;">
+              <h2 style="margin: 0;">Car Service Management System</h2>
+            </div>
+            <div style="padding: 30px;">
+              <h3 style="color: #4338ca; margin-top: 0;">Hello ${updatedContact.name},</h3>
+              <p>Thank you for reaching out to us. We have reviewed your message regarding <strong>${updatedContact.problemType || 'General Inquiry'}</strong> and provided a response below:</p>
+              
+              <div style="background-color: #f9fafb; border-left: 4px solid #4338ca; padding: 20px; margin: 25px 0; border-radius: 4px;">
+                <p style="color: #6b7280; font-size: 0.85rem; margin-bottom: 5px;"><strong>Your Message:</strong></p>
+                <p style="color: #9ca3af; font-size: 0.9rem; font-style: italic;">"${updatedContact.description}"</p>
+              </div>
+
+              <div style="background-color: #f9fafb; border-left: 4px solid #4338ca; padding: 20px; margin: 25px 0; border-radius: 4px;">
+                <p style="color: #6b7280; font-size: 0.85rem; margin-bottom: 5px;"><strong>Our Response:</strong></p>
+                <p style="color: #9ca3af; font-size: 0.9rem; font-style: italic;">${changes.adminResponse}</p>
+              </div>
+
+              <p style="margin-top: 30px;">If you have any further questions, feel free to reply to this email or visit our website.</p>
+              
+              <p style="margin-bottom: 0;">Best regards,</p>
+              <p style="margin-top: 5px; font-weight: bold; color: #4338ca;">The Car Service Team</p>
+            </div>
+            <div style="background-color: #f3f4f6; padding: 15px; text-align: center; color: #9ca3af; font-size: 0.8rem;">
+              &copy; ${new Date().getFullYear()} Car Service Management System. All rights reserved.
+            </div>
+          </div>
+        `
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error('Error sending response email:', error);
+        } else {
+          console.log('Response email sent successfully to:', updatedContact.email);
+        }
+      });
+    }
+
     res.json(updatedContact);
   } catch (err) {
     res.status(400).json({ error: err.message });

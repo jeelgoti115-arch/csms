@@ -2989,6 +2989,20 @@
                         </button>
                     </div>
                 </div>
+
+                <!-- Contact Status Filter Buttons -->
+                <div style="display: flex; gap: 10px; margin: 1rem 0 1.5rem; flex-wrap: wrap; align-items: center;">
+                    <button class="role-filter-btn active" data-contact-status="all" onclick="filterContactsByStatus('all')">
+                        <i class="fas fa-list"></i> All Messages
+                    </button>
+                    <button class="role-filter-btn" data-contact-status="new" onclick="filterContactsByStatus('new')">
+                        <i class="fas fa-envelope"></i> New
+                    </button>
+                    <button class="role-filter-btn" data-contact-status="responded" onclick="filterContactsByStatus('responded')">
+                        <i class="fas fa-reply"></i> Responded
+                    </button>
+                </div>
+
                 <div class="table-container" id="contact-messages-container">
                     <!-- Populated by JavaScript -->
                 </div>
@@ -3445,6 +3459,7 @@
         // Search state
         let currentUserSearchTerm = '';
         let currentVehicleSearchTerm = '';
+        let currentContactStatusFilter = 'all'; // Contact status filter state
         let currentContactSearchTerm = '';
         let currentGlobalSearchTerm = '';
         let currentUserRoleFilter = 'all'; // Add role filter state
@@ -6234,6 +6249,12 @@ const avatarSource = user.avatar || '';
             }
 
             let filteredContacts = Array.isArray(contactsDatabase) ? contactsDatabase.slice() : [];
+            
+            // Apply status filter
+            if (currentContactStatusFilter !== 'all') {
+                filteredContacts = filteredContacts.filter(c => (c.status || 'new') === currentContactStatusFilter);
+            }
+
             if (currentContactSearchTerm) {
                 const searchTerm = currentContactSearchTerm;
                 filteredContacts = filteredContacts.filter(contact => 
@@ -6294,6 +6315,24 @@ const avatarSource = user.avatar || '';
             container.innerHTML = html;
             renderPaginationSummary('contact-messages-pagination-summary', totalItems, startIndex, endIndex);
             renderPagination('contact-messages-pagination', currentContactPage, totalPages, goToContactPage);
+        }
+
+        function filterContactsByStatus(status) {
+            currentContactStatusFilter = status;
+            currentContactSearchTerm = ''; // Clear search term when filtering by status
+            currentContactPage = 1;
+
+            // Update active state on filter buttons
+            document.querySelectorAll('.role-filter-btn[data-contact-status]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.role-filter-btn[data-contact-status="${status}"]`)?.classList.add('active');
+            
+            // Clear search input
+            const searchInput = document.getElementById('contact-search-input');
+            if (searchInput) searchInput.value = '';
+            
+            refreshContactMessages();
         }
         
         async function viewContactMessageDetail(msgId) {

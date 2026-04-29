@@ -6,8 +6,9 @@ const contactSchema = new mongoose.Schema({
   phone: { type: String, trim: true, default: '' },
   problemType: { type: String },
   description: { type: String },
-  status: { type: String, default: 'new', enum: ['new', 'in-progress', 'resolved'] },
-  adminResponse: { type: String }
+  status: { type: String, enum: ['new', 'in-progress', 'resolved', 'responded'], default: 'new' },
+  adminResponse: { type: String, default: '' },
+  respondedAt: { type: Date }
 }, { timestamps: true });
 
 module.exports = mongoose.model('Contact', contactSchema);
