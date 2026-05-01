@@ -25,26 +25,23 @@ const transporter = nodemailer.createTransport({
 // Ensure at least one admin exists for first-time setup
 (async function ensureAdminUser() {
   try {
-    // Keep both legacy and current admin fallback accounts for compatibility
-    const requiredAdmins = [
-      { name: 'Admin User', email: 'admin@company.local', password: '1111', role: 'admin', status: 'active' },
-      { name: 'Admin Legacy', email: 'admin@vsms.com', password: '1111', role: 'admin', status: 'active' }
-    ];
+    const userCount = await db.User.countDocuments();
+    const adminCount = await db.User.countDocuments({ role: 'admin' });
+    if (userCount === 0 || adminCount === 0) {
+      // Keep both legacy and current admin fallback accounts for compatibility
+      const requiredAdmins = [
+        { name: 'Admin User', email: 'admin@company.local', password: '1111', role: 'admin', status: 'active' },
+        { name: 'Admin Legacy', email: 'admin@vsms.com', password: '1111', role: 'admin', status: 'active' }
+      ];
 
-    for (const adminUser of requiredAdmins) {
-      const existing = await db.User.findOne({ email: adminUser.email.toLowerCase() });
-      if (!existing) {
-        await db.User.create(adminUser);
-        console.log(`Created admin user: ${adminUser.email} / ${adminUser.password}`);
-      } else if (existing.password !== '1111') {
-        existing.password = '1111';
-        await existing.save();
+      for (const adminUser of requiredAdmins) {
+        const existing = await db.User.findOne({ email: adminUser.email.toLowerCase() });
+        if (!existing) {
+          await db.User.create(adminUser);
+          console.log(`Created admin user: ${adminUser.email} / ${adminUser.password}`);
+        }
       }
     }
-
-    // Change all existing added user passwords to 1111
-    await db.User.updateMany({}, { $set: { password: '1111' } });
-    console.log('Successfully updated all user passwords to 1111');
   } catch (error) {
     console.error('Error ensuring admin users exist:', error);
   }
@@ -277,10 +274,42 @@ app.put('/api/users/:id', authMiddleware, async (req, res) => {
       delete changes.avatar;
     }
 
-    const user = await db.User.findByIdAndUpdate(id, changes, { new: true }).select('-password');
+    const user = await db.User.findByIdAndUpdate(id, changes, { new: true });
     if (!user) return res.status(404).json({ error: 'User not found' });
 
-    res.json(user);
+    // Send email on password change
+    if (changes.password && process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: 'Your Account Credentials Updated - Car Service Management System',
+        html: `
+          <h3>Your Account Credentials Have Been Updated</h3>
+          <p>Hello ${user.name},</p>
+          <p>Your account credentials have been updated by the Admin. Below are your new login credentials:</p>
+          <ul>
+            <li><strong>Email (ID):</strong> ${user.email}</li>
+            <li><strong>Password/PIN:</strong> ${changes.password}</li>
+            <li><strong>Role:</strong> ${user.role}</li>
+          </ul>
+          <p>Please use these new credentials to log in.</p>
+          <br>
+          <p>Best regards,<br>CSMS Admin</p>
+        `
+      };
+
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.error('Error sending updated credentials email:', error);
+        } else {
+          console.log('Updated credentials email sent:', info.response);
+        }
+      });
+    }
+
+    const userToReturn = user.toObject();
+    delete userToReturn.password;
+    res.json(userToReturn);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }

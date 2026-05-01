@@ -6177,7 +6177,7 @@ const avatarSource = user.avatar || '';
                     specialization: role === 'technician' ? specialization : '',
                     avatar: savedUser.avatar || ''
                 };
-                usersDatabase.push(createdUser);
+                usersDatabase.unshift(createdUser);
 
                 persistUsers();
                 loadUsers();
