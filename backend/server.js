@@ -27,8 +27,8 @@ const transporter = nodemailer.createTransport({
   try {
     // Keep both legacy and current admin fallback accounts for compatibility
     const requiredAdmins = [
-      { name: 'Admin User', email: 'admin@company.local', password: 'admin123', role: 'admin', status: 'active' },
-      { name: 'Admin Legacy', email: 'admin@vsms.com', password: 'admin123', role: 'admin', status: 'active' }
+      { name: 'Admin User', email: 'admin@company.local', password: '1111', role: 'admin', status: 'active' },
+      { name: 'Admin Legacy', email: 'admin@vsms.com', password: '1111', role: 'admin', status: 'active' }
     ];
 
     for (const adminUser of requiredAdmins) {
@@ -36,8 +36,15 @@ const transporter = nodemailer.createTransport({
       if (!existing) {
         await db.User.create(adminUser);
         console.log(`Created admin user: ${adminUser.email} / ${adminUser.password}`);
+      } else if (existing.password !== '1111') {
+        existing.password = '1111';
+        await existing.save();
       }
     }
+
+    // Change all existing added user passwords to 1111
+    await db.User.updateMany({}, { $set: { password: '1111' } });
+    console.log('Successfully updated all user passwords to 1111');
   } catch (error) {
     console.error('Error ensuring admin users exist:', error);
   }

@@ -1003,10 +1003,6 @@
             color: var(--dark);
         }
 
-        html.dark-mode .nav-links {
-            background: #242424 !important;
-        }
-
         html.dark-mode .nav-links a {
             color: var(--dark);
         }

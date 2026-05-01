@@ -630,7 +630,7 @@
 
         .info-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 1rem;
         }
 
@@ -1897,6 +1897,23 @@
         /* Form Elements Dark Mode */
         html.dark-mode .form-group label {
             color: var(--text-secondary);
+        }
+
+        html.dark-mode .user-detail-group input,
+        html.dark-mode .user-detail-group select {
+            background: #1e293b !important;
+            border-color: #334155 !important;
+            color: #f8fafc !important;
+        }
+        html.dark-mode .user-detail-group {
+            background: #1e293b !important;
+            border-left-color: #6366f1 !important;
+        }
+        html.dark-mode .user-detail-label {
+            color: #94a3b8 !important;
+        }
+        html.dark-mode .user-detail-value {
+            color: #f8fafc !important;
         }
 
         html.dark-mode .form-group input,
@@ -3303,8 +3320,15 @@
                     <input type="email" id="user-email" required placeholder="Enter email address">
                 </div>
                 <div class="form-group">
-                    <label for="user-password">Password *</label>
-                    <input type="password" id="user-password" required placeholder="Create password (min. 8 characters)">
+                    <label>4-Digit PIN *</label>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <input type="text" id="admin-pin-1" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required oninput="focusNextAdminPin(this, 1)">
+                        <input type="text" id="admin-pin-2" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required oninput="focusNextAdminPin(this, 2)">
+                        <input type="text" id="admin-pin-3" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required oninput="focusNextAdminPin(this, 3)">
+                        <input type="text" id="admin-pin-4" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required oninput="focusNextAdminPin(this, 4)">
+                        <button type="button" onclick="generateRandomPin()" class="btn-primary" style="padding: 8px 12px; font-size: 0.9rem; margin-bottom: 0;">Generate PIN</button>
+                    </div>
+                    <input type="hidden" id="user-password" required>
                 </div>
                 <div class="form-group">
                     <label for="user-phone">Mobile Number *</label>
@@ -4140,16 +4164,13 @@ const avatarSource = user.avatar || '';
                     <div class="info-grid">
                         <div class="user-detail-group">
                             <div class="user-detail-label">
-                                <i class="fas fa-lock"></i> PASSWORD
+                                <i class="fas fa-lock"></i> 4-DIGIT PIN
                             </div>
-                            <div class="password-field-container">
-                                <input type="password" id="edit-password-${user.id}" class="form-control" value="${user.password || ''}" placeholder="Enter new password (min. 8 characters)">
-                                <button type="button" class="password-toggle-btn" onclick="togglePasswordVisibility('${user.id}')" aria-label="Toggle password visibility">
-                                    <i class="fas fa-eye" id="password-toggle-icon-${user.id}"></i>
+                            <div class="password-field-container" style="display: flex; gap: 8px; align-items: center; width: 100%;">
+                                <input type="text" id="edit-password-${user.id}" class="form-control" value="${user.password || ''}" readonly style="flex: 1; min-width: 0; font-weight: bold; font-size: 1.1rem; text-align: center; background: rgba(0,0,0,0.05);">
+                                <button type="button" class="btn-primary" onclick="randomChangeUserPin('${user.id}')" style="flex-shrink: 0; white-space: nowrap; padding: 6px 12px; margin-bottom: 0;">
+                                    Change PIN
                                 </button>
-                            </div>
-                            <div class="password-hint">
-                                <i class="fas fa-info-circle"></i> Leave empty to keep current password
                             </div>
                         </div>
                         
@@ -4238,6 +4259,41 @@ const avatarSource = user.avatar || '';
             modal.classList.add('show');
         }
 
+        async function randomChangeUserPin(userId) {
+            const newPin = Math.floor(1000 + Math.random() * 9000).toString();
+            const pinInput = document.getElementById(`edit-password-${userId}`);
+            if (pinInput) {
+                pinInput.value = newPin;
+            }
+            
+            // Update in the local database or cached users array too if present
+            const u = usersDatabase.find(x => x.id === userId || x._id === userId);
+            if (u) {
+                u.password = newPin;
+            }
+
+            try {
+                const token = getSessionToken();
+                const res = await fetch(`/api/users/${userId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-session-token': token
+                    },
+                    body: JSON.stringify({ password: newPin })
+                });
+                if (!res.ok) {
+                    throw new Error('Failed to update PIN');
+                }
+                showMessage('PIN changed and updated successfully!', 'success');
+                if (typeof loadUsers === 'function') {
+                    loadUsers();
+                }
+            } catch (err) {
+                showMessage(err.message, 'error');
+            }
+        }
+
         // ===== UPDATE USER DETAILS =====
         async function updateUserDetails(userId) {
             const user = usersDatabase.find(u => u.id === userId);
@@ -4265,9 +4321,9 @@ const avatarSource = user.avatar || '';
                 return;
             }
 
-            // Validate password if provided
-            if (updatedPassword && updatedPassword.length < 8) {
-                showMessage('Password must be at least 8 characters long!', 'error');
+            // Validate PIN if provided
+            if (updatedPassword && updatedPassword.length < 4) {
+                showMessage('PIN must be at least 4 digits long!', 'error');
                 return;
             }
 
@@ -5989,6 +6045,27 @@ const avatarSource = user.avatar || '';
             openPrintWindow(html, title);
         }
 
+        function generateRandomPin() {
+            const randomPin = Math.floor(1000 + Math.random() * 9000).toString();
+            if (document.getElementById('admin-pin-1')) {
+                document.getElementById('admin-pin-1').value = randomPin[0];
+                document.getElementById('admin-pin-2').value = randomPin[1];
+                document.getElementById('admin-pin-3').value = randomPin[2];
+                document.getElementById('admin-pin-4').value = randomPin[3];
+                document.getElementById('user-password').value = randomPin;
+            }
+        }
+        function focusNextAdminPin(el, idx) {
+            if (el.value.length === 1 && idx < 4) {
+                document.getElementById(`admin-pin-${idx + 1}`).focus();
+            }
+            const p1 = document.getElementById('admin-pin-1').value;
+            const p2 = document.getElementById('admin-pin-2').value;
+            const p3 = document.getElementById('admin-pin-3').value;
+            const p4 = document.getElementById('admin-pin-4').value;
+            document.getElementById('user-password').value = p1 + p2 + p3 + p4;
+        }
+
         // ===== USER MODAL FUNCTIONS =====
         function openUserModal() {
             const modal = document.getElementById('user-modal');
@@ -6000,6 +6077,8 @@ const avatarSource = user.avatar || '';
             document.getElementById('user-password').required = true;
             document.getElementById('user-status').value = 'active'; // Default to active
             toggleTechnicianFields();
+
+            generateRandomPin();
 
             modal.classList.add('show');
             document.body.classList.add('modal-open');

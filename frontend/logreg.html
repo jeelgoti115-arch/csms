@@ -1,734 +1,948 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login | CSMS</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <!-- AOS Library -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
     <style>
-        :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --secondary: #7209b7;
-            --accent: #f72585;
-            --success: #4cc9f0;
-            --dark: #0f172a;
-            --light: #f8f9fa;
-            --gray: #8d99ae;
-            --card-bg: #ffffff;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.15);
-            --gradient: linear-gradient(135deg, #4361ee, #7209b7);
-            --border-radius: 16px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+      :root {
+        --primary: #4361ee;
+        --primary-dark: #3a56d4;
+        --secondary: #7209b7;
+        --accent: #f72585;
+        --success: #4cc9f0;
+        --dark: #0f172a;
+        --light: #f8f9fa;
+        --gray: #8d99ae;
+        --card-bg: #ffffff;
+        --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        --shadow-hover: 0 20px 50px rgba(0, 0, 0, 0.15);
+        --gradient: linear-gradient(135deg, #4361ee, #7209b7);
+        --border-radius: 16px;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
 
-        body { 
-            font-family: 'Outfit', sans-serif; 
-            overflow-x: hidden; 
-            background-color: var(--light);
-        }
+      body {
+        font-family: "Outfit", sans-serif;
+        overflow-x: hidden;
+        background-color: var(--light);
+      }
 
-        .hero-gradient {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-        }
+      .hero-gradient {
+        background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      }
 
-        .input-focus:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
-        }
+      .input-focus:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(67, 97, 238, 0.1);
+      }
 
-        .btn-primary-custom {
-            background: var(--gradient);
-            transition: var(--transition);
-        }
+      .btn-primary-custom {
+        background: var(--gradient);
+        transition: var(--transition);
+      }
 
-        .btn-primary-custom:hover {
-            transform: scale(1.02);
-            box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
-        }
+      .btn-primary-custom:hover {
+        transform: scale(1.02);
+        box-shadow: 0 10px 20px rgba(67, 97, 238, 0.3);
+      }
 
-        /* Role Select Styling */
-        .role-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234361ee' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1.2em;
-        }
+      /* Role Select Styling */
+      .role-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234361ee' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.2em;
+      }
 
-        /* Existing component styles needed for scripts */
-        .message-box {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            padding: 1.2rem 1.8rem;
-            border-radius: 12px;
-            color: white;
-            font-weight: 600;
-            box-shadow: var(--shadow);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            min-width: 320px;
-            max-width: 400px;
-            animation: slideIn 0.3s ease;
-        }
-        .message-success { background: linear-gradient(135deg, #06d6a0, #04a777); }
-        .message-error { background: linear-gradient(135deg, #ef476f, #ff6b6b); }
-        .message-info { background: var(--gradient); }
-        
-        .message-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.8rem;
-            cursor: pointer;
-            margin-left: 1rem;
-            line-height: 1;
-        }
+      /* Existing component styles needed for scripts */
+      .message-box {
+        position: fixed;
+        top: 100px;
+        right: 20px;
+        padding: 1.2rem 1.8rem;
+        border-radius: 12px;
+        color: white;
+        font-weight: 600;
+        box-shadow: var(--shadow);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        min-width: 320px;
+        max-width: 400px;
+        animation: slideIn 0.3s ease;
+      }
+      .message-success {
+        background: linear-gradient(135deg, #06d6a0, #04a777);
+      }
+      .message-error {
+        background: linear-gradient(135deg, #ef476f, #ff6b6b);
+      }
+      .message-info {
+        background: var(--gradient);
+      }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateX(100px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
+      .message-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.8rem;
+        cursor: pointer;
+        margin-left: 1rem;
+        line-height: 1;
+      }
 
-        @keyframes slideOut {
-            from { opacity: 1; transform: translateX(0); }
-            to { opacity: 0; transform: translateX(100px); }
+      @keyframes slideIn {
+        from {
+          opacity: 0;
+          transform: translateX(100px);
         }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
 
-        .redirect-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.95);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            display: none;
+      @keyframes slideOut {
+        from {
+          opacity: 1;
+          transform: translateX(0);
         }
-        .redirect-overlay.show { display: flex; }
-        .redirect-content {
-            background: white;
-            padding: 3rem;
-            border-radius: 24px;
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        to {
+          opacity: 0;
+          transform: translateX(100px);
         }
-        .redirect-role-icon { font-size: 4.5rem; margin-bottom: 1.5rem; animation: bounce 2s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+      }
 
-        /* Dark Mode Support */
-        html.dark-mode {
-            --light: #0f172a;
-            --card-bg: #1e293b;
-            --dark: #f8f9fa;
+      .redirect-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(15, 23, 42, 0.95);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        display: none;
+      }
+      .redirect-overlay.show {
+        display: flex;
+      }
+      .redirect-content {
+        background: white;
+        padding: 3rem;
+        border-radius: 24px;
+        text-align: center;
+        max-width: 500px;
+        width: 90%;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      }
+      .redirect-role-icon {
+        font-size: 4.5rem;
+        margin-bottom: 1.5rem;
+        animation: bounce 2s infinite;
+      }
+      @keyframes bounce {
+        0%,
+        100% {
+          transform: translateY(0);
         }
-        html.dark-mode .bg-white { background-color: var(--card-bg) !important; color: white !important; }
-        html.dark-mode .text-slate-700 { color: #cbd5e1 !important; }
-        html.dark-mode .text-slate-400 { color: #94a3b8 !important; }
-        html.dark-mode .bg-slate-50 { background-color: #0f172a !important; }
-        html.dark-mode .border-slate-200 { border-color: #334155 !important; }
-        html.dark-mode input { color: white !important; }
+        50% {
+          transform: translateY(-15px);
+        }
+      }
 
-        /* Logged In Message Styling */
-        .logged-in-message {
-            background: linear-gradient(135deg, #06d6a0, #04a777);
-            color: white;
-            padding: 2rem;
-            border-radius: 20px;
-            margin-bottom: 2rem;
-            display: none;
-        }
-        .logged-in-message.show { display: block; }
+      /* Dark Mode Support */
+      html.dark-mode {
+        --light: #0f172a;
+        --card-bg: #1e293b;
+        --dark: #f8f9fa;
+      }
+      html.dark-mode .bg-white {
+        background-color: var(--card-bg) !important;
+        color: white !important;
+      }
+      html.dark-mode .text-slate-700 {
+        color: #cbd5e1 !important;
+      }
+      html.dark-mode .text-slate-400 {
+        color: #94a3b8 !important;
+      }
+      html.dark-mode .bg-slate-50 {
+        background-color: #0f172a !important;
+      }
+      html.dark-mode .border-slate-200 {
+        border-color: #334155 !important;
+      }
+      html.dark-mode input {
+        background-color: #0f172a !important;
+        color: white !important;
+      }
+      html.dark-mode input:-webkit-autofill,
+      html.dark-mode input:-webkit-autofill:hover, 
+      html.dark-mode input:-webkit-autofill:focus {
+        -webkit-text-fill-color: white !important;
+        -webkit-box-shadow: 0 0 0px 1000px #0f172a inset !important;
+      }
+
+      /* Logged In Message Styling */
+      .logged-in-message {
+        background: linear-gradient(135deg, #06d6a0, #04a777);
+        color: white;
+        padding: 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        display: none;
+      }
+      .logged-in-message.show {
+        display: block;
+      }
     </style>
-</head>
-<body class="hero-gradient min-h-screen flex items-center justify-center p-4">
-
+  </head>
+  <body class="hero-gradient min-h-screen flex items-center justify-center p-4">
     <div class="max-w-md w-full" data-aos="zoom-in" data-aos-duration="800">
-        <!-- Logo -->
-        <div class="text-center mb-10">
-            <a href="index.html" class="text-3xl font-bold text-white tracking-tight">Car<span class="text-blue-500">Service</span></a>
-            <p class="text-slate-400 mt-2">Welcome back! Please login to your account.</p>
-        </div>
+      <!-- Logo -->
+      <div class="text-center mb-10">
+        <a
+          href="index.html"
+          class="text-3xl font-bold text-white tracking-tight"
+          >Car<span class="text-blue-500">Service</span></a
+        >
+        <p class="text-slate-400 mt-2">
+          Welcome back! Please login to your account.
+        </p>
+      </div>
 
-        <!-- Already Logged In Message -->
-        <div class="logged-in-message mb-6" id="logged-in-message">
-            <div class="text-center">
-                <h3 class="text-xl font-bold mb-2 flex items-center justify-center gap-2">
-                    <i class="fas fa-check-circle"></i> Already Logged In
-                </h3>
-                <p id="logged-in-details" class="text-sm opacity-90 mb-6">You are currently logged in.</p>
-                <div class="flex flex-col gap-3">
-                    <a href="/" id="go-to-dashboard" class="bg-white text-green-600 font-bold py-3 px-6 rounded-xl transition hover:bg-opacity-90">
-                        <i class="fas fa-tachometer-alt mr-2"></i> Go to Dashboard
-                    </a>
-                    <a href="#" id="logout-here" class="border border-white text-white font-bold py-3 px-6 rounded-xl transition hover:bg-white hover:text-green-600">
-                        <i class="fas fa-sign-out-alt mr-2"></i> Logout
-                    </a>
-                </div>
+      <!-- Already Logged In Message -->
+      <div class="logged-in-message mb-6" id="logged-in-message">
+        <div class="text-center">
+          <h3
+            class="text-xl font-bold mb-2 flex items-center justify-center gap-2"
+          >
+            <i class="fas fa-check-circle"></i> Already Logged In
+          </h3>
+          <p id="logged-in-details" class="text-sm opacity-90 mb-6">
+            You are currently logged in.
+          </p>
+          <div class="flex flex-col gap-3">
+            <a
+              href="/"
+              id="go-to-dashboard"
+              class="bg-white text-green-600 font-bold py-3 px-6 rounded-xl transition hover:bg-opacity-90"
+            >
+              <i class="fas fa-tachometer-alt mr-2"></i> Go to Dashboard
+            </a>
+            <a
+              href="#"
+              id="logout-here"
+              class="border border-white text-white font-bold py-3 px-6 rounded-xl transition hover:bg-white hover:text-green-600"
+            >
+              <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Login Card -->
+      <div class="bg-white rounded-3xl p-8 md:p-10 shadow-2xl" id="login-box">
+        <form id="login-form" class="space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-2"
+              >Email Address</label
+            >
+            <div class="relative">
+              <span
+                class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400"
+              >
+                <svg
+                  class="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                  ></path>
+                </svg>
+              </span>
+              <input
+                type="email"
+                id="login-email"
+                required
+                placeholder="name@company.com"
+                class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 input-focus transition"
+              />
             </div>
-        </div>
+          </div>
 
-        <!-- Login Card -->
-        <div class="bg-white rounded-3xl p-8 md:p-10 shadow-2xl" id="login-box">
-            <form id="login-form" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path></svg>
-                        </span>
-                        <input type="email" id="login-email" required placeholder="name@company.com" class="w-full pl-11 pr-4 py-3 rounded-xl border border-slate-200 bg-slate-50 input-focus transition">
-                    </div>
-                </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-2"
+              >Enter PIN</label
+            >
+            <div class="grid grid-cols-4 gap-4 w-full" id="pin-container">
+              <input
+                type="text"
+                maxlength="1"
+                id="pin-1"
+                required
+                class="w-full h-14 text-center text-2xl font-bold border border-slate-200 bg-slate-50 rounded-xl focus:border-blue-500 focus:outline-none transition"
+                oninput="focusNextPin(this, 1)"
+                onkeydown="focusPrevPin(event, 1)"
+              />
+              <input
+                type="text"
+                maxlength="1"
+                id="pin-2"
+                required
+                class="w-full h-14 text-center text-2xl font-bold border border-slate-200 bg-slate-50 rounded-xl focus:border-blue-500 focus:outline-none transition"
+                oninput="focusNextPin(this, 2)"
+                onkeydown="focusPrevPin(event, 2)"
+              />
+              <input
+                type="text"
+                maxlength="1"
+                id="pin-3"
+                required
+                class="w-full h-14 text-center text-2xl font-bold border border-slate-200 bg-slate-50 rounded-xl focus:border-blue-500 focus:outline-none transition"
+                oninput="focusNextPin(this, 3)"
+                onkeydown="focusPrevPin(event, 3)"
+              />
+              <input
+                type="text"
+                maxlength="1"
+                id="pin-4"
+                required
+                class="w-full h-14 text-center text-2xl font-bold border border-slate-200 bg-slate-50 rounded-xl focus:border-blue-500 focus:outline-none transition"
+                oninput="focusNextPin(this, 4)"
+                onkeydown="focusPrevPin(event, 4)"
+              />
+            </div>
+            <!-- Hidden field to hold the full password value for form submission -->
+            <input type="hidden" id="login-password" />
+          </div>
 
-                <div>
-                    <div class="flex justify-between mb-2">
-                        <label class="block text-sm font-semibold text-slate-700">Password</label>
-                    </div>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path></svg>
-                        </span>
-                        <input type="password" id="login-password" required placeholder="••••••••" class="w-full pl-11 pr-12 py-3 rounded-xl border border-slate-200 bg-slate-50 input-focus transition">
-                        <button type="button" id="toggle-password" class="absolute inset-y-0 right-0 pr-4 flex items-center text-slate-400 hover:text-blue-500 transition">
-                            <i class="fas fa-eye" id="eye-icon"></i>
-                        </button>
-                    </div>
-                </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-2"
+              >Select Your Role</label
+            >
+            <div class="relative">
+              <span
+                class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400"
+              >
+                <i class="fas fa-user-tag text-sm"></i>
+              </span>
+              <select
+                id="login-role"
+                class="w-full pl-11 pr-10 py-3 rounded-xl border border-slate-200 bg-slate-50 input-focus transition role-select"
+                required
+              >
+                <option value="">--Select--</option>
+                <option value="admin">👨‍💼 Administrator</option>
+                <option value="guard">👮 Security Guard</option>
+                <option value="receptionist">👩‍💼 Receptionist</option>
+                <option value="advisor">👨‍🔧 Service Advisor</option>
+                <option value="technician">🔧 Technician</option>
+                <option value="qc">🔬 Quality Controller</option>
+              </select>
+            </div>
+          </div>
 
-                <div>
-                    <label class="block text-sm font-semibold text-slate-700 mb-2">Select Your Role</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 pl-4 flex items-center text-slate-400">
-                            <i class="fas fa-user-tag text-sm"></i>
-                        </span>
-                        <select id="login-role" class="w-full pl-11 pr-10 py-3 rounded-xl border border-slate-200 bg-slate-50 input-focus transition role-select" required>
-                            <option value="">--Select--</option>
-                            <option value="admin">👨‍💼 Administrator</option>
-                            <option value="guard">👮 Security Guard</option>
-                            <option value="receptionist">👩‍💼 Receptionist</option>
-                            <option value="advisor">👨‍🔧 Service Advisor</option>
-                            <option value="technician">🔧 Technician</option>
-                            <option value="qc">🔬 Quality Controller</option>
-                        </select>
-                    </div>
-                </div>
+          <button
+            type="submit"
+            class="w-full btn-primary-custom text-white font-bold py-4 rounded-xl transition shadow-lg shadow-blue-200 transform hover:scale-[1.02] active:scale-95"
+          >
+            Sign In
+          </button>
 
-                <button type="submit" class="w-full btn-primary-custom text-white font-bold py-4 rounded-xl transition shadow-lg shadow-blue-200 transform hover:scale-[1.02] active:scale-95">
-                    Sign In
-                </button>
-
-                <!-- Back to Home -->
-                <div class="text-center mt-6">
-                    <a href="index.html" class="text-slate-600 hover:text-black transition flex items-center justify-center gap-2 text-sm font-medium">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                        Back to Home
-                    </a>
-                </div>
-
-            </form>
-        </div>
+          <!-- Back to Home -->
+          <div class="text-center mt-6">
+            <a
+              href="index.html"
+              class="text-slate-600 hover:text-black transition flex items-center justify-center gap-2 text-sm font-medium"
+            >
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                ></path>
+              </svg>
+              Back to Home
+            </a>
+          </div>
+        </form>
+      </div>
     </div>
 
     <!-- Redirect Overlay -->
     <div class="redirect-overlay" id="redirect-overlay">
-        <div class="redirect-content">
-            <div class="redirect-role-icon" id="redirect-role-icon">👨‍💼</div>
-            <h3 id="redirect-title" class="text-2xl font-bold text-slate-800 mb-2">Login Successful!</h3>
-            <p id="redirect-message" class="text-slate-600 mb-4">You are being redirected...</p>
-            <div class="redirect-countdown text-blue-600 font-bold" id="redirect-countdown">Redirecting in 3 seconds...</div>
-        </div>
+      <div class="flex flex-col items-center justify-center gap-4 text-center">
+        <div class="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500 mb-2"></div>
+        <h3 class="text-2xl font-bold text-white tracking-tight">Login Successful!</h3>
+      </div>
     </div>
 
     <!-- Account Inactive Modal -->
-    <div class="redirect-overlay" id="inactive-account-modal" style="display: none;">
-        <div class="redirect-content">
-            <div class="redirect-role-icon" style="color: #ef4444;">🔒</div>
-            <h3 class="text-2xl font-bold text-red-600 mb-2">Account Inactive</h3>
-            <p id="inactive-message" class="text-slate-600 mb-6">Please contact the administrator.</p>
-            <button onclick="closeInactiveModal()" class="w-full btn-primary-custom text-white font-bold py-3 rounded-xl">
-                <i class="fas fa-check mr-2"></i> OK
-            </button>
-        </div>
+    <div
+      class="redirect-overlay"
+      id="inactive-account-modal"
+      style="display: none"
+    >
+      <div class="redirect-content">
+        <div class="redirect-role-icon" style="color: #ef4444">🔒</div>
+        <h3 class="text-2xl font-bold text-red-600 mb-2">Account Inactive</h3>
+        <p id="inactive-message" class="text-slate-600 mb-6">
+          Please contact the administrator.
+        </p>
+        <button
+          onclick="closeInactiveModal()"
+          class="w-full btn-primary-custom text-white font-bold py-3 rounded-xl"
+        >
+          <i class="fas fa-check mr-2"></i> OK
+        </button>
+      </div>
     </div>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script>
-        AOS.init({ once: true });
+      AOS.init({ once: true });
     </script>
 
-
     <script>
-        // Mobile menu toggle=======================================
-        function toggleMobileMenu() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('active');
-        }
+      // Mobile menu toggle=======================================
+      function toggleMobileMenu() {
+        const navLinks = document.getElementById("navLinks");
+        navLinks.classList.toggle("active");
+      }
 
-        // Intersection Observer for animations=======================================
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+      // Intersection Observer for animations=======================================
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      };
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                }
-            });
-        }, observerOptions);
-
-        // Observe elements=======================================
-        document.querySelectorAll('.fade-in, .slide-in-left').forEach(el => {
-            observer.observe(el);
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animated");
+          }
         });
+      }, observerOptions);
 
-        // Check if user is already logged in=======================================
-        function checkExistingSession() {
-            const currentUser = JSON.parse(localStorage.getItem('vsms_current_user'));
-            if (currentUser) {
-                // Show logged in message=======================================
-                const messageBox = document.getElementById('logged-in-message');
-                const details = document.getElementById('logged-in-details');
-                const dashboardLink = document.getElementById('go-to-dashboard');
-                const logoutLink = document.getElementById('logout-here');    
-                if (messageBox && details) {
-                    const roleName = getRoleName(currentUser.role);
-                    details.textContent = `You are currently logged in as ${currentUser.name} with ${roleName} role.`;
-                    messageBox.classList.add('show');
-                    // Hide login form (registration not available on this page)
-                    document.getElementById('login-box').style.display = 'none';
-                    // Update page header=======================================
-                    const pageHeader = document.querySelector('.page-header h1');
-                    const pageSubtitle = document.querySelector('.page-header p');
-                    if (pageHeader) {
-                        pageHeader.textContent = `Hello, ${currentUser.name}!`;
-                    }
-                    if (pageSubtitle) {
-                        pageSubtitle.textContent = `You are logged in with ${roleName} role. Access your dashboard to manage vehicle services.`;
-                    }
+      // Observe elements=======================================
+      document.querySelectorAll(".fade-in, .slide-in-left").forEach((el) => {
+        observer.observe(el);
+      });
 
-                    const sectionTitle = document.querySelector('.section-title h2');
-                    if (sectionTitle) {
-                        sectionTitle.textContent = `Current Session`;
-                    }
-                    const sectionSubtitle = document.querySelector('.section-title p');
-                    if (sectionSubtitle) {
-                        sectionSubtitle.textContent = `You are already logged in. Please logout first to switch accounts.`;
-                    }
-                }
-                
-                // Set dashboard link=======================================
-                if (dashboardLink) {
-                    dashboardLink.href = `${currentUser.role}.html`;
-                }
-                
-                // Set logout functionality=======================================
-                if (logoutLink) {
-                    logoutLink.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        localStorage.removeItem('vsms_current_user');
-                        window.location.href = 'logreg.html';
-                    });
-                }
+      // Check if user is already logged in=======================================
+      function checkExistingSession() {
+        const currentUser = JSON.parse(
+          localStorage.getItem("vsms_current_user"),
+        );
+        if (currentUser) {
+          // Show logged in message=======================================
+          const messageBox = document.getElementById("logged-in-message");
+          const details = document.getElementById("logged-in-details");
+          const dashboardLink = document.getElementById("go-to-dashboard");
+          const logoutLink = document.getElementById("logout-here");
+          if (messageBox && details) {
+            const roleName = getRoleName(currentUser.role);
+            details.textContent = `You are currently logged in as ${currentUser.name} with ${roleName} role.`;
+            messageBox.classList.add("show");
+            // Hide login form (registration not available on this page)
+            document.getElementById("login-box").style.display = "none";
+            // Update page header=======================================
+            const pageHeader = document.querySelector(".page-header h1");
+            const pageSubtitle = document.querySelector(".page-header p");
+            if (pageHeader) {
+              pageHeader.textContent = `Hello, ${currentUser.name}!`;
             }
-        }
-        
-        // DOM Elements=======================================
-        const loginBox = document.getElementById('login-box');
-        const loginForm = document.getElementById('login-form');
-        
-        // User database
-        let usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
+            if (pageSubtitle) {
+              pageSubtitle.textContent = `You are logged in with ${roleName} role. Access your dashboard to manage vehicle services.`;
+            }
 
-        // ===== MIGRATE OLD USERS TO ADD STATUS FIELD ============================================
-        function migrateUsersDatabase() {
-            let migrated = false;
-            usersDatabase = usersDatabase.map(user => {
-                if (!user.hasOwnProperty('status')) {
-                    migrated = true;
-                    return { ...user, status: 'active' };
-                }
-                return user;
+            const sectionTitle = document.querySelector(".section-title h2");
+            if (sectionTitle) {
+              sectionTitle.textContent = `Current Session`;
+            }
+            const sectionSubtitle = document.querySelector(".section-title p");
+            if (sectionSubtitle) {
+              sectionSubtitle.textContent = `You are already logged in. Please logout first to switch accounts.`;
+            }
+          }
+
+          // Set dashboard link=======================================
+          if (dashboardLink) {
+            dashboardLink.href = `${currentUser.role}.html`;
+          }
+
+          // Set logout functionality=======================================
+          if (logoutLink) {
+            logoutLink.addEventListener("click", function (e) {
+              e.preventDefault();
+              localStorage.removeItem("vsms_current_user");
+              window.location.href = "logreg.html";
             });
-            if (migrated) {
-                localStorage.setItem('vsms_users', JSON.stringify(usersDatabase));
-                console.log('Users database migrated: added status field');
-            }
+          }
         }
-        migrateUsersDatabase();
-        
-        // Role descriptions=======================================
-        const roleDescriptions = {
-            admin: {
-                title: "Administrator Role",
-                description: "Manages the entire system, creates users, assigns roles, and monitors overall operations and reports.",
-                icon: "👨‍💼"
-            },
-            advisor: {
-                title: "Service Advisor Role",
-                description: "Inspects the vehicle, prepares the job details, and assigns tasks to the technician.",
-                icon: "👨‍🔧"
-            },
-            technician: {
-                title: "Technician Role",
-                description: "Performs the assigned service work and updates job start and completion status.",
-                icon: "🔧"
-            },
-            qc: {
-                title: "Quality Controller Role",
-                description: "Checks the serviced vehicle to ensure quality standards before final approval or delivery.",
-                icon: "🔬"
-            },
-            receptionist: {
-                title: "Receptionist Role",
-                description: "Receives entered vehicles, verifies details, and assigns them to a service advisor.",
-                icon: "👩‍💼"
-            },
-            guard: {
-                title: "Security Guard Role",
-                description: "Registers vehicle entry at the gate and initiates the service workflow.",
-                icon: "👮"
-            }
-        };
-        
-        // Check for existing session on page load=======================================
-        document.addEventListener('DOMContentLoaded', function() {
-            checkExistingSession();
-            
-            // Only setup form events if user is not logged in=======================================
-            setupFormEvents();
-            
-            // Add social login button functionality=======================================
-            document.querySelectorAll('.social-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    showMessage('Social login feature is coming soon!', 'info');
-                });
-            });
+      }
+
+      // DOM Elements=======================================
+      const loginBox = document.getElementById("login-box");
+      const loginForm = document.getElementById("login-form");
+
+      // User database
+      let usersDatabase = JSON.parse(localStorage.getItem("vsms_users")) || [];
+
+      // ===== MIGRATE OLD USERS TO ADD STATUS FIELD ============================================
+      function migrateUsersDatabase() {
+        let migrated = false;
+        usersDatabase = usersDatabase.map((user) => {
+          if (!user.hasOwnProperty("status")) {
+            migrated = true;
+            return { ...user, status: "active" };
+          }
+          return user;
         });
-        
-        function setupFormEvents() {
-            // Only allow login on this page. Account creation is restricted to Admin page.=======================================
-            loginForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
+        if (migrated) {
+          localStorage.setItem("vsms_users", JSON.stringify(usersDatabase));
+          console.log("Users database migrated: added status field");
+        }
+      }
+      migrateUsersDatabase();
 
-                const email = document.getElementById('login-email').value.toLowerCase().trim();
-                const password = document.getElementById('login-password').value;
-                const selectedRole = document.getElementById('login-role').value;
+      // Role descriptions=======================================
+      const roleDescriptions = {
+        admin: {
+          title: "Administrator Role",
+          description:
+            "Manages the entire system, creates users, assigns roles, and monitors overall operations and reports.",
+          icon: "👨‍💼",
+        },
+        advisor: {
+          title: "Service Advisor Role",
+          description:
+            "Inspects the vehicle, prepares the job details, and assigns tasks to the technician.",
+          icon: "👨‍🔧",
+        },
+        technician: {
+          title: "Technician Role",
+          description:
+            "Performs the assigned service work and updates job start and completion status.",
+          icon: "🔧",
+        },
+        qc: {
+          title: "Quality Controller Role",
+          description:
+            "Checks the serviced vehicle to ensure quality standards before final approval or delivery.",
+          icon: "🔬",
+        },
+        receptionist: {
+          title: "Receptionist Role",
+          description:
+            "Receives entered vehicles, verifies details, and assigns them to a service advisor.",
+          icon: "👩‍💼",
+        },
+        guard: {
+          title: "Security Guard Role",
+          description:
+            "Registers vehicle entry at the gate and initiates the service workflow.",
+          icon: "👮",
+        },
+      };
 
-                // Basic validation=======================================
-                if (!email || !password || !selectedRole) {
-                    showMessage('Please fill in all fields including role', 'error');
-                    return;
-                }
+      // Check for existing session on page load=======================================
+      document.addEventListener("DOMContentLoaded", function () {
+        checkExistingSession();
 
-                // Login via API (MongoDB-backed auth)
-                try {
-                    const result = await fetch('/api/login', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email, password })
-                    });
+        // Only setup form events if user is not logged in=======================================
+        setupFormEvents();
 
-                    if (!result.ok) {
-                        const body = await result.json().catch(() => ({}));
-                        throw new Error(body.error || 'Invalid email or password');
-                    }
+        // Add social login button functionality=======================================
+        document.querySelectorAll(".social-btn").forEach((btn) => {
+          btn.addEventListener("click", function () {
+            showMessage("Social login feature is coming soon!", "info");
+          });
+        });
+      });
 
-                    const payload = await result.json();
-                    const user = payload.user;
-                    const token = payload.token;
+      function focusNextPin(el, num) {
+        if (el.value.length === 1 && num < 4) {
+          document.getElementById(`pin-${num + 1}`).focus();
+        }
+        updatePinValue();
+      }
+      function focusPrevPin(e, num) {
+        if (
+          e.key === "Backspace" &&
+          num > 1 &&
+          !document.getElementById(`pin-${num}`).value
+        ) {
+          document.getElementById(`pin-${num - 1}`).focus();
+          document.getElementById(`pin-${num - 1}`).value = "";
+        }
+      }
+      function updatePinValue() {
+        const p1 = document.getElementById("pin-1").value;
+        const p2 = document.getElementById("pin-2").value;
+        const p3 = document.getElementById("pin-3").value;
+        const p4 = document.getElementById("pin-4").value;
+        document.getElementById("login-password").value = p1 + p2 + p3 + p4;
+      }
+      document.addEventListener("DOMContentLoaded", () => {
+        const p1 = document.getElementById("pin-1");
+        if (p1) {
+          p1.addEventListener("paste", (e) => {
+            e.preventDefault();
+            const text = (e.clipboardData || window.clipboardData)
+              .getData("text")
+              .trim();
+            if (/^\d{4}$/.test(text)) {
+              for (let i = 0; i < 4; i++) {
+                const pinBox = document.getElementById(`pin-${i + 1}`);
+                pinBox.value = text[i];
+              }
+              document.getElementById("pin-4").focus();
+              updatePinValue();
+            }
+          });
+        }
+      });
 
-                    if (!user || !token) {
-                        throw new Error('Login response missing user/token');
-                    }
+      function setupFormEvents() {
+        // Only allow login on this page. Account creation is restricted to Admin page.=======================================
+        loginForm.addEventListener("submit", async function (e) {
+          e.preventDefault();
 
-                    if (user.role !== selectedRole) {
-                        showMessage(`Your account is registered as ${getRoleName(user.role)}. Please select ${getRoleName(user.role)} role to login.`, 'error');
-                        return;
-                    }
+          const email = document
+            .getElementById("login-email")
+            .value.toLowerCase()
+            .trim();
+          const password = document.getElementById("login-password").value;
+          const selectedRole = document.getElementById("login-role").value;
 
-                    if (user.status === 'inactive') {
-                        document.getElementById('inactive-account-modal').style.display = 'flex';
-                        document.getElementById('inactive-message').innerHTML = `Your account has been deactivated. Please contact the administrator.`;
-                        return;
-                    }
+          // Basic validation=======================================
+          if (!email || !password || !selectedRole) {
+            showMessage("Please fill in all fields including role", "error");
+            return;
+          }
 
-                    // Save auth token + user
-                    localStorage.setItem('vs_session_token', token);
-                    localStorage.setItem('vsms_session_token', token);
-                    localStorage.setItem('vsms_current_user', JSON.stringify(user));
-                    localStorage.setItem('vs_current_user', JSON.stringify(user));
-
-                    loginSuccess(user);
-                } catch (error) {
-                    showMessage(error.message, 'error');
-                }
+          // Login via API (MongoDB-backed auth)
+          try {
+            const result = await fetch("/api/login", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password }),
             });
-        }
-        
-        // Helper functions=======================================
-        function getRoleName(roleCode) {
-            switch(roleCode) {
-                case 'admin': return 'Administrator';
-                case 'advisor': return 'Service Advisor';
-                case 'technician': return 'Technician';
-                case 'qc': return 'Quality Controller';
-                case 'receptionist': return 'Receptionist';
-                case 'guard': return 'Security Guard';
-                default: return 'User';
+
+            if (!result.ok) {
+              const body = await result.json().catch(() => ({}));
+              throw new Error(body.error || "Invalid email or password");
             }
-        }
-        
-        function showMessage(message, type) {
-            // Remove any existing message=======================================
-            const existingMessage = document.querySelector('.message-box');
-            if (existingMessage) {
-                existingMessage.remove();
+
+            const payload = await result.json();
+            const user = payload.user;
+            const token = payload.token;
+
+            if (!user || !token) {
+              throw new Error("Login response missing user/token");
             }
-            
-            // Create message element=======================================
-            const messageBox = document.createElement('div');
-            messageBox.className = `message-box message-${type}`;
-            messageBox.innerHTML = `
+
+            if (user.role !== selectedRole) {
+              showMessage(
+                `Your account is registered as ${getRoleName(user.role)}. Please select ${getRoleName(user.role)} role to login.`,
+                "error",
+              );
+              return;
+            }
+
+            if (user.status === "inactive") {
+              document.getElementById("inactive-account-modal").style.display =
+                "flex";
+              document.getElementById("inactive-message").innerHTML =
+                `Your account has been deactivated. Please contact the administrator.`;
+              return;
+            }
+
+            // Save auth token + user
+            localStorage.setItem("vs_session_token", token);
+            localStorage.setItem("vsms_session_token", token);
+            localStorage.setItem("vsms_current_user", JSON.stringify(user));
+            localStorage.setItem("vs_current_user", JSON.stringify(user));
+
+            loginSuccess(user);
+          } catch (error) {
+            showMessage(error.message, "error");
+          }
+        });
+      }
+
+      // Helper functions=======================================
+      function getRoleName(roleCode) {
+        switch (roleCode) {
+          case "admin":
+            return "Administrator";
+          case "advisor":
+            return "Service Advisor";
+          case "technician":
+            return "Technician";
+          case "qc":
+            return "Quality Controller";
+          case "receptionist":
+            return "Receptionist";
+          case "guard":
+            return "Security Guard";
+          default:
+            return "User";
+        }
+      }
+
+      function showMessage(message, type) {
+        // Remove any existing message=======================================
+        const existingMessage = document.querySelector(".message-box");
+        if (existingMessage) {
+          existingMessage.remove();
+        }
+
+        // Create message element=======================================
+        const messageBox = document.createElement("div");
+        messageBox.className = `message-box message-${type}`;
+        messageBox.innerHTML = `
                 <p>${message}</p>
                 <button class="message-close">&times;</button>
             `;
-            
-            document.body.appendChild(messageBox);
-            
-            // Add close button functionality=======================================
-            const closeBtn = messageBox.querySelector('.message-close');
-            closeBtn.addEventListener('click', () => {
-                messageBox.style.animation = 'slideOut 0.3s ease';
-                setTimeout(() => messageBox.remove(), 300);
-            });
-            
-            // Auto remove after 5 seconds=======================================
-            setTimeout(() => {
-                if (messageBox.parentNode) {
-                    messageBox.style.animation = 'slideOut 0.3s ease';
-                    setTimeout(() => messageBox.remove(), 300);
-                }
-            }, 5000);
-        }
-        
-        // Close inactive account modal=======================================
-        function closeInactiveModal() {
-            document.getElementById('inactive-account-modal').style.display = 'none';
-        }
-        
-        // Handle successful login=======================================
-        function loginSuccess(user) {
-            // Set current user in session=======================================
-            localStorage.setItem('vsms_current_user', JSON.stringify(user));
-            
-            // Show redirect overlay=======================================
-            const redirectOverlay = document.getElementById('redirect-overlay');
-            const redirectRoleIcon = document.getElementById('redirect-role-icon');
-            const redirectTitle = document.getElementById('redirect-title');
-            const redirectMessage = document.getElementById('redirect-message');
-            const redirectCountdown = document.getElementById('redirect-countdown');
-            
-            // Set role-specific info=======================================
-            const roleInfo = roleDescriptions[user.role];
-            redirectRoleIcon.textContent = roleInfo.icon;
-            redirectTitle.textContent = `Welcome, ${user.name}!`;
-            redirectMessage.textContent = `You are logged in as ${getRoleName(user.role)}.`;
-            
-            // Show overlay=======================================
-            redirectOverlay.classList.add('show');
-            
-            // Start countdown for redirect=======================================
-            let countdown = 3;
-            updateCountdown();
-            
-            function updateCountdown() {
-                if (countdown > 0) {
-                    redirectCountdown.textContent = `Redirecting in ${countdown} seconds...`;
-                    countdown--;
-                    setTimeout(updateCountdown, 1000);
-                } else {
-                    // Redirect to the appropriate dashboard=======================================
-                    window.location.href = `${user.role}.html`;
-                }
-            }
-        }
-        
-        // Initialize sample users with STATUS field=======================================
-        function initializeSampleUsers() {
-            if (usersDatabase.length === 0) {
-                usersDatabase = [
-                    {
-                        id: 1,
-                        name: "Admin User",
-                        email: "admin@vsms.com",
-                        password: "admin123",
-                        role: "admin",
-                        status: "active",
-                        createdAt: "2023-01-01T00:00:00.000Z"
-                    },
-                    {
-                        id: 2,
-                        name: "Security Guard",
-                        email: "guard@vsms.com",
-                        password: "guard123",
-                        role: "guard",
-                        status: "active",
-                        createdAt: "2023-01-02T00:00:00.000Z"
-                    },
-                    {
-                        id: 3,
-                        name: "Receptionist User",
-                        email: "receptionist@vsms.com",
-                        password: "receptionist123",
-                        role: "receptionist",
-                        status: "active",
-                        createdAt: "2023-01-03T00:00:00.000Z"
-                    },
-                    {
-                        id: 4,
-                        name: "Service Advisor",
-                        email: "advisor@vsms.com",
-                        password: "advisor123",
-                        role: "advisor",
-                        status: "active",
-                        createdAt: "2023-01-04T00:00:00.000Z"
-                    },
-                    {
-                        id: 5,
-                        name: "Technician User",
-                        email: "technician@vsms.com",
-                        password: "tech123",
-                        role: "technician",
-                        status: "active",
-                        createdAt: "2023-01-05T00:00:00.000Z"
-                    },
-                    {
-                        id: 6,
-                        name: "Quality Controller",
-                        email: "qc@vsms.com",
-                        password: "qc123",
-                        role: "qc",
-                        status: "active",
-                        createdAt: "2023-01-06T00:00:00.000Z"
-                    },
-                    {
-                        id: 7,
-                        name: "Inactive User",
-                        email: "inactive@vsms.com",
-                        password: "inactive123",
-                        role: "technician",
-                        status: "inactive",
-                        createdAt: "2023-01-07T00:00:00.000Z"
-                    }
-                ];
-                localStorage.setItem('vsms_users', JSON.stringify(usersDatabase));
-            }
-        }
-        
-        // Initialize sample data=======================================
-        initializeSampleUsers();
-        
-        // Smooth scrolling for anchor links=======================================
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Close mobile menu if open=======================================
-                    const navLinks = document.getElementById('navLinks');
-                    navLinks.classList.remove('active');
-                }
-            });
+
+        document.body.appendChild(messageBox);
+
+        // Add close button functionality=======================================
+        const closeBtn = messageBox.querySelector(".message-close");
+        closeBtn.addEventListener("click", () => {
+          messageBox.style.animation = "slideOut 0.3s ease";
+          setTimeout(() => messageBox.remove(), 300);
         });
 
-        // Add scroll effect to header=======================================
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (window.scrollY > 50) {
-                header.style.background = 'rgba(255, 255, 255, 0.98)';
-                header.style.backdropFilter = 'blur(20px)';
-            } else {
-                header.style.background = 'rgba(255, 255, 255, 0.95)';
-                header.style.backdropFilter = 'blur(10px)';
-            }
-        });
+        // Auto remove after 5 seconds=======================================
+        setTimeout(() => {
+          if (messageBox.parentNode) {
+            messageBox.style.animation = "slideOut 0.3s ease";
+            setTimeout(() => messageBox.remove(), 300);
+          }
+        }, 5000);
+      }
 
-        /* Theme Toggle Handler======================================= */
-        function initThemeToggle() {
-            const toggleBtn = document.getElementById('theme-toggle');
-            const html = document.documentElement;
-            
-            // Check localStorage for saved preference=======================================
-            const savedTheme = localStorage.getItem('theme-preference');
-            if (savedTheme === 'dark') {
-                html.classList.add('dark-mode');
-                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
-            }
-            
-            // Toggle button click handler=======================================
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => {
-                    html.classList.toggle('dark-mode');
-                    const isDark = html.classList.contains('dark-mode');
-                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>' : '<i class="fas fa-sun"></i>';
-                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
-                });
-            }
+      // Close inactive account modal=======================================
+      function closeInactiveModal() {
+        document.getElementById("inactive-account-modal").style.display =
+          "none";
+      }
+
+      // Handle successful login=======================================
+      function loginSuccess(user) {
+        // Set current user in session=======================================
+        localStorage.setItem("vsms_current_user", JSON.stringify(user));
+
+        // Show redirect overlay=======================================
+        const redirectOverlay = document.getElementById("redirect-overlay");
+        if (redirectOverlay) {
+          redirectOverlay.classList.add("show");
         }
-        
-        // Password visibility toggle=======================================
-        const togglePassword = document.getElementById('toggle-password');
-        const passwordInput = document.getElementById('login-password');
-        const eyeIcon = document.getElementById('eye-icon');
 
-        if (togglePassword && passwordInput && eyeIcon) {
-            togglePassword.addEventListener('click', function() {
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                
-                // Toggle icon
-                if (type === 'password') {
-                    eyeIcon.classList.remove('fa-eye-slash');
-                    eyeIcon.classList.add('fa-eye');
-                } else {
-                    eyeIcon.classList.remove('fa-eye');
-                    eyeIcon.classList.add('fa-eye-slash');
-                }
+        // Redirect after a 1.5 second delay
+        setTimeout(() => {
+          window.location.href = `${user.role}.html`;
+        }, 1500);
+      }
+
+      // Initialize sample users with STATUS field=======================================
+      function initializeSampleUsers() {
+        if (usersDatabase.length === 0) {
+          usersDatabase = [
+            {
+              id: 1,
+              name: "Admin User",
+              email: "admin@vsms.com",
+              password: "admin123",
+              role: "admin",
+              status: "active",
+              createdAt: "2023-01-01T00:00:00.000Z",
+            },
+            {
+              id: 2,
+              name: "Security Guard",
+              email: "guard@vsms.com",
+              password: "guard123",
+              role: "guard",
+              status: "active",
+              createdAt: "2023-01-02T00:00:00.000Z",
+            },
+            {
+              id: 3,
+              name: "Receptionist User",
+              email: "receptionist@vsms.com",
+              password: "receptionist123",
+              role: "receptionist",
+              status: "active",
+              createdAt: "2023-01-03T00:00:00.000Z",
+            },
+            {
+              id: 4,
+              name: "Service Advisor",
+              email: "advisor@vsms.com",
+              password: "advisor123",
+              role: "advisor",
+              status: "active",
+              createdAt: "2023-01-04T00:00:00.000Z",
+            },
+            {
+              id: 5,
+              name: "Technician User",
+              email: "technician@vsms.com",
+              password: "tech123",
+              role: "technician",
+              status: "active",
+              createdAt: "2023-01-05T00:00:00.000Z",
+            },
+            {
+              id: 6,
+              name: "Quality Controller",
+              email: "qc@vsms.com",
+              password: "qc123",
+              role: "qc",
+              status: "active",
+              createdAt: "2023-01-06T00:00:00.000Z",
+            },
+            {
+              id: 7,
+              name: "Inactive User",
+              email: "inactive@vsms.com",
+              password: "inactive123",
+              role: "technician",
+              status: "inactive",
+              createdAt: "2023-01-07T00:00:00.000Z",
+            },
+          ];
+          localStorage.setItem("vsms_users", JSON.stringify(usersDatabase));
+        }
+      }
+
+      // Initialize sample data=======================================
+      initializeSampleUsers();
+
+      // Smooth scrolling for anchor links=======================================
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute("href");
+          if (targetId === "#") return;
+
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: "smooth",
             });
-        }
 
-        // Initialize theme toggle when DOM is ready=======================================
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initThemeToggle);
+            // Close mobile menu if open=======================================
+            const navLinks = document.getElementById("navLinks");
+            navLinks.classList.remove("active");
+          }
+        });
+      });
+
+      // Add scroll effect to header=======================================
+      window.addEventListener("scroll", () => {
+        const header = document.querySelector("header");
+        if (window.scrollY > 50) {
+          header.style.background = "rgba(255, 255, 255, 0.98)";
+          header.style.backdropFilter = "blur(20px)";
         } else {
-            initThemeToggle();
+          header.style.background = "rgba(255, 255, 255, 0.95)";
+          header.style.backdropFilter = "blur(10px)";
         }
-    </script>
-</body>
-</html>
+      });
 
+      /* Theme Toggle Handler======================================= */
+      function initThemeToggle() {
+        const toggleBtn = document.getElementById("theme-toggle");
+        const html = document.documentElement;
+
+        // Check localStorage for saved preference=======================================
+        const savedTheme = localStorage.getItem("theme-preference");
+        if (savedTheme === "dark") {
+          html.classList.add("dark-mode");
+          if (toggleBtn)
+            toggleBtn.innerHTML =
+              '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
+        }
+
+        // Toggle button click handler=======================================
+        if (toggleBtn) {
+          toggleBtn.addEventListener("click", () => {
+            html.classList.toggle("dark-mode");
+            const isDark = html.classList.contains("dark-mode");
+            toggleBtn.innerHTML = isDark
+              ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>'
+              : '<i class="fas fa-sun"></i>';
+            localStorage.setItem("theme-preference", isDark ? "dark" : "light");
+          });
+        }
+      }
+
+      // Password visibility toggle=======================================
+      const togglePassword = document.getElementById("toggle-password");
+      const passwordInput = document.getElementById("login-password");
+      const eyeIcon = document.getElementById("eye-icon");
+
+      if (togglePassword && passwordInput && eyeIcon) {
+        togglePassword.addEventListener("click", function () {
+          const type =
+            passwordInput.getAttribute("type") === "password"
+              ? "text"
+              : "password";
+          passwordInput.setAttribute("type", type);
+
+          // Toggle icon
+          if (type === "password") {
+            eyeIcon.classList.remove("fa-eye-slash");
+            eyeIcon.classList.add("fa-eye");
+          } else {
+            eyeIcon.classList.remove("fa-eye");
+            eyeIcon.classList.add("fa-eye-slash");
+          }
+        });
+      }
+
+      // Initialize theme toggle when DOM is ready=======================================
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initThemeToggle);
+      } else {
+        initThemeToggle();
+      }
+    </script>
+  </body>
+</html>
