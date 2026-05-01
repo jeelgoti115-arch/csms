@@ -247,7 +247,10 @@
     userInfo.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      const isOpen = profileSection && profileSection.style.display !== 'none';
+      const profileSection = el('#profile-section');
+      const mainContent = el('#dashboard-content') || el('#main-content') || el('[role="main"]');
+      if (!profileSection) return;
+      const isOpen = profileSection && window.getComputedStyle(profileSection).display !== 'none';
       if (isOpen) {
         if (profileSection) profileSection.style.display = 'none';
         if (mainContent) mainContent.style.display = 'block';
@@ -262,6 +265,8 @@
     if (closeProfileBtn) {
       closeProfileBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        const profileSection = el('#profile-section');
+        const mainContent = el('#dashboard-content') || el('#main-content') || el('[role="main"]');
         if (profileSection) profileSection.style.display = 'none';
         if (mainContent) mainContent.style.display = 'block';
       });
@@ -271,6 +276,8 @@
     if (cancelProfileBtn) {
       cancelProfileBtn.addEventListener('click', (e) => {
         e.preventDefault();
+        const profileSection = el('#profile-section');
+        const mainContent = el('#dashboard-content') || el('#main-content') || el('[role="main"]');
         if (profileSection) profileSection.style.display = 'none';
         if (mainContent) mainContent.style.display = 'block';
       });
@@ -292,7 +299,7 @@
         const user = currentUser();
         if (!user) return;
 
-        const res = await uploadAvatar(user._id, file);
+        const res = await uploadAvatar(user.id || user._id, file);
         if (res.ok) {
           if (avatarPreview) {
             avatarPreview.src = res.user.avatar || 'images/default-avatar.png';
@@ -334,9 +341,23 @@
           updateData.specialization = specialization;
         }
 
-        const res = await updateUserProfile(user._id, updateData);
+        const res = await updateUserProfile(user.id || user._id, updateData);
 
         if (res.ok) {
+          // Immediately update DOM elements without manual refresh
+          const pNameEl = el('#profile-user-name');
+          if (pNameEl) pNameEl.textContent = res.user.name || name;
+          const pEmailEl = el('#profile-user-email');
+          if (pEmailEl) pEmailEl.textContent = res.user.email || email;
+          const adminNameEl = el('#admin-name');
+          if (adminNameEl) adminNameEl.textContent = res.user.name || name;
+
+          // Hide profile section, show dashboard content
+          const profileSection = el('#profile-section');
+          const mainContent = el('#dashboard-content') || el('#main-content') || el('[role="main"]');
+          if (profileSection) profileSection.style.display = 'none';
+          if (mainContent) mainContent.style.display = 'block';
+
           notify('Profile updated successfully', 'success');
           setTimeout(() => {
             location.reload();
@@ -382,9 +403,13 @@
   }
 
   // Initialize profile modal when DOM is ready
-  document.addEventListener('DOMContentLoaded', () => {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      initProfileModal();
+    });
+  } else {
     initProfileModal();
-  });
+  }
 
   function renderIndex(){
     const f=el('#startForm');

@@ -6120,11 +6120,7 @@ const avatarSource = user.avatar || '';
                 return;
             }
 
-            // Validate password length
-            if (password.length < 8) {
-                showMessage('Password must be at least 8 characters long!', 'error');
-                return;
-            }
+
 
             // Validate mobile number
             if (!/^[0-9]{10}$/.test(phone)) {
