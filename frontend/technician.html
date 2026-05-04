@@ -135,7 +135,7 @@
         }
 
         .logo span {
-            color: black;
+            color: var(--text-primary);
         }
 
         .user-info {
@@ -2143,17 +2143,17 @@
             </div>
         </div>
 
-        <!-- Communication with Service Advisors Section -->
+        <!-- Available Quality Controllers Section -->
         <div class="dashboard-section">
             <div class="section-header">
                 <h2 class="section-title">
-                    <i class="fas fa-comments section-icon"></i> Communication with Service Advisors
+                    <i class="fas fa-user-check section-icon"></i> Available Quality Controllers
                 </h2>
             </div>
             <div class="section-content">
                 <div class="communication-panel">
                     <h4 style="margin-bottom: 1rem; color: var(--text-primary); font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-user-tie"></i> Available Service Advisors
+                        <i class="fas fa-user-check"></i> Available Quality Controllers
                     </h4>
                     <div class="advisor-list" id="advisor-list"></div>
                 </div>
@@ -2171,6 +2171,7 @@
                 </div>
             </div>
         </div>
+
 
         <!-- Job Details Modal -->
         <div id="jobDetailsModal" class="modal">
@@ -2429,6 +2430,9 @@
             loadServiceAdvisors();
             loadAssignedJobs();
 
+            updateTime();
+            setInterval(updateTime, 1000);
+
             setInterval(() => { loadAssignedJobs(); }, 60000); // refresh job list, but timer elements are NOT recreated if they exist
 
             // event delegation
@@ -2619,17 +2623,17 @@
                 users = JSON.parse(localStorage.getItem('vsms_users')) || [];
             }
 
-            serviceAdvisors = users.filter(u => u.role && u.role.toLowerCase() === 'advisor').map((a, i) => ({
-                id: a._id || a.id || `advisor_${i + 1}`,
-                name: a.name || 'Service Advisor',
-                role: 'Service Advisor',
-                email: a.email || 'advisor@vsms.com',
+            serviceAdvisors = users.filter(u => u.role && (u.role.toLowerCase() === 'qc' || u.role.toLowerCase() === 'quality controller')).map((a, i) => ({
+                id: a._id || a.id || `qc_${i + 1}`,
+                name: a.name || 'Quality Controller',
+                role: 'Quality Controller',
+                email: a.email || 'qc@vsms.com',
                 avatar: a.avatar || a.avatarUrl || a.photo || null,
-                avatarText: (a.name || 'SA').split(' ').map(n => n[0]).join('').toUpperCase() || 'SA',
+                avatarText: (a.name || 'QC').split(' ').map(n => n[0]).join('').toUpperCase() || 'QC',
                 isActive: true
             }));
 
-            if (serviceAdvisors.length === 0) serviceAdvisors = [{ id: 2, name: 'John Advisor', role: 'Service Advisor', email: 'advisor@vsms.com', avatar: 'JA', isActive: true }];
+            if (serviceAdvisors.length === 0) serviceAdvisors = [{ id: 4, name: 'Sarah QC', role: 'Quality Controller', email: 'qc@vsms.com', avatar: 'SQ', isActive: true }];
             const storedMessages = JSON.parse(localStorage.getItem('vsms_messages')) || {};
             serviceAdvisors.forEach(adv => { const aid = String(adv.id); messages[aid] = storedMessages[aid] || []; });
             const advisorList = document.getElementById('advisor-list');
@@ -2773,7 +2777,7 @@
         }
 
         function sendMessage() {
-            if (!currentAdvisor) { showNotification('Please select a service advisor first', 'error'); return; }
+            if (!currentAdvisor) { showNotification('Please select a quality controller first', 'error'); return; }
             const input = document.getElementById('message-input');
             const messageText = input.value.trim();
             if (!messageText) return;
