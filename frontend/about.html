@@ -1,509 +1,656 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CSMS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="css/about.css">
-</head>
-<body>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="css/about.css" />
+  </head>
+  <body>
     <!-- ======================================= Header ======================================= -->
     <header>
-        <nav>
-            <div class="logo">
-                <i class="fas fa-car"></i>
-                Car<span>Service</span>
-            </div>
-            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                <i class="fas fa-bars"></i>
+      <nav>
+        <div class="logo">
+          <i class="fas fa-car"></i>
+          Car<span>Service</span>
+        </div>
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+          <i class="fas fa-bars"></i>
+        </button>
+        <ul class="nav-links" id="navLinks">
+          <li>
+            <a href="index.html"><i class="fas fa-home"></i> Home</a>
+          </li>
+          <li>
+            <a href="about.html" class="active"
+              ><i class="fas fa-info-circle"></i> About</a
+            >
+          </li>
+          <li>
+            <a href="features.html"><i class="fas fa-star"></i> Features</a>
+          </li>
+          <li>
+            <a href="contact.html"><i class="fas fa-envelope"></i> Contact</a>
+          </li>
+          <li class="theme-toggle-item">
+            <button
+              class="theme-toggle"
+              id="theme-toggle"
+              title="Toggle dark mode"
+            >
+              <i class="fas fa-sun"></i>
             </button>
-            <ul class="nav-links" id="navLinks">
-                <li><a href="index.html"><i class="fas fa-home"></i> Home</a></li>
-                <li><a href="about.html" class="active"><i class="fas fa-info-circle"></i> About</a></li>
-                <li><a href="features.html"><i class="fas fa-star"></i> Features</a></li>
-                <li><a href="contact.html"><i class="fas fa-envelope"></i> Contact</a></li>
-                <li class="theme-toggle-item">
-                    <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
-                        <i class="fas fa-sun"></i>
-                    </button>
-                </li>
-            </ul>
-        </nav>
+          </li>
+        </ul>
+      </nav>
     </header>
 
     <!-- ======================================= Page Header ======================================= -->
     <div class="page-header">
-        <div class="floating-element floating-1"></div>
-        <div class="floating-element floating-2"></div>
-        <div class="page-header-content">
-            <div class="page-header-badge floating">
-                <i class="fas fa-shield-alt"></i>
-                About Us
-            </div>
-            <h1 class="fade-in">About Car Service Management System</h1>
-            <p class="fade-in">Transforming vehicle service operations with innovative technology, security, and efficiency since 2020.</p>
+      <div class="floating-element floating-1"></div>
+      <div class="floating-element floating-2"></div>
+      <div class="page-header-content">
+        <div class="page-header-badge floating">
+          <i class="fas fa-shield-alt"></i>
+          About Us
         </div>
+        <h1 class="fade-in">About Car Service Management System</h1>
+        <p class="fade-in">
+          Transforming vehicle service operations with innovative technology,
+          security, and efficiency since 2020.
+        </p>
+      </div>
     </div>
 
     <div class="container">
-        <!-- ==================================== About Content =================================== -->
-        <section class="section">
-            <div class="about-content fade-in">
-                <div class="about-image">
-                    <img id="about-theme-image" src="images/car-service-logo-dark.png" alt="CSMS Platform" data-dark-src="images/car-service-logo-dark.png" data-light-src="images/car-service-bill-logo.png" data-mode="dark">
-                    <div class="about-image-overlay">
-                        <h3>Since 2020</h3>
-                        <p>Serving 500+ vehicles monthly</p>
-                    </div>
-                </div>
-                <div class="about-text">
-                    <h3>Our Story</h3>
-                    <p>Car Service Management System (CSMS) was founded in 2020 with a simple yet powerful vision: to revolutionize how car service centers operate. We recognized the challenges faced by service centers in managing multiple roles, tracking vehicle entries, and ensuring efficient operations.</p>
-                    <p>What started as a small project to help local service centers has now grown into a comprehensive platform used by service centers across the region. Our mission is to provide an intuitive, secure, and efficient system that streamlines operations for all stakeholders.</p>
-                    <p>Today, CSMS stands as a testament to innovation in vehicle service management, combining cutting-edge technology with user-centric design to deliver exceptional value to our clients.</p>
-                </div>
+      <!-- ==================================== About Content =================================== -->
+      <section class="section">
+        <div class="about-content fade-in">
+          <div class="about-image">
+            <img
+              id="about-theme-image"
+              src="images/car-service-logo-dark.png"
+              alt="CSMS Platform"
+              data-dark-src="images/car-service-logo-dark.png"
+              data-light-src="images/car-service-bill-logo.png"
+              data-mode="dark"
+            />
+            <div class="about-image-overlay">
+              <h3>Since 2020</h3>
+              <p>Serving 500+ vehicles monthly</p>
             </div>
-        </section>
+          </div>
+          <div class="about-text">
+            <h3>Our Story</h3>
+            <p>
+              Car Service Management System (CSMS) was founded in 2020 with a
+              simple yet powerful vision: to revolutionize how car service
+              centers operate. We recognized the challenges faced by service
+              centers in managing multiple roles, tracking vehicle entries, and
+              ensuring efficient operations.
+            </p>
+            <p>
+              What started as a small project to help local service centers has
+              now grown into a comprehensive platform used by service centers
+              across the region. Our mission is to provide an intuitive, secure,
+              and efficient system that streamlines operations for all
+              stakeholders.
+            </p>
+            <p>
+              Today, CSMS stands as a testament to innovation in vehicle service
+              management, combining cutting-edge technology with user-centric
+              design to deliver exceptional value to our clients.
+            </p>
+          </div>
+        </div>
+      </section>
 
-        <!-- ================================= Mission & Vision ==================================== -->
-        <section class="section">
-            <div class="section-title slide-in-left">
-                <h2>Our Mission & Vision</h2>
-                <p>Driving excellence in vehicle service management through innovation and commitment</p>
+      <!-- ================================= Mission & Vision ==================================== -->
+      <section class="section">
+        <div class="section-title slide-in-left">
+          <h2>Our Mission & Vision</h2>
+          <p>
+            Driving excellence in vehicle service management through innovation
+            and commitment
+          </p>
+        </div>
+        <div class="mission-vision">
+          <div class="mission-card fade-in">
+            <div class="card-icon">
+              <i class="fas fa-bullseye"></i>
             </div>
-            <div class="mission-vision">
-                <div class="mission-card fade-in">
-                    <div class="card-icon">
-                        <i class="fas fa-bullseye"></i>
-                    </div>
-                    <h3>Our Mission</h3>
-                    <p>To provide a comprehensive, secure, and user-friendly vehicle service management platform that enhances operational efficiency, improves customer satisfaction, and empowers service centers to deliver exceptional service through innovative technology and reliable support.</p>
-                </div>
-                
-                <div class="vision-card fade-in">
-                    <div class="card-icon">
-                        <i class="fas fa-eye"></i>
-                    </div>
-                    <h3>Our Vision</h3>
-                    <p>To become the leading vehicle service management solution globally, recognized for our innovative approach to streamlining service operations, our commitment to security, and our dedication to transforming how vehicle service centers operate in the digital age.</p>
-                </div>
-            </div>
-        </section>
+            <h3>Our Mission</h3>
+            <p>
+              To provide a comprehensive, secure, and user-friendly vehicle
+              service management platform that enhances operational efficiency,
+              improves customer satisfaction, and empowers service centers to
+              deliver exceptional service through innovative technology and
+              reliable support.
+            </p>
+          </div>
 
-        <!-- ==================================== Core Values ==================================== -->
-        <section class="section">
-            <div class="section-title slide-in-left">
-                <h2>Our Core Values</h2>
-                <p>The principles that guide everything we do at CSMS</p>
+          <div class="vision-card fade-in">
+            <div class="card-icon">
+              <i class="fas fa-eye"></i>
             </div>
-            
-            <div class="values-grid">
-                <div class="value-card fade-in">
-                    <div class="value-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <h4>Security First</h4>
-                    <p>We prioritize the security of user data and system integrity above all else, implementing robust security measures and regular audits.</p>
-                </div>
-                
-                <div class="value-card fade-in">
-                    <div class="value-icon">
-                        <i class="fas fa-lightbulb"></i>
-                    </div>
-                    <h4>Innovation</h4>
-                    <p>We continuously innovate to provide cutting-edge solutions that address the evolving needs of vehicle service management.</p>
-                </div>
-                
-                <div class="value-card fade-in">
-                    <div class="value-icon">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h4>User-Centric</h4>
-                    <p>Our design and development are guided by user feedback and real-world needs, ensuring an intuitive and efficient experience.</p>
-                </div>
-                
-                <div class="value-card fade-in">
-                    <div class="value-icon">
-                        <i class="fas fa-handshake"></i>
-                    </div>
-                    <h4>Reliability</h4>
-                    <p>We build systems that are dependable and consistent, ensuring uninterrupted service and data integrity for our clients.</p>
-                </div>
-            </div>
-        </section>
+            <h3>Our Vision</h3>
+            <p>
+              To become the leading vehicle service management solution
+              globally, recognized for our innovative approach to streamlining
+              service operations, our commitment to security, and our dedication
+              to transforming how vehicle service centers operate in the digital
+              age.
+            </p>
+          </div>
+        </div>
+      </section>
 
-        <!-- ==================================== Team Section ==================================== -->
-        <section class="section">
-            <div class="section-title slide-in-left">
-                <h2>Meet Our Team</h2>
-                <p>The dedicated professionals behind CSMS</p>
-            </div>
-            
-            <div class="team-grid">
-                <div class="team-member fade-in">
-                    <div class="member-image" >
-                        <i class="fas fa-user-tie"></i>
-                    </div>
-                    <div class="member-info" >
-                        <h4>C&F</h4>
-                        <div class="member-role">CEO & Founder</div>
-                        <p class="member-desc">With 15+ years in automotive technology, ABC leads our vision and strategy.</p>
-                    </div>
-                </div>
-                
-                <div class="team-member fade-in">
-                    <div class="member-image">
-                        <i class="fas fa-laptop-code"></i>
-                    </div>
-                    <div class="member-info">
-                        <h4>CTO</h4>
-                        <div class="member-role">Chief Technology Officer</div>
-                        <p class="member-desc">Expert in system architecture and security protocols, ensuring robust platform performance.</p>
-                    </div>
-                </div>
-                
-                <div class="team-member fade-in">
-                    <div class="member-image">
-                        <i class="fas fa-cogs"></i>
-                    </div>
-                    <div class="member-info">
-                        <h4>LD</h4>
-                        <div class="member-role">Lead Developer</div>
-                        <p class="member-desc">Specializes in scalable solutions and user experience optimization.</p>
-                    </div>
-                </div>
-                
-                <div class="team-member fade-in">
-                    <div class="member-image">
-                        <i class="fas fa-headset"></i>
-                    </div>
-                    <div class="member-info">
-                        <h4>CSH</h4>
-                        <div class="member-role">Customer Support Head</div>
-                        <p class="member-desc">Ensures exceptional support and user satisfaction across all platforms.</p>
-                    </div>
-                </div>
-                
-            </div>
-        </section>
+      <!-- ==================================== Core Values ==================================== -->
+      <section class="section">
+        <div class="section-title slide-in-left">
+          <h2>Our Core Values</h2>
+          <p>The principles that guide everything we do at CSMS</p>
+        </div>
 
-        <!-- ==================================== Stats Section ==================================== -->
-        <section class="stats-section">
-            <div class="stats-content">
-                <div class="stats-grid">
-                    <div class="stat-item fade-in">
-                        <h3 id="stat-vehicles">500+</h3>
-                        <p>Vehicles Managed</p>
-                    </div>
-                    <div class="stat-item fade-in">
-                        <h3 id="stat-users">100+</h3>
-                        <p>Active Users</p>
-                    </div>
-                    <div class="stat-item fade-in">
-                        <h3 id="stat-service">50+</h3>
-                        <p>Service Centers</p>
-                    </div>
-                    <div class="stat-item fade-in">
-                        <h3 id="stat-satisfaction">98%</h3>
-                        <p>Satisfaction Rate</p>
-                    </div>
-                </div>
+        <div class="values-grid">
+          <div class="value-card fade-in">
+            <div class="value-icon">
+              <i class="fas fa-shield-alt"></i>
             </div>
-        </section>
+            <h4>Security First</h4>
+            <p>
+              We prioritize the security of user data and system integrity above
+              all else, implementing robust security measures and regular
+              audits.
+            </p>
+          </div>
 
-        <!-- ==================================== CTA Section ==================================== -->
-        <section class="cta-section">
-            <div class="cta-content">
-                <h2 class="slide-in-left">Ready to Transform Your Vehicle Service Operations?</h2>
-                <p class="fade-in">Join hundreds of service centers already using CSMS to streamline their operations, improve efficiency, and enhance customer satisfaction.</p>
-                <div class="cta-buttons">
-                    <a href="logreg.html" class="btn btn-primary fade-in">
-                        <i class="fas fa-rocket"></i>
-                        Get Started
-                    </a>
-                    <a href="contact.html" class="btn btn-secondary fade-in">
-                        <i class="fas fa-comments"></i>
-                        Contact Our Team
-                    </a>
-                </div>
+          <div class="value-card fade-in">
+            <div class="value-icon">
+              <i class="fas fa-lightbulb"></i>
             </div>
-        </section>
+            <h4>Innovation</h4>
+            <p>
+              We continuously innovate to provide cutting-edge solutions that
+              address the evolving needs of vehicle service management.
+            </p>
+          </div>
 
-        <!-- ==================================== Footer ==================================== -->
-        <footer class="footer">
-            <div class="footer-content">
-                <div class="footer-about">
-                    <div class="footer-logo">
-                        <i class="fas fa-car"></i>
-                        Car<span>Service</span>
-                    </div>
-                    <p class="footer-description">
-                        Car Service Management System is more than just software—it's a commitment to excellence in vehicle service operations. We're dedicated to continuous improvement and innovation to serve our clients better every day.
-                    </p>
-                    <div class="social-links">
-                        <a href="#" class="social-link-facebook">
-                            <i class="fa-brands fa-facebook-f fa-lg"></i>
-                        </a>
-                        <a href="#" class="social-link-whatsapp">
-                            <i class="fa-brands fa-whatsapp fa-lg"></i>
-                        </a>
-                        <a href="https://www.linkedin.com/in/jeel-goti-b9a984280/" class="social-link-linkedln">
-                            <i class="fab fa-linkedin-in fa-lg"></i>
-                        </a>
-                        <a href="https://github.com/" class="social-link-github">
-                            <i class="fab fa-github fa-lg"></i>
-                        </a>
-                        <a href="#" class="social-link-yt">
-                            <i class="fab fa-youtube fa-lg"></i>
-                        </a>
-                    </div>
-                </div>
-                
-                <div class="footer-links">
-                    <h3>Product</h3>
-                    <ul>
-                        <li><a href="index.html#features"><i class="fas fa-chevron-right"></i> Features</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Pricing</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Case Studies</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Updates</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-links">
-                    <h3>Company</h3>
-                    <ul>
-                        <li><a href="about.html" class="active"><i class="fas fa-chevron-right"></i> About Us</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Careers</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Blog</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Press</a></li>
-                    </ul>
-                </div>
-                
-                <div class="footer-links">
-                    <h3>Support</h3>
-                    <ul>
-                        <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contact</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> Help Center</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> API Docs</a></li>
-                        <li><a href="#"><i class="fas fa-chevron-right"></i> System Status</a></li>
-                    </ul>
-                </div>
+          <div class="value-card fade-in">
+            <div class="value-icon">
+              <i class="fas fa-users"></i>
             </div>
-            
-            <div class="footer-bottom">
-                <p>&copy; 2020-2026 Car Service Management System. All rights reserved.</p>
+            <h4>User-Centric</h4>
+            <p>
+              Our design and development are guided by user feedback and
+              real-world needs, ensuring an intuitive and efficient experience.
+            </p>
+          </div>
+
+          <div class="value-card fade-in">
+            <div class="value-icon">
+              <i class="fas fa-handshake"></i>
             </div>
-        </footer>
+            <h4>Reliability</h4>
+            <p>
+              We build systems that are dependable and consistent, ensuring
+              uninterrupted service and data integrity for our clients.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================== Team Section ==================================== -->
+      <section class="section">
+        <div class="section-title slide-in-left">
+          <h2>Meet Our Team</h2>
+          <p>The dedicated professionals behind CSMS</p>
+        </div>
+
+        <div class="team-grid">
+          <div class="team-member fade-in">
+            <div class="member-image">
+              <i class="fas fa-user-tie"></i>
+            </div>
+            <div class="member-info">
+              <h4>C&F</h4>
+              <div class="member-role">CEO & Founder</div>
+              <p class="member-desc">
+                With 15+ years in automotive technology, ABC leads our vision
+                and strategy.
+              </p>
+            </div>
+          </div>
+
+          <div class="team-member fade-in">
+            <div class="member-image">
+              <i class="fas fa-laptop-code"></i>
+            </div>
+            <div class="member-info">
+              <h4>CTO</h4>
+              <div class="member-role">Chief Technology Officer</div>
+              <p class="member-desc">
+                Expert in system architecture and security protocols, ensuring
+                robust platform performance.
+              </p>
+            </div>
+          </div>
+
+          <div class="team-member fade-in">
+            <div class="member-image">
+              <i class="fas fa-cogs"></i>
+            </div>
+            <div class="member-info">
+              <h4>LD</h4>
+              <div class="member-role">Lead Developer</div>
+              <p class="member-desc">
+                Specializes in scalable solutions and user experience
+                optimization.
+              </p>
+            </div>
+          </div>
+
+          <div class="team-member fade-in">
+            <div class="member-image">
+              <i class="fas fa-headset"></i>
+            </div>
+            <div class="member-info">
+              <h4>CSH</h4>
+              <div class="member-role">Customer Support Head</div>
+              <p class="member-desc">
+                Ensures exceptional support and user satisfaction across all
+                platforms.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================== Stats Section ==================================== -->
+      <section class="stats-section">
+        <div class="stats-content">
+          <div class="stats-grid">
+            <div class="stat-item fade-in">
+              <h3 id="stat-vehicles">500+</h3>
+              <p>Vehicles Managed</p>
+            </div>
+            <div class="stat-item fade-in">
+              <h3 id="stat-users">100+</h3>
+              <p>Active Users</p>
+            </div>
+            <div class="stat-item fade-in">
+              <h3 id="stat-service">50+</h3>
+              <p>Service Centers</p>
+            </div>
+            <div class="stat-item fade-in">
+              <h3 id="stat-satisfaction">98%</h3>
+              <p>Satisfaction Rate</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================== CTA Section ==================================== -->
+      <section class="cta-section">
+        <div class="cta-content">
+          <h2 class="slide-in-left">
+            Ready to Transform Your Vehicle Service Operations?
+          </h2>
+          <p class="fade-in">
+            Join hundreds of service centers already using CSMS to streamline
+            their operations, improve efficiency, and enhance customer
+            satisfaction.
+          </p>
+          <div class="cta-buttons">
+            <a href="logreg.html" class="btn btn-primary fade-in">
+              <i class="fas fa-rocket"></i>
+              Get Started
+            </a>
+            <a href="contact.html" class="btn btn-secondary fade-in">
+              <i class="fas fa-comments"></i>
+              Contact Our Team
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==================================== Footer ==================================== -->
+      <footer class="footer">
+        <div class="footer-content">
+          <div class="footer-about">
+            <div class="footer-logo">
+              <i class="fas fa-car"></i>
+              Car<span>Service</span>
+            </div>
+            <p class="footer-description">
+              Car Service Management System is more than just software—it's a
+              commitment to excellence in vehicle service operations. We're
+              dedicated to continuous improvement and innovation to serve our
+              clients better every day.
+            </p>
+            <div class="social-links">
+              <a href="#" class="social-link-facebook">
+                <i class="fa-brands fa-facebook-f fa-lg"></i>
+              </a>
+              <a href="#" class="social-link-whatsapp">
+                <i class="fa-brands fa-whatsapp fa-lg"></i>
+              </a>
+              <a
+                href="https://www.linkedin.com/in/jeel-goti-b9a984280/"
+                class="social-link-linkedln"
+              >
+                <i class="fab fa-linkedin-in fa-lg"></i>
+              </a>
+              <a href="https://github.com/" class="social-link-github">
+                <i class="fab fa-github fa-lg"></i>
+              </a>
+              <a href="#" class="social-link-yt">
+                <i class="fab fa-youtube fa-lg"></i>
+              </a>
+            </div>
+          </div>
+
+          <div class="footer-links">
+            <h3>Product</h3>
+            <ul>
+              <li>
+                <a href="index.html#features"
+                  ><i class="fas fa-chevron-right"></i> Features</a
+                >
+              </li>
+              <li>
+                <a href="#"><i class="fas fa-chevron-right"></i> Pricing</a>
+              </li>
+              <li>
+                <a href="#"
+                  ><i class="fas fa-chevron-right"></i> Case Studies</a
+                >
+              </li>
+              <li>
+                <a href="#"><i class="fas fa-chevron-right"></i> Updates</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="footer-links">
+            <h3>Company</h3>
+            <ul>
+              <li>
+                <a href="about.html" class="active"
+                  ><i class="fas fa-chevron-right"></i> About Us</a
+                >
+              </li>
+              <li>
+                <a href="#"><i class="fas fa-chevron-right"></i> Careers</a>
+              </li>
+              <li>
+                <a href="#"><i class="fas fa-chevron-right"></i> Blog</a>
+              </li>
+              <li>
+                <a href="#"><i class="fas fa-chevron-right"></i> Press</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="footer-links">
+            <h3>Support</h3>
+            <ul>
+              <li>
+                <a href="contact.html"
+                  ><i class="fas fa-chevron-right"></i> Contact</a
+                >
+              </li>
+              <li>
+                <a href="#"><i class="fas fa-chevron-right"></i> Help Center</a>
+              </li>
+              <li>
+                <a href="#"><i class="fas fa-chevron-right"></i> API Docs</a>
+              </li>
+              <li>
+                <a href="#"
+                  ><i class="fas fa-chevron-right"></i> System Status</a
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="footer-bottom">
+          <p>
+            &copy; 2020-2026 Car Service Management System. All rights reserved.
+          </p>
+        </div>
+      </footer>
     </div>
 
     <script>
-        // Mobile menu toggle
-        function toggleMobileMenu() {
-            const navLinks = document.getElementById('navLinks');
-            navLinks.classList.toggle('active');
-        }
+      // Mobile menu toggle
+      function toggleMobileMenu() {
+        const navLinks = document.getElementById("navLinks");
+        navLinks.classList.toggle("active");
+      }
 
-        // Intersection Observer for animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
+      // Intersection Observer for animations
+      const observerOptions = {
+        threshold: 0.1,
+        rootMargin: "0px 0px -50px 0px",
+      };
 
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('animated');
-                }
-            });
-        }, observerOptions);
-
-        // Observe elements
-        document.querySelectorAll('.fade-in, .slide-in-left').forEach(el => {
-            observer.observe(el);
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("animated");
+          }
         });
+      }, observerOptions);
 
-        // Animate stats on scroll
-        function animateStats() {
-            const statsSection = document.querySelector('.stats-section');
-            if (!statsSection) return;
-            
-            const statsPosition = statsSection.getBoundingClientRect().top;
-            const screenPosition = window.innerHeight / 1.3;
+      // Observe elements
+      document.querySelectorAll(".fade-in, .slide-in-left").forEach((el) => {
+        observer.observe(el);
+      });
 
-            if (statsPosition < screenPosition) {
-                // Get data from localStorage
-                const vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
-                const usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
-                
-                const totalVehicles = vehiclesDatabase.length;
-                const totalUsers = usersDatabase.length;
-                
-                // Update stats with animation
-                animateNumber('stat-vehicles', Math.max(totalVehicles, 100), 2500);
-                animateNumber('stat-users', Math.max(totalUsers, 20), 100);
-                animateNumber('stat-service', Math.max(totalVehicles / 10, 10), 50);
-                animateNumber('stat-satisfaction', 92, 92);
-                
-                // Remove scroll listener after animation
-                window.removeEventListener('scroll', animateStats);
-            }
+      // Animate stats on scroll
+      function animateStats() {
+        const statsSection = document.querySelector(".stats-section");
+        if (!statsSection) return;
+
+        const statsPosition = statsSection.getBoundingClientRect().top;
+        const screenPosition = window.innerHeight / 1.3;
+
+        if (statsPosition < screenPosition) {
+          // Get data from localStorage
+          const vehiclesDatabase =
+            JSON.parse(localStorage.getItem("vsms_vehicles")) || [];
+          const usersDatabase =
+            JSON.parse(localStorage.getItem("vsms_users")) || [];
+
+          const totalVehicles = vehiclesDatabase.length;
+          const totalUsers = usersDatabase.length;
+
+          // Update stats with animation
+          animateNumber("stat-vehicles", Math.max(totalVehicles, 100), 2500);
+          animateNumber("stat-users", Math.max(totalUsers, 20), 100);
+          animateNumber("stat-service", Math.max(totalVehicles / 10, 10), 50);
+          animateNumber("stat-satisfaction", 92, 92);
+
+          // Remove scroll listener after animation
+          window.removeEventListener("scroll", animateStats);
         }
+      }
 
-        // Animate number counting
-        function animateNumber(elementId, target, baseNumber) {
-            const element = document.getElementById(elementId);
-            if (!element) return;
-            
-            const finalNumber = target > baseNumber ? target : baseNumber;
-            let current = 0;
-            const increment = Math.ceil(finalNumber / 50);
-            const timer = setInterval(() => {
-                current += increment;
-                if (current >= finalNumber) {
-                    element.textContent = finalNumber + (elementId === 'stat-satisfaction' ? '%' : '+');
-                    clearInterval(timer);
-                } else {
-                    element.textContent = current + (elementId === 'stat-satisfaction' ? '%' : '+');
-                }
-            }, 20);
-        }
+      // Animate number counting
+      function animateNumber(elementId, target, baseNumber) {
+        const element = document.getElementById(elementId);
+        if (!element) return;
 
-        // Initialize
-        window.addEventListener('scroll', animateStats);
-        
-        // Trigger once on load in case stats are already visible
-        setTimeout(animateStats, 100);
-        
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+        const finalNumber = target > baseNumber ? target : baseNumber;
+        let current = 0;
+        const increment = Math.ceil(finalNumber / 50);
+        const timer = setInterval(() => {
+          current += increment;
+          if (current >= finalNumber) {
+            element.textContent =
+              finalNumber + (elementId === "stat-satisfaction" ? "%" : "+");
+            clearInterval(timer);
+          } else {
+            element.textContent =
+              current + (elementId === "stat-satisfaction" ? "%" : "+");
+          }
+        }, 20);
+      }
+
+      // Initialize
+      window.addEventListener("scroll", animateStats);
+
+      // Trigger once on load in case stats are already visible
+      setTimeout(animateStats, 100);
+
+      // Check if user is logged in and update CTA buttons
+      setTimeout(() => {
+        const currentUser = JSON.parse(
+          localStorage.getItem("vsms_current_user"),
+        );
+        if (currentUser) {
+          // Update CTA buttons
+          const ctaButtons = document.querySelector(".cta-buttons");
+          if (ctaButtons) {
+            ctaButtons.innerHTML = `
+                        <a href="${currentUser.role}.html" class="btn btn-primary fade-in">
+                            <i class="fas fa-tachometer-alt"></i>
+                            Go to ${getRoleName(currentUser.role)} Dashboard
+                        </a>
+                        <a href="#" id="logout-home" class="btn btn-secondary fade-in">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </a>
+                    `;
+            // Add logout event listener
+            document
+              .getElementById("logout-home")
+              .addEventListener("click", function (e) {
                 e.preventDefault();
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                    
-                    // Close mobile menu if open
-                    const navLinks = document.getElementById('navLinks');
-                    navLinks.classList.remove('active');
-                }
+                localStorage.removeItem("vsms_current_user");
+                window.location.href = "about.html";
+              });
+          }
+        }
+      }, 500);
+      function getRoleName(roleCode) {
+        switch (roleCode) {
+          case "admin":
+            return "Administrator";
+          case "advisor":
+            return "Service Advisor";
+          case "technician":
+            return "Technician";
+          case "qc":
+            return "Quality Controller";
+          case "receptionist":
+            return "Receptionist";
+          case "guard":
+            return "Security Guard";
+          default:
+            return "User";
+        }
+      }
+
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const targetId = this.getAttribute("href");
+          if (targetId === "#") return;
+
+          const targetElement = document.querySelector(targetId);
+          if (targetElement) {
+            window.scrollTo({
+              top: targetElement.offsetTop - 80,
+              behavior: "smooth",
             });
+
+            // Close mobile menu if open
+            const navLinks = document.getElementById("navLinks");
+            navLinks.classList.remove("active");
+          }
         });
+      });
 
-        // Add scroll effect to header
-        window.addEventListener('scroll', () => {
-            const header = document.querySelector('header');
-            if (window.scrollY > 50) {
-                header.style.background = 'rgba(255, 255, 255, 0.98)';
-                header.style.backdropFilter = 'blur(20px)';
-            } else {
-                header.style.background = 'rgba(255, 255, 255, 0.95)';
-                header.style.backdropFilter = 'blur(10px)';
-            }
-        });
-
-        // Initialize sample data if needed
-        function initializeSampleData() {
-            const vehiclesDatabase = JSON.parse(localStorage.getItem('vsms_vehicles')) || [];
-            const usersDatabase = JSON.parse(localStorage.getItem('vsms_users')) || [];
-            
-            if (vehiclesDatabase.length === 0) {
-                const sampleVehicles = [
-                    {
-                        id: 1,
-                        vehicleNumber: "MH12AB1234",
-                        year: 2022,
-                        carName: "Hyundai Creta",
-                        vehicleModel: "SUV",
-                        ownerEmail: "rajesh@gmail.com",
-                        mobileNumber: "9876543210",
-                        entryTime: new Date().toISOString(),
-                        exitTime: null,
-                        status: 'entry'
-                    }
-                ];
-                localStorage.setItem('vsms_vehicles', JSON.stringify(sampleVehicles));
-            }
-            
-            if (usersDatabase.length === 0) {
-                const sampleUsers = [
-                    {
-                        id: 1,
-                        name: "Admin User",
-                        email: "admin@vsms.com",
-                        password: "admin123",
-                        role: "admin",
-                        createdAt: "2023-01-01T00:00:00.000Z"
-                    }
-                ];
-                localStorage.setItem('vsms_users', JSON.stringify(sampleUsers));
-            }
-        }
-        
-        // Initialize sample data
-        initializeSampleData();
-
-        /* Theme Toggle Handler */
-        function initThemeToggle() {
-            const toggleBtn = document.getElementById('theme-toggle');
-            const html = document.documentElement;
-            
-            // Check localStorage for saved preference
-            const savedTheme = localStorage.getItem('theme-preference');
-            if (savedTheme === 'dark') {
-                html.classList.add('dark-mode');
-                if (toggleBtn) toggleBtn.innerHTML = '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
-            }
-            syncAboutImageMode(html.classList.contains('dark-mode') ? 'dark' : 'light');
-
-            // Toggle button click handler
-            if (toggleBtn) {
-                toggleBtn.addEventListener('click', () => {
-                    html.classList.toggle('dark-mode');
-                    const isDark = html.classList.contains('dark-mode');
-                    toggleBtn.innerHTML = isDark ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i> ' : '<i class="fas fa-sun"></i>';
-                    localStorage.setItem('theme-preference', isDark ? 'dark' : 'light');
-                    syncAboutImageMode(isDark ? 'dark' : 'light');
-                });
-            }
-        }
-
-        function setAboutImageMode(mode) {
-            const img = document.getElementById('about-theme-image');
-            if (!img) return;
-            const darkSrc = img.dataset.darkSrc || img.src;
-            const lightSrc = img.dataset.lightSrc || darkSrc;
-            if (mode === 'light') {
-                img.src = lightSrc;
-                img.dataset.mode = 'light';
-                img.classList.add('light-mode');
-                img.classList.remove('dark-mode');
-            } else {
-                img.src = darkSrc;
-                img.dataset.mode = 'dark';
-                img.classList.add('dark-mode');
-                img.classList.remove('light-mode');
-            }
-        }
-
-        function syncAboutImageMode(themeMode) {
-            setAboutImageMode(themeMode === 'dark' ? 'dark' : 'light');
-        }
-        
-        // Initialize theme toggle when DOM is ready
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initThemeToggle);
+      // Add scroll effect to header
+      window.addEventListener("scroll", () => {
+        const header = document.querySelector("header");
+        if (window.scrollY > 50) {
+          header.style.background = "rgba(255, 255, 255, 0.98)";
+          header.style.backdropFilter = "blur(20px)";
         } else {
-            initThemeToggle();
+          header.style.background = "rgba(255, 255, 255, 0.95)";
+          header.style.backdropFilter = "blur(10px)";
         }
-    </script>
-</body>
-</html>
+      });
 
+      /* Theme Toggle Handler */
+      function initThemeToggle() {
+        const toggleBtn = document.getElementById("theme-toggle");
+        const html = document.documentElement;
+
+        // Check localStorage for saved preference
+        const savedTheme = localStorage.getItem("theme-preference");
+        if (savedTheme === "dark") {
+          html.classList.add("dark-mode");
+          if (toggleBtn)
+            toggleBtn.innerHTML =
+              '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>';
+        }
+        syncAboutImageMode(
+          html.classList.contains("dark-mode") ? "dark" : "light",
+        );
+
+        // Toggle button click handler
+        if (toggleBtn) {
+          toggleBtn.addEventListener("click", () => {
+            html.classList.toggle("dark-mode");
+            const isDark = html.classList.contains("dark-mode");
+            toggleBtn.innerHTML = isDark
+              ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i> '
+              : '<i class="fas fa-sun"></i>';
+            localStorage.setItem("theme-preference", isDark ? "dark" : "light");
+            syncAboutImageMode(isDark ? "dark" : "light");
+          });
+        }
+      }
+
+      function setAboutImageMode(mode) {
+        const img = document.getElementById("about-theme-image");
+        if (!img) return;
+        const darkSrc = img.dataset.darkSrc || img.src;
+        const lightSrc = img.dataset.lightSrc || darkSrc;
+        if (mode === "light") {
+          img.src = lightSrc;
+          img.dataset.mode = "light";
+          img.classList.add("light-mode");
+          img.classList.remove("dark-mode");
+        } else {
+          img.src = darkSrc;
+          img.dataset.mode = "dark";
+          img.classList.add("dark-mode");
+          img.classList.remove("light-mode");
+        }
+      }
+
+      function syncAboutImageMode(themeMode) {
+        setAboutImageMode(themeMode === "dark" ? "dark" : "light");
+      }
+
+      // Initialize theme toggle when DOM is ready
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initThemeToggle);
+      } else {
+        initThemeToggle();
+      }
+    </script>
+  </body>
+</html>

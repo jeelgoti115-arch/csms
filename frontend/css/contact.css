@@ -429,8 +429,8 @@
 
         .problem-type {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
             margin-top: 0.5rem;
         }
 
@@ -438,8 +438,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
-            padding: 1rem;
+            gap: 0.25rem;
+            padding: 0.6rem 0.3rem;
             background-color: #f9f9f9;
             border-radius: 10px;
             cursor: pointer;
@@ -493,7 +493,7 @@
             flex-direction: column;
             align-items: center;
             gap: 0.3rem;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--dark);
             font-weight: 500;
         }
@@ -506,6 +506,12 @@
         .problem-option .option-text i {
             font-size: 1.2rem;
             margin-bottom: 0.3rem;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
         }
 
         /* Button */
@@ -1070,6 +1076,10 @@
             }
             
             .problem-type {
+                grid-template-columns: 1fr;
+            }
+
+            .form-row {
                 grid-template-columns: 1fr;
             }
         }
