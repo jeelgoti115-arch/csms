@@ -2944,11 +2944,15 @@
             <div class="dashboard-section" id="financial-analytics-section">
                 <div class="section-header">
                     <h2 class="section-title"><i class="fas fa-chart-line"></i> Financial Analytics</h2>
-                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
                         <div class="chart-controls">
                             <button class="chart-btn active" id="btnDayView"><i class="fas fa-calendar-day"></i> Day</button>
                             <button class="chart-btn" id="btnMonthView"><i class="fas fa-calendar-alt"></i> Month</button>
                         </div>
+                        <select id="financialChartMonthFilter" style="background: #eef2ff; border: 1px solid transparent; color: #475569; padding: 8px 18px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-size: 0.95rem; letter-spacing: 0.3px; outline: none; border: 1px solid rgba(59,130,246,0.3);">
+                        </select>
+                        <select id="financialChartYearFilter" style="background: #eef2ff; border: 1px solid transparent; color: #475569; padding: 8px 18px; border-radius: 40px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; font-size: 0.95rem; letter-spacing: 0.3px; outline: none; border: 1px solid rgba(59,130,246,0.3);">
+                        </select>
                     </div>
                 </div>
                 <!-- total income display -->
@@ -3322,10 +3326,10 @@
                 <div class="form-group">
                     <label>4-Digit PIN *</label>
                     <div style="display: flex; gap: 8px; align-items: center;">
-                        <input type="text" id="admin-pin-1" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required oninput="focusNextAdminPin(this, 1)">
-                        <input type="text" id="admin-pin-2" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required oninput="focusNextAdminPin(this, 2)">
-                        <input type="text" id="admin-pin-3" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required oninput="focusNextAdminPin(this, 3)">
-                        <input type="text" id="admin-pin-4" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required oninput="focusNextAdminPin(this, 4)">
+                        <input type="text" id="admin-pin-1" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required readonly>
+                        <input type="text" id="admin-pin-2" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required readonly>
+                        <input type="text" id="admin-pin-3" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required readonly>
+                        <input type="text" id="admin-pin-4" maxlength="1" style="width: 50px; text-align: center; font-size: 1.25rem; font-weight: bold; border-radius: 10px; padding: 8px;" required readonly>
                         <button type="button" onclick="generateRandomPin()" class="btn-primary" style="padding: 8px 12px; font-size: 0.9rem; margin-bottom: 0;">Generate PIN</button>
                     </div>
                     <input type="hidden" id="user-password" required>
@@ -6619,6 +6623,8 @@ const avatarSource = user.avatar || '';
         let chartInstance = null;
         let currentView = localStorage.getItem('chartView') || 'day'; // Persist view preference
         let currentChartType = localStorage.getItem('chartType') || 'bar'; // Persist chart type preference
+        let selectedMonth = new Date().getMonth();
+        let selectedYear = new Date().getFullYear();
 
         // Initialize chart controls and event listeners
         document.addEventListener('DOMContentLoaded', function() {
@@ -6626,6 +6632,30 @@ const avatarSource = user.avatar || '';
             // Set initial active button based on saved preference
             setActiveViewButton();
             setActiveChartTypeButton();
+            
+            // Populate filter dropdown and add listeners
+            populateFilterDropdowns();
+            const monthEl = document.getElementById('financialChartMonthFilter');
+            const yearEl = document.getElementById('financialChartYearFilter');
+            
+            if (monthEl) {
+                monthEl.addEventListener('change', function() {
+                    selectedMonth = parseInt(this.value, 10);
+                    refreshChartData();
+                });
+            }
+            if (yearEl) {
+                yearEl.addEventListener('change', function() {
+                    selectedYear = parseInt(this.value, 10);
+                    populateFilterDropdowns();
+                    // clamp month if it exceeds the new allowed range for this year
+                    const now = new Date();
+                    let endM = (selectedYear === now.getFullYear()) ? now.getMonth() : 11;
+                    if (selectedMonth > endM) selectedMonth = endM;
+                    refreshChartData();
+                });
+            }
+            
             // Render chart with saved view
             setTimeout(() => {
                 if (typeof Chart !== 'undefined' && document.getElementById('financialChart')) {
@@ -6660,6 +6690,60 @@ const avatarSource = user.avatar || '';
             }
         }
 
+        function populateFilterDropdowns() {
+            const monthFilter = document.getElementById('financialChartMonthFilter');
+            const yearFilter = document.getElementById('financialChartYearFilter');
+            if (!monthFilter || !yearFilter) return;
+            
+            const now = new Date();
+            const currentYearValue = now.getFullYear();
+            const currentMonthValue = now.getMonth();
+            
+            if (selectedYear < 2026) selectedYear = 2026;
+            if (selectedYear > currentYearValue) selectedYear = currentYearValue;
+
+            // 1. Fill Year Dropdown
+            yearFilter.innerHTML = '';
+            for (let y = 2026; y <= currentYearValue; y++) {
+                const opt = document.createElement('option');
+                opt.value = y;
+                opt.textContent = y;
+                if (y === selectedYear) {
+                    opt.selected = true;
+                }
+                yearFilter.appendChild(opt);
+            }
+
+            // 2. Manage Month Dropdown Visibility & Content
+            if (currentView === 'day') {
+                monthFilter.style.display = 'inline-block';
+                monthFilter.innerHTML = '';
+                
+                const months = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+                
+                let startM = 0;
+                let endM = (selectedYear === currentYearValue) ? currentMonthValue : 11;
+                
+                if (selectedMonth < startM) selectedMonth = startM;
+                if (selectedMonth > endM) selectedMonth = endM;
+                
+                for (let m = startM; m <= endM; m++) {
+                    const opt = document.createElement('option');
+                    opt.value = m;
+                    opt.textContent = months[m];
+                    if (m === selectedMonth) {
+                        opt.selected = true;
+                    }
+                    monthFilter.appendChild(opt);
+                }
+            } else {
+                monthFilter.style.display = 'none';
+            }
+        }
+
         function initializeChartControls() {
             const btnDay = document.getElementById('btnDayView');
             const btnMonth = document.getElementById('btnMonthView');
@@ -6672,6 +6756,7 @@ const avatarSource = user.avatar || '';
                     btnMonth.classList.remove('active');
                     currentView = 'day';
                     localStorage.setItem('chartView', 'day'); // Save preference
+                    populateFilterDropdowns();
                     refreshChartData();
                 });
             }
@@ -6682,6 +6767,7 @@ const avatarSource = user.avatar || '';
                     btnDay.classList.remove('active');
                     currentView = 'month';
                     localStorage.setItem('chartView', 'month'); // Save preference
+                    populateFilterDropdowns();
                     refreshChartData();
                 });
             }
@@ -6735,46 +6821,50 @@ const avatarSource = user.avatar || '';
             if (currentView === 'day') {
                 const labels = [];
                 const values = [];
+                const year = selectedYear;
+                const daysInMonth = new Date(year, selectedMonth + 1, 0).getDate();
                 
-                for (let i = 6; i >= 0; i--) {
-                    const d = new Date(now);
-                    d.setDate(d.getDate() - i);
-                    d.setHours(0, 0, 0, 0);
-                    
-                    const dateStr = d.toISOString().split('T')[0];
-                    const display = d.toLocaleDateString('en', { 
-                        weekday: 'short', 
-                        day: 'numeric', 
-                        month: 'short' 
+                for (let d = 1; d <= daysInMonth; d++) {
+                    const compDateObj = new Date(year, selectedMonth, d);
+                    const dateStr = compDateObj.toISOString().split('T')[0];
+                    const display = compDateObj.toLocaleDateString('en', {
+                        day: 'numeric',
+                        month: 'short'
                     });
                     labels.push(display);
                     
                     const dayTotal = deliveredVehicles.reduce((sum, v) => {
                         let compDate = v.serviceCompletionTime || v.completedAt || v.updatedAt || v.createdAt || v.entryTime;
                         if (!compDate) return sum;
-                        const compDateObj = new Date(compDate);
-                        compDateObj.setHours(0, 0, 0, 0);
-                        const compDateStr = compDateObj.toISOString().split('T')[0];
-                        return sum + (compDateStr === dateStr ? (computeVehicleTotals(v).grandTotal || computeVehicleTotals(v).totalCost || 0) : 0);
+                        const vDateObj = new Date(compDate);
+                        vDateObj.setHours(0, 0, 0, 0);
+                        const vDateStr = vDateObj.toISOString().split('T')[0];
+                        return sum + (vDateStr === dateStr ? (computeVehicleTotals(v).grandTotal || computeVehicleTotals(v).totalCost || 0) : 0);
                     }, 0);
                     values.push(dayTotal);
                 }
-                if (axisLabel) axisLabel.textContent = 'last 7 days';
+                if (axisLabel) {
+                    const months = [
+                        "January", "February", "March", "April", "May", "June",
+                        "July", "August", "September", "October", "November", "December"
+                    ];
+                    axisLabel.textContent = `month: ${months[selectedMonth]}`;
+                }
                 return { labels, values };
             } else {
                 const labels = [];
                 const values = [];
                 
-                for (let i = 11; i >= 0; i--) {
-                    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                for (let monthIdx = 0; monthIdx < 12; monthIdx++) {
+                    const d = new Date(selectedYear, monthIdx, 1);
                     const monthLabel = d.toLocaleDateString('en', { 
                         month: 'short', 
                         year: 'numeric' 
                     });
                     labels.push(monthLabel);
                     
-                    const monthStart = new Date(d.getFullYear(), d.getMonth(), 1);
-                    const monthEnd = new Date(d.getFullYear(), d.getMonth() + 1, 0, 23, 59, 59);
+                    const monthStart = new Date(selectedYear, monthIdx, 1);
+                    const monthEnd = new Date(selectedYear, monthIdx + 1, 0, 23, 59, 59);
                     
                     const monthTotal = deliveredVehicles.reduce((sum, v) => {
                         let compDate = v.serviceCompletionTime || v.completedAt || v.updatedAt || v.createdAt || v.entryTime;
@@ -6787,7 +6877,7 @@ const avatarSource = user.avatar || '';
                     }, 0);
                     values.push(monthTotal);
                 }
-                if (axisLabel) axisLabel.textContent = 'last 12 months';
+                if (axisLabel) axisLabel.textContent = `year: ${selectedYear}`;
                 return { labels, values };
             }
         }
