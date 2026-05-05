@@ -861,7 +861,37 @@ const initializeDB = async () => {
       console.log('Seeded sample contact');
     }
 
-    app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}/`));
+    const http = require('http');
+    const server = http.createServer(app);
+    const { Server } = require('socket.io');
+    const io = new Server(server, { cors: { origin: '*' } });
+
+    io.on('connection', (socket) => {
+      console.log('A user connected to team chat');
+      
+      db.ChatMessage.find().sort({ timestamp: 1 }).limit(100).then(msgs => {
+        socket.emit('load_messages', msgs);
+      }).catch(err => console.error('Error loading messages:', err));
+
+      socket.on('send_message', async (data) => {
+        try {
+          const msg = await db.ChatMessage.create({
+            text: data.text,
+            senderName: data.senderName,
+            senderId: data.senderId
+          });
+          io.emit('receive_message', msg);
+        } catch (e) {
+          console.error('Error saving chat message:', e);
+        }
+      });
+
+      socket.on('disconnect', () => {
+        console.log('User disconnected from team chat');
+      });
+    });
+
+    server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}/`));
   } catch (err) {
     console.error('Failed to initialize DB', err);
   }

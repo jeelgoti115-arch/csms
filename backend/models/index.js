@@ -22,5 +22,6 @@ db.Appointment = require('./appointment');
 db.Vehicle = require('./vehicle');
 db.Contact = require('./contact');
 db.Session = require('./session');
+db.ChatMessage = require('./chatMessage');
 
 module.exports = db;

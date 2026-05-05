@@ -106,6 +106,23 @@
             transition: background 0.3s ease, color 0.3s ease, background-color 0.3s ease;
         }
 
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--light-bg);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-hover);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-primary);
+        }
+
         /* Header Styles */
         header {
             background: linear-gradient(135deg, var(--card-bg) 0%, var(--card-hover) 100%);
@@ -2157,18 +2174,6 @@
                     </h4>
                     <div class="advisor-list" id="advisor-list"></div>
                 </div>
-                <div id="chat-section" style="display: none; margin-top: 1.5rem;">
-                    <h4 style="color: var(--text-primary); margin-bottom: 1rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">
-                        <i class="fas fa-comment-dots"></i> <span id="chat-with">Chat</span>
-                    </h4>
-                    <div class="message-area" id="message-area"></div>
-                    <div class="message-input">
-                        <input type="text" id="message-input" placeholder="Type your message..." onkeypress="handleMessageKeypress(event)">
-                        <button id="send-message-btn" class="btn btn-primary" style="padding: 1rem 1.5rem;">
-                            <i class="fas fa-paper-plane"></i> Send
-                        </button>
-                    </div>
-                </div>
             </div>
         </div>
 
@@ -2298,8 +2303,25 @@
         <div class="footer">
             <p>&copy; 2020-2026 Car Service Management System. All rights reserved.</p>
         </div>
+        <!-- Team Chat Modal -->
+        <div id="teamChatModal" class="modal">
+            <div class="modal-content" style="max-width: 500px; width: 90%; display: flex; flex-direction: column; height: 65vh; max-height: 600px; min-height: 400px; overflow: hidden; padding: 1.5rem;">
+                <div class="modal-header" style="margin-bottom: 1rem; padding-bottom: 1rem;">
+                    <h2><i class="fas fa-users"></i> Team Chat</h2>
+                    <button class="modal-close" onclick="closeTeamChat()"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="message-area" id="team-message-area" style="flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 10px; margin-bottom: 0;">
+                    <!-- Messages will be injected here -->
+                </div>
+                <div class="message-input" style="padding-top: 15px; border-top: 1px solid var(--border-color); display: flex; gap: 0.8rem; flex-shrink: 0; margin-top: 10px;">
+                    <input type="text" id="team-chat-input" placeholder="Type a message to the team..." onkeypress="if(event.key === 'Enter') sendTeamMessage()" style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--border-color);">
+                    <button class="btn btn-primary" onclick="sendTeamMessage()"><i class="fas fa-paper-plane"></i> Send</button>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
     <script>
         // ===== STABLE TIMER SYSTEM – NO FLICKER, NO VISIBILITY TOGGLE =====
         let activeTimers = {};          // interval per (vehicleId_jobId)
@@ -2424,7 +2446,6 @@
                 localStorage.removeItem('vsms_current_user');
                 window.location.href = 'logreg.html';
             });
-            document.getElementById('send-message-btn').addEventListener('click', sendMessage);
 
             initializeDatabases();
             loadServiceAdvisors();
@@ -2472,11 +2493,6 @@
                     const jobId = detailsBtn.getAttribute('data-id');
                     const vehicleId = detailsBtn.getAttribute('data-vehicle-id');
                     showJobDetails(jobId, vehicleId);
-                }
-                if (messageBtn) {
-                    const advisorId = messageBtn.getAttribute('data-advisor');
-                    const advisor = serviceAdvisors.find(a => a.name === advisorId || a.id === advisorId);
-                    if (advisor) { selectAdvisor(advisor.id); document.getElementById('message-input').focus(); }
                 }
             });
 
@@ -2649,7 +2665,10 @@
 
                 card.innerHTML = `<div class="advisor-avatar" style="background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));">${avatarContent}</div>
                     <div class="advisor-info"><h4>${advisor.name}</h4><p>${advisor.role}</p><div class="advisor-status"><span class="status-dot online"></span><span>Online</span></div></div>`;
-                card.addEventListener('click', () => selectAdvisor(advisor.id));
+                
+                // Add a small hover effect without the click functionality
+                card.style.cursor = 'default';
+                
                 advisorList.appendChild(card);
             });
         }
@@ -2749,56 +2768,6 @@
             if (!localStorage.getItem('vsms_messages')) localStorage.setItem('vsms_messages', JSON.stringify({}));
         }
 
-        function selectAdvisor(advisorId) {
-            const advisor = serviceAdvisors.find(a => String(a.id) === String(advisorId));
-            if (!advisor) return;
-            currentAdvisor = advisor;
-            document.querySelectorAll('.advisor-card').forEach(c => c.classList.remove('active'));
-            const selected = document.querySelector(`.advisor-card[data-id="${advisorId}"]`);
-            if (selected) selected.classList.add('active');
-            document.getElementById('chat-section').style.display = 'block';
-            document.getElementById('chat-with').textContent = `Chat with: ${advisor.name}`;
-            loadMessages(advisorId);
-        }
-
-        function loadMessages(advisorId) {
-            const area = document.getElementById('message-area');
-            area.innerHTML = '';
-            const advisorMessages = messages[String(advisorId)] || [];
-            if (!advisorMessages.length) { area.innerHTML = '<div style="text-align: center; color: var(--text-muted); padding: 2rem;">No messages yet. Start a conversation!</div>'; return; }
-            advisorMessages.forEach(msg => {
-                const div = document.createElement('div');
-                div.className = `message ${msg.type || 'received'}`;
-                div.innerHTML = `<div style="font-weight: 600; margin-bottom: 0.3rem; font-size: 0.85rem; display: flex; justify-content: space-between;"><span>${msg.type === 'sent' ? 'You' : (serviceAdvisors.find(a=>String(a.id)===String(advisorId))?.name||'Advisor')}</span>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">${formatTime(msg.timestamp)}</span></div><div>${msg.text}</div>`;
-                area.appendChild(div);
-            });
-            area.scrollTop = area.scrollHeight;
-        }
-
-        function sendMessage() {
-            if (!currentAdvisor) { showNotification('Please select a quality controller first', 'error'); return; }
-            const input = document.getElementById('message-input');
-            const messageText = input.value.trim();
-            if (!messageText) return;
-            const msg = { id: Date.now(), text: messageText, timestamp: new Date().toISOString(), type: 'sent', sender: currentUser?.name||'Technician', from: currentUser?.id||'tech' };
-            const advisorId = String(currentAdvisor.id);
-            if (!messages[advisorId]) messages[advisorId] = [];
-            messages[advisorId].push(msg);
-            const stored = JSON.parse(localStorage.getItem('vsms_messages')) || {};
-            stored[advisorId] = messages[advisorId];
-            localStorage.setItem('vsms_messages', JSON.stringify(stored));
-            input.value = '';
-            loadMessages(advisorId);
-            setTimeout(() => {
-                const reply = { id: Date.now(), text: `Thanks for your message. I'll check on this.`, timestamp: new Date().toISOString(), type: 'received', sender: currentAdvisor.name, from: currentAdvisor.id };
-                messages[advisorId].push(reply);
-                stored[advisorId] = messages[advisorId];
-                localStorage.setItem('vsms_messages', JSON.stringify(stored));
-                loadMessages(advisorId);
-            }, 2000);
-        }
-        function handleMessageKeypress(e) { if(e.key === 'Enter') sendMessage(); }
 
 
         function updateTime() {
@@ -3337,14 +3306,76 @@
             setTimeout(()=>{ n.style.animation = 'slideOut 0.3s ease'; setTimeout(()=>{ if(n.parentNode) n.parentNode.removeChild(n); },300); },5000);
         }
         function openServiceManuals() {
-            showNotification('Opening Service Manuals.', 'info');
-            
-            // Opens the PDF in a new tab
-            window.open('/servicemanual.pdf', '_blank');
+            window.open('https://docs.google.com/spreadsheets/d/1bfWhypu69Rhf_OVB8-WHGYKyNJDe2N3GYgygzRk-Vpw/edit?usp=sharing', '_blank');
         }
         function openWorkOrders() { showNotification('Opening Work Orders.','info'); }
-        function openPartsInventory() { showNotification('Opening Parts Inventory.','info'); }
-        function openTeamChat() { showNotification('Opening Team Chat.','info'); }
+        function openPartsInventory() {
+            window.open('https://docs.google.com/spreadsheets/d/1gXagUQ0vQgumCX24nRRlPVnC6tbp1UhwE1XNImyxHqo/edit?usp=sharing', '_blank');
+        }
+        let teamSocket = null;
+
+        function initTeamChat() {
+            if (!teamSocket) {
+                teamSocket = io();
+                
+                teamSocket.on('load_messages', (msgs) => {
+                    const area = document.getElementById('team-message-area');
+                    area.innerHTML = '';
+                    msgs.forEach(msg => appendTeamMessage(msg));
+                    area.scrollTop = area.scrollHeight;
+                });
+
+                teamSocket.on('receive_message', (msg) => {
+                    appendTeamMessage(msg);
+                    const area = document.getElementById('team-message-area');
+                    area.scrollTop = area.scrollHeight;
+                });
+            }
+        }
+
+        function openTeamChat() {
+            document.getElementById('teamChatModal').classList.add('show');
+            initTeamChat();
+            setTimeout(() => {
+                const area = document.getElementById('team-message-area');
+                area.scrollTop = area.scrollHeight;
+            }, 100);
+        }
+
+        function closeTeamChat() {
+            document.getElementById('teamChatModal').classList.remove('show');
+        }
+
+        function sendTeamMessage() {
+            const input = document.getElementById('team-chat-input');
+            const text = input.value.trim();
+            if (!text || !teamSocket) return;
+            
+            teamSocket.emit('send_message', {
+                text: text,
+                senderName: currentUser?.name || 'Technician',
+                senderId: currentUser?._id || currentUser?.id || 'anon'
+            });
+            
+            input.value = '';
+        }
+
+        function appendTeamMessage(msg) {
+            const area = document.getElementById('team-message-area');
+            const currentId = currentUser?._id || currentUser?.id || 'anon';
+            const isMe = String(msg.senderId) === String(currentId);
+            
+            const div = document.createElement('div');
+            div.className = `message ${isMe ? 'sent' : 'received'}`;
+            div.style.maxWidth = '80%';
+            div.innerHTML = `
+                <div style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 4px; text-align: ${isMe ? 'right' : 'left'}">
+                    ${isMe ? 'You' : msg.senderName} • ${new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                </div>
+                <div>${msg.text}</div>
+            `;
+            area.appendChild(div);
+        }
     </script>
 
     <!-- Profile Modal Styles -->
