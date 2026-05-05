@@ -323,6 +323,8 @@
                 type="text"
                 maxlength="1"
                 id="pin-1"
+                inputmode="numeric"
+                pattern="[0-9]*"
                 required
                 class="w-full h-14 text-center text-2xl font-bold border border-slate-200 bg-slate-50 rounded-xl focus:border-blue-500 focus:outline-none transition"
                 oninput="focusNextPin(this, 1)"
@@ -332,6 +334,8 @@
                 type="text"
                 maxlength="1"
                 id="pin-2"
+                inputmode="numeric"
+                pattern="[0-9]*"
                 required
                 class="w-full h-14 text-center text-2xl font-bold border border-slate-200 bg-slate-50 rounded-xl focus:border-blue-500 focus:outline-none transition"
                 oninput="focusNextPin(this, 2)"
@@ -341,6 +345,8 @@
                 type="text"
                 maxlength="1"
                 id="pin-3"
+                inputmode="numeric"
+                pattern="[0-9]*"
                 required
                 class="w-full h-14 text-center text-2xl font-bold border border-slate-200 bg-slate-50 rounded-xl focus:border-blue-500 focus:outline-none transition"
                 oninput="focusNextPin(this, 3)"
@@ -350,6 +356,8 @@
                 type="text"
                 maxlength="1"
                 id="pin-4"
+                inputmode="numeric"
+                pattern="[0-9]*"
                 required
                 class="w-full h-14 text-center text-2xl font-bold border border-slate-200 bg-slate-50 rounded-xl focus:border-blue-500 focus:outline-none transition"
                 oninput="focusNextPin(this, 4)"
@@ -617,6 +625,8 @@
       });
 
       function focusNextPin(el, num) {
+        // Only allow numbers
+        el.value = el.value.replace(/[^0-9]/g, "");
         if (el.value.length === 1 && num < 4) {
           document.getElementById(`pin-${num + 1}`).focus();
         }
@@ -687,6 +697,13 @@
 
             if (!result.ok) {
               const body = await result.json().catch(() => ({}));
+              if (body.error === "inactive") {
+                document.getElementById("inactive-account-modal").style.display =
+                  "flex";
+                document.getElementById("inactive-message").innerHTML =
+                  `Your account has been deactivated. Please contact the administrator.`;
+                return;
+              }
               throw new Error(body.error || "Invalid email or password");
             }
 
@@ -703,14 +720,6 @@
                 `Your account is registered as ${getRoleName(user.role)}. Please select ${getRoleName(user.role)} role to login.`,
                 "error",
               );
-              return;
-            }
-
-            if (user.status === "inactive") {
-              document.getElementById("inactive-account-modal").style.display =
-                "flex";
-              document.getElementById("inactive-message").innerHTML =
-                `Your account has been deactivated. Please contact the administrator.`;
               return;
             }
 

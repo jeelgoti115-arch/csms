@@ -2584,16 +2584,17 @@
         .sidebar {
             position: fixed;
             top: 0;
-            left: -260px;
-            width: 260px;
+            left: -220px;
+            width: 220px;
             height: 100vh;
             background: linear-gradient(180deg, #111827 0%, #1f2937 100%);
             color: #eef2ff;
             padding: 1.5rem 1rem;
-            transition: left 0.3s ease;
+            transition: left 0.3s ease, transform 0.3s ease;
             z-index: 1600;
             overflow-y: auto;
             border-right: 1px solid rgba(255,255,255,0.08);
+            will-change: left, transform;
         }
 
         .sidebar.open {
@@ -2668,6 +2669,7 @@
             flex: 1;
             min-width: 0;
             transition: margin-left 0.3s ease;
+            will-change: margin-left;
         }
 
         body.sidebar-open .sidebar {
@@ -2680,8 +2682,8 @@
 
         @media (max-width: 900px) {
             .sidebar {
-                width: 240px;
-                left: -240px;
+                width: 220px;
+                left: -220px;
             }
 
             body.sidebar-open .admin-view {
@@ -2719,7 +2721,8 @@
         .search-box input, .search-btn { padding: 7px 12px; font-size: 0.9rem; }
         table th, table td { padding: 0.6rem 0.8rem; font-size: 0.82rem; }
         .pagination-btn { padding: 0.55rem 0.85rem; font-size: 0.82rem; }
-        .sidebar { width: 220px; padding: 1.2rem 0.9rem; }
+        /* Standardized sidebar metrics to ensure synchronized transitions */
+        .sidebar { width: 220px; padding: 1.5rem 1rem; }
         body.sidebar-open .admin-view { margin-left: 220px; }
         .modal-content { padding: 1.8rem; max-width: 520px; }
     </style>
