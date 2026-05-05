@@ -52,8 +52,6 @@ const vehicleSchema = new mongoose.Schema({
   jobsAssigned: { type: Boolean, default: false },
   qcStatus: { type: String, default: null },
   qcNotes: { type: String, default: null },
-  qcPriority: { type: String, default: null },
-  vehicleRejected: { type: Boolean, default: false },
   reworkJobs: { type: [String], default: [] },
   totalServiceTime: { type: Number, default: null },
   totalCost: { type: Number, default: null },

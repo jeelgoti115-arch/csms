@@ -2376,11 +2376,11 @@
           </div>
           <div class="stat-card delivered">
             <div class="stat-icon delivered">
-              <i class="fas fa-car-side"></i>
+              <i class="fas fa-check-double"></i>
             </div>
             <div>
               <h3 id="delivered-count">0</h3>
-              <p>Delivered</p>
+              <p>Ready for delivery</p>
             </div>
           </div>
         </div>
@@ -2401,6 +2401,9 @@
           </button>
           <button class="filter-btn" data-filter="awaiting-qc">
             <i class="fas fa-check-circle"></i> Awaiting QC
+          </button>
+          <button class="filter-btn" data-filter="in-qc">
+            <i class="fas fa-clipboard-list"></i> IN QC
           </button>
           <!-- NEW FILTER: Ready for Delivery -->
           <button class="filter-btn" data-filter="ready-for-delivery">
@@ -3014,7 +3017,7 @@
         document.getElementById("pending-count").textContent = pending;
         document.getElementById("inprogress-count").textContent = inProgress;
         document.getElementById("completed-count").textContent = awaitingQc;
-        document.getElementById("delivered-count").textContent = delivered;
+        document.getElementById("delivered-count").textContent = readyForDelivery;
         // optional: we don't have a stat card for ready, but we could add later
       }
 
@@ -3147,6 +3150,11 @@
           case "awaiting-qc":
             filteredVehicles = vehiclesDatabase.filter(
               (v) => v.status === "entry" && v.serviceStatus === "awaiting-qc",
+            );
+            break;
+          case "in-qc":
+            filteredVehicles = vehiclesDatabase.filter(
+              (v) => v.status === "entry" && v.serviceStatus === "in-qc",
             );
             break;
           // NEW CASE: ready-for-delivery

@@ -2903,7 +2903,7 @@
                             <i class="fas fa-check-circle"></i>
                         </div>
                         <div>
-                            <div class="stat-title">Completed Services</div>
+                            <div class="stat-title">Delivered vehicle</div>
                             <div class="stat-value" id="completed-services">0</div>
                         </div>
                     </div>
@@ -4060,9 +4060,12 @@
             document.getElementById('active-vehicles') ? 
                 document.getElementById('active-vehicles').textContent = activeVehicles : null;
             
-            // Completed Services (vehicles with serviceStatus as completed)
-            const completedServices = vehiclesDatabase.filter(v => v.serviceStatus === 'completed').length;
-            document.getElementById('completed-services').textContent = completedServices;
+            // Delivered Vehicles
+            const deliveredVehicles = vehiclesDatabase.filter(v => {
+                const status = (v.serviceStatus || v.status || '').toLowerCase().trim();
+                return status === 'delivered';
+            }).length;
+            document.getElementById('completed-services').textContent = deliveredVehicles;
             
             // Pending Services (vehicles with serviceStatus as pending or in-progress)
             const pendingServices = vehiclesDatabase.filter(v => 
@@ -5464,7 +5467,7 @@ const avatarSource = user.avatar || '';
                         const statusText = String(getJobValue(j, ['status','jobStatus','job_status'], 'pending')).replace(/[_-]/g, ' ');
                         const estHours = Number(getJobValue(j, ['estimatedHours','estHours','estimated_hours','hours'], 0)) || 0;
                         const estCost = Number(getJobValue(j, ['estimatedCost','estCost','estimated_amount','cost_estimate','price'], 0)) || 0;
-                        const actualTime = Number(getJobValue(j, ['actualTime','actual_hours','timeHours','actualHours','actual_hours'], 0)) || 0;
+                        const actualTime = Number(getJobValue(j, ['actualTime','actual_hours','timeHours','actualHours','actual_hours','totalServiceTime'], 0)) || 0;
                         const actualCost = Number(getJobValue(j, ['actualCost','actual_cost','cost','price','amount'], 0)) || 0;
                         // Render extra job fields
                         const jobPrimary = ['serviceName','service','name','type','technician','technicianName','status','jobStatus','estimatedHours','estimated_cost','estimatedCost','actualTime','actualCost','id'];
@@ -5493,7 +5496,7 @@ const avatarSource = user.avatar || '';
                                 <div style="text-align:right;min-width:160px;">
                                     <div><strong>Est Hours:</strong> ${estHours.toFixed(2)}</div>
                                     <div><strong>Est Cost:</strong> ₹${estCost.toFixed(2)}</div>
-                                    <div><strong>Actual Time:</strong> ${actualTime ? actualTime.toFixed(2) + ' h' : '-'}</div>
+                                    <div><strong>Actual Time:</strong> ${actualTime ? `${String(Math.floor(actualTime)).padStart(2,'0')}:${String(Math.floor((actualTime * 60) % 60)).padStart(2,'0')}:${String(Math.floor((actualTime * 3600) % 60)).padStart(2,'0')}` : '-'}</div>
                                     
                                 </div>
                             </div>

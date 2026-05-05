@@ -411,7 +411,7 @@
         /* Benefits Section */
         .benefits-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(4, 1fr);
             gap: 2rem;
             margin-bottom: 4rem;
         }
@@ -958,6 +958,10 @@
                 font-size: 3.5rem;
             }
             
+            .benefits-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
             .comparison-row {
                 grid-template-columns: 1fr;
                 gap: 0.5rem;
@@ -1028,7 +1032,8 @@
                 font-size: 2.5rem;
             }
             
-            .features-grid {
+            .features-grid,
+            .benefits-grid {
                 grid-template-columns: 1fr;
             }
         }

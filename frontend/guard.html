@@ -32,11 +32,12 @@
             --gradient-alt: linear-gradient(135deg, #4cc9f0, #4361ee);
             --accent-primary: #6366f1;
             --accent-secondary: #8b5cf6;
+            --body-main: #1e293b;
         }
 
         body {
             background: linear-gradient(135deg, #f8fafc 0%, #eef2f9 100%);
-            color: #1e293b;
+            color: var(--body-main);
             min-height: 100vh;
         }
 
@@ -69,7 +70,7 @@
         }
 
         .logo span {
-            color: #1e293b;
+            color: var(--body-main);
         }
 
         .user-info {
@@ -89,7 +90,7 @@
         .user-avatar {
             width: 45px;
             height: 45px;
-            background: linear-gradient(135deg, #4361ee, #7209b7);
+            background: var(--gradient);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -149,7 +150,7 @@
         }
 
         .dashboard-header h1 {
-            color: #1e293b;
+            color: var(--body-main);
             font-size: 2.5rem;
             margin-bottom: 1rem;
             font-weight: 700;
@@ -200,7 +201,7 @@
         }
 
         .section-title {
-            color: #1e293b;
+            color: var(--body-main);
             font-size: 1.8rem;
             margin-bottom: 2rem;
             padding-bottom: 1rem;
@@ -236,7 +237,7 @@
             font-size: 1rem;
             transition: all 0.3s;
             background: white;
-            color: #1e293b;
+            color: var(--body-main);
         }
 
         .form-group input::placeholder,
@@ -247,7 +248,7 @@
         input:-webkit-autofill,
         textarea:-webkit-autofill,
         select:-webkit-autofill {
-            -webkit-text-fill-color: #1e293b !important;
+            -webkit-text-fill-color: var(--body-main) !important;
             background-color: #ffffff !important;
             -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
             transition: background-color 5000s ease-in-out 0s !important;

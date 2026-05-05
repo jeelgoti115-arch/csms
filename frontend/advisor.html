@@ -3184,14 +3184,6 @@
             let assignedVehicles = vehiclesDatabase
                 .filter(v => String(v.assignedAdvisor) === String(currentAdvisorId))
                 .filter(v => v.serviceStatus !== "delivered");
-            // Keep all assigned vehicles visible to the advisor (advisor should see inspection and job status).
-            // The UI will automatically remove the "Assign Jobs" button when jobs exist on the vehicle
-            // or when a vehicle has previously had jobs assigned. We use an explicit `jobsAssigned` flag
-            // (set when saving jobs) to ensure the Assign Jobs button NEVER reappears for a vehicle
-            // after jobs have been assigned — even if a jobs array becomes empty due to other bugs.
-            // (Previously vehicles with jobs or advisorHidden were being filtered out — that hid data
-            // and caused inconsistencies on re-login.)
-            // No additional filtering here.
             
             console.log('After advisor filter:', assignedVehicles.length, assignedVehicles);
             console.log('Active tab:', activeTab);
