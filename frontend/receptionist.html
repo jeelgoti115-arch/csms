@@ -321,7 +321,77 @@
         border-bottom: 2px solid #f1f5f9;
         display: flex;
         align-items: center;
-        gap: 10px;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      /* Search Bar Styles */
+      .search-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: #f1f5f9;
+        border-radius: 12px;
+        padding: 0.6rem 1.2rem;
+        width: 380px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      }
+
+      .search-container:focus-within {
+        background: white;
+        border-color: #4361ee;
+        box-shadow: 0 8px 25px rgba(67, 97, 238, 0.15);
+        transform: translateY(-2px);
+        width: 420px;
+      }
+
+      .search-container i {
+        color: #64748b;
+        margin-right: 12px;
+        font-size: 1.1rem;
+        transition: color 0.3s ease;
+      }
+
+      .search-container:focus-within i {
+        color: #4361ee;
+      }
+
+      .search-container input {
+        background: transparent;
+        border: none;
+        outline: none;
+        width: 100%;
+        font-size: 1rem;
+        color: #1e293b;
+        font-weight: 500;
+      }
+
+      .search-container input::placeholder {
+        color: #94a3b8;
+        font-weight: 400;
+      }
+
+      /* Dark mode search styles */
+      html.dark-mode .search-container {
+        background: #2d3b4f;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      }
+
+      html.dark-mode .search-container:focus-within {
+        background: #1e293b;
+        border-color: #f59e0b;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+      }
+
+      html.dark-mode .search-container input {
+        color: white;
+      }
+
+      html.dark-mode .search-container:focus-within i {
+        color: #f59e0b;
       }
 
       .section-title i {
@@ -426,7 +496,7 @@
       }
 
       .assign-btn:disabled {
-        background: #cbd5e1;
+        background: linear-gradient(135deg, #4361ee, #7209b7);
         cursor: not-allowed;
       }
 
@@ -2419,8 +2489,19 @@
           <!-- Vehicles Section - Full Width -->
           <div class="vehicles-section">
             <h2 class="section-title">
-              <i class="fas fa-car"></i> Car Management
-              <span id="live-time" class="live-time"></span>
+              <div style="display: flex; align-items: center; gap: 10px">
+                <i class="fas fa-car"></i> Car Management
+                <span id="live-time" class="live-time"></span>
+              </div>
+              <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input
+                  type="text"
+                  id="vehicle-search"
+                  placeholder="Search vehicle, model or owner..."
+                  onkeyup="handleSearch()"
+                />
+              </div>
             </h2>
 
             <div class="vehicles-table-container">
@@ -2453,13 +2534,15 @@
           <div class="advisors-section">
             <div class="section-header">
               <h2 class="section-title">
-                <i class="fas fa-users-cog"></i> Service Advisors
-                <span
-                  id="advisors-count"
-                  class="live-time"
-                  style="margin-left: 0.5rem; font-size: 0.8rem"
-                  >0 available</span
-                >
+                <div style="display: flex; align-items: center; gap: 10px">
+                  <i class="fas fa-users-cog"></i> Service Advisors
+                  <span
+                    id="advisors-count"
+                    class="live-time"
+                    style="margin-left: 0.5rem; font-size: 0.8rem"
+                    >0 available</span
+                  >
+                </div>
               </h2>
             </div>
 
@@ -2756,7 +2839,9 @@
           }));
 
           // Sort by createdAt DESC
-          usersDatabase.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
+          usersDatabase.sort(
+            (a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0),
+          );
 
           return true;
         } catch (error) {
@@ -2822,7 +2907,9 @@
           }));
 
           // Sort by entryTime DESC
-          vehiclesDatabase.sort((a, b) => new Date(b.entryTime || 0) - new Date(a.entryTime || 0));
+          vehiclesDatabase.sort(
+            (a, b) => new Date(b.entryTime || 0) - new Date(a.entryTime || 0),
+          );
 
           normalizeVehicles();
           return true;
@@ -3017,7 +3104,8 @@
         document.getElementById("pending-count").textContent = pending;
         document.getElementById("inprogress-count").textContent = inProgress;
         document.getElementById("completed-count").textContent = awaitingQc;
-        document.getElementById("delivered-count").textContent = readyForDelivery;
+        document.getElementById("delivered-count").textContent =
+          readyForDelivery;
         // optional: we don't have a stat card for ready, but we could add later
       }
 
@@ -3114,6 +3202,10 @@
           .join("");
       }
 
+      function handleSearch() {
+        filterVehicles();
+      }
+
       // ===== FILTER VEHICLES - FIXED: includes ready-for-delivery and enables Deliver button =====
       function filterVehicles() {
         const tbody = document.getElementById("vehicles-table-body");
@@ -3157,7 +3249,6 @@
               (v) => v.status === "entry" && v.serviceStatus === "in-qc",
             );
             break;
-          // NEW CASE: ready-for-delivery
           case "ready-for-delivery":
             filteredVehicles = vehiclesDatabase.filter(
               (v) =>
@@ -3176,6 +3267,20 @@
               (v) => v.status === "entry" && v.serviceStatus !== "delivered",
             );
             break;
+        }
+
+        // Apply search filter if query exists
+        const searchQuery = document.getElementById("vehicle-search")?.value.toLowerCase() || "";
+        if (searchQuery) {
+          filteredVehicles = filteredVehicles.filter(v => {
+            const plateMatch = (v.vehicleNumber || "").toLowerCase().includes(searchQuery);
+            const carMatch = (v.carName || "").toLowerCase().includes(searchQuery);
+            const modelMatch = (v.vehicleModel || "").toLowerCase().includes(searchQuery);
+            const ownerMatch = (v.ownerEmail || "").toLowerCase().includes(searchQuery);
+            const phoneMatch = (v.mobileNumber || "").toLowerCase().includes(searchQuery);
+            
+            return plateMatch || carMatch || modelMatch || ownerMatch || phoneMatch;
+          });
         }
 
         // Sort by entry time (newest first)
@@ -3256,15 +3361,28 @@
               // Vehicle passed QC, ready to deliver -> Show DELIVER button
               actionButton = `
                         <button class="assign-btn" onclick="markAsDelivered('${vehicle.id}')" style="background: linear-gradient(135deg, #4cc9f0, #059669);">
-                            <i class="fas fa-car-side"></i> Deliver
+                            <i class="fas fa-check-double"></i> Deliver
                         </button>
                     `;
               assignDisplay = advisor
                 ? `<span class="assigned-advisor">${advisor.name}</span>`
                 : '<span style="color:#94a3b8;">Not Assigned</span>';
-            } else {
-              // Other statuses - no action or disabled
-              actionButton = `<button class="assign-btn" disabled>No Action</button>`;
+            } else if (
+              vehicle.serviceStatus === "delivered" &&
+              vehicle.status === "exit"
+            ) {
+              actionButton = `
+                        <button class="assign-btn" style="background: linear-gradient(135deg, #4cc9f0, #059669);" disabled>
+                            <i class="fas fa-car-side"></i> Delivered
+                        </button>
+                    `;
+              assignDisplay = advisor
+                ? `<span class="assigned-advisor">${advisor.name}</span>`
+                : '<span style="color:#94a3b8;">Not Assigned</span>';
+            }
+             else {
+              // Other statuses - assigned or disabled
+              actionButton = `<button class="assign-btn" disabled>Assigned</button>`;
               assignDisplay = advisor
                 ? `<span class="assigned-advisor">${advisor.name}</span>`
                 : '<span style="color:#94a3b8;">Not Assigned</span>';
@@ -3736,10 +3854,7 @@
             toggleBtn.innerHTML = isDark
               ? '<i class="fa-solid fa-moon" style="color: #ffffff;"></i>'
               : '<i class="fa-solid fa-sun" style="color: rgb(30 41 59);"></i>';
-            localStorage.setItem(
-              "theme-preference",
-              isDark ? "dark" : "light",
-            );
+            localStorage.setItem("theme-preference", isDark ? "dark" : "light");
           });
         }
       }
@@ -4137,10 +4252,19 @@
     <script src="js/app.js"></script>
 
     <!-- Custom Confirm Modal -->
-    <div id="customConfirmModal" class="vehicle-detail-modal" style="z-index: 30000">
+    <div
+      id="customConfirmModal"
+      class="vehicle-detail-modal"
+      style="z-index: 30000"
+    >
       <div
         class="vehicle-detail-content"
-        style="max-width: 400px; text-align: center; padding: 2rem; overflow: hidden;"
+        style="
+          max-width: 400px;
+          text-align: center;
+          padding: 2rem;
+          overflow: hidden;
+        "
       >
         <div
           style="font-size: 3rem; color: var(--warning); margin-bottom: 1rem"
