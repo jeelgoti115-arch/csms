@@ -218,7 +218,7 @@ app.post('/api/users', authMiddleware, upload.single('avatar'), async (req, res)
         to: email,
         subject: 'Your Account Credentials - Car Service Management System',
         html: `
-          <h3>Welcome to the Car Service Management System</h3>
+          <h3>Welcome to the Car Service Management System as ${role}</h3>
           <p>Hello ${name},</p>
           <p>Your account has been created successfully. Below are your login credentials:</p>
           <ul>
