@@ -889,12 +889,13 @@
                 top: 70px;
                 left: 0;
                 right: 0;
-                background: white;
+                background: var(--card-bg);
                 flex-direction: column;
-                padding: 1rem;
+                padding: 0.8rem;
                 box-shadow: var(--shadow);
                 border-radius: 0 0 var(--border-radius) var(--border-radius);
                 display: none;
+                gap: 0.4rem;
             }
             
             .nav-links.active {
@@ -906,8 +907,15 @@
             }
             
             .nav-links a {
-                padding: 1rem;
+                padding: 0.5rem;
                 justify-content: center;
+            }
+
+            .theme-toggle-item {
+                display: flex;
+                justify-content: center;
+                width: 100%;
+                padding: 0.5rem 0;
             }
             
             .page-header {

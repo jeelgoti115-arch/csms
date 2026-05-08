@@ -2035,13 +2035,6 @@
 
         /* Responsive Dark Mode */
         @media (max-width: 768px) {
-            html.dark-mode .user-details {
-                display: none;
-            }
-            
-            html.dark-mode .nav-links {
-                display: none;
-            }
         }
 
         /* Access Denied (Light Mode) */
@@ -2154,8 +2147,8 @@
 
             header nav {
                 flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
+                align-items: center;
+                gap: 0.8rem;
             }
 
             .logo {
@@ -2169,7 +2162,16 @@
             }
 
             .nav-links a {
-                padding: 0.8rem 0.5rem;
+                padding: 0.4rem 0.5rem;
+            }
+
+            .theme-toggle {
+                margin: 0 auto;
+            }
+
+            .user-info {
+                width: 100%;
+                justify-content: center;
             }
 
             .stats-grid {
