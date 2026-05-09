@@ -2595,8 +2595,28 @@
             transition: left 0.3s ease, transform 0.3s ease;
             z-index: 1600;
             overflow-y: auto;
+            display: flex;
+            flex-direction: column;
             border-right: 1px solid rgba(255,255,255,0.08);
             will-change: left, transform;
+        }
+
+        .sidebar-actions {
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .logout-link {
+            color: #fca5a5 !important;
+        }
+
+        .logout-link:hover {
+            background: rgba(239, 68, 68, 0.1) !important;
+            color: #f87171 !important;
         }
 
         .sidebar.open {
@@ -2764,6 +2784,11 @@
                     <i class="fas fa-car"></i> Add Vehicle
                 </button>
             </nav>
+            <div class="sidebar-actions">
+                <button type="button" class="sidebar-link logout-link" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
         </aside>
         <div class="admin-view">
     <!-- Header -->
@@ -2782,16 +2807,12 @@
                 <button class="theme-toggle" id="theme-toggle" title="Toggle dark mode">
                     <i class="fas fa-sun"></i>
                 </button>
-                
-                <div class="user-info">
-                    <div class="user-avatar" id="admin-avatar">A</div>
+                              <div class="user-info" onclick="scrollToTop()">
                     <div class="user-details">
-                        <h4 id="admin-name">Administrator</h4>
-                        <p>System Administrator</p>
+                        <h4 id="admin-name">Loading...</h4>
+                        <p>Administrator</p>
                     </div>
-                    <button class="logout-btn" onclick="logout()">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </button>
+                    <div class="user-avatar" id="admin-avatar">A</div>
                 </div>
             </div>
         </nav>
