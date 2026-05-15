@@ -16,11 +16,25 @@ const app = express();
 // Nodemailer setup
 const transporter = nodemailer.createTransport({
   host: 'smtp.gmail.com',
-  port: 465,
-  secure: true, // true for 465, false for other ports
+  port: 587,
+  secure: false, // false for port 587
+  requireTLS: true,
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
+  },
+  tls: {
+    // This allows connections even if the server's TLS certificate is not recognized (common on shared/live hosting)
+    rejectUnauthorized: false
+  }
+});
+
+// Verify the connection when the server starts
+transporter.verify(function(error, success) {
+  if (error) {
+    console.error('🔴 Nodemailer Connection Error:', error);
+  } else {
+    console.log('🟢 Nodemailer is ready to send emails');
   }
 });
 
