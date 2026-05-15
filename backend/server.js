@@ -15,7 +15,9 @@ const app = express();
 
 // Nodemailer setup
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true, // true for 465, false for other ports
   auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
@@ -227,8 +229,6 @@ app.post('/api/users', authMiddleware, upload.single('avatar'), async (req, res)
             <li><strong>Role:</strong> ${role}</li>
           </ul>
           <p>Please log in and change your password if needed.</p>
-          <br>
-          <p>Best regards,<br>CSMS Admin</p>
         `
       };
 
